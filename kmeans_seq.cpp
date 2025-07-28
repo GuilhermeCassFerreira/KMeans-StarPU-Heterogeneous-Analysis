@@ -4,7 +4,7 @@
 #include <iostream>
 #include <vector>
 #include <chrono>
-#include <omp.h> 
+// #include <omp.h> // Comente ou remova esta linha se quiser garantir que não haja OpenMP
 
 using namespace std;
 using namespace chrono;
@@ -219,8 +219,9 @@ public:
             bool done = true;
 
             // Add all points to their nearest cluster
-            // Removida a cláusula num_threads(16) para permitir controle via OMP_NUM_THREADS
-            #pragma omp parallel for reduction(&&: done) 
+            // Para garantir que esta seção seja sequencial, compile sem -fopenmp
+            // ou defina OMP_NUM_THREADS=1
+            // #pragma omp parallel for reduction(&&: done) 
             for (int i = 0; i < total_points; i++)
             {
                 int currentClusterId = all_points[i].getCluster();
@@ -252,8 +253,9 @@ public:
                     double sum = 0.0;
                     if (ClusterSize > 0)
                     {
-                        // Removida a cláusula num_threads(16) para permitir controle via OMP_NUM_THREADS
-                        #pragma omp parallel for reduction(+: sum) 
+                        // Para garantir que esta seção seja sequencial, compile sem -fopenmp
+                        // ou defina OMP_NUM_THREADS=1
+                        // #pragma omp parallel for reduction(+: sum) 
                         for (int p = 0; p < ClusterSize; p++)
                         {
                             sum += clusters[i].getPoint(p).getVal(j);
