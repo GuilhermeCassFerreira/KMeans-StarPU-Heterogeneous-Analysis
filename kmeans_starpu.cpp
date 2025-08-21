@@ -5,10 +5,14 @@
 #include <iostream>
 #include <vector>
 #include <chrono>
+#include <cstring>
 
 using namespace std;
 using namespace chrono;
 
+// Declaração da função wrapper CUDA (implementada no .cu)
+extern "C" void assign_point_to_cluster_cuda(void *buffers[], void *cl_arg);
+extern "C" int get_cuda_kernel_calls();
 class Point {
 private:
     int pointId, clusterId;
@@ -92,8 +96,9 @@ public:
 
 // Estrutura para passar argumentos para o kernel StarPU
 struct StarPUArgs {
-    Point *point;
-    vector<Cluster> *clusters;
+    double *point_values;
+    double *centroids;
+    int K;
     int dimensions;
     int *nearestClusterId;
 };
@@ -101,33 +106,35 @@ struct StarPUArgs {
 // Kernel para CPU
 void assign_point_to_cluster(void *buffers[], void *cl_arg) {
     StarPUArgs *args = (StarPUArgs *)cl_arg;
-    Point *point = args->point;
-    vector<Cluster> *clusters = args->clusters;
+    double *point_values = args->point_values;
+    double *centroids = args->centroids;
+    int K = args->K;
     int dimensions = args->dimensions;
     int *nearestClusterId = args->nearestClusterId;
 
     double min_dist = numeric_limits<double>::max();
     int bestClusterId = -1;
 
-    for (size_t i = 0; i < clusters->size(); i++) {
+    for (int i = 0; i < K; i++) {
         double dist = 0.0;
         for (int j = 0; j < dimensions; j++) {
-            dist += pow((*clusters)[i].getCentroidByPos(j) - point->getVal(j), 2.0);
+            double diff = centroids[i * dimensions + j] - point_values[j];
+            dist += diff * diff;
         }
         dist = sqrt(dist);
         if (dist < min_dist) {
             min_dist = dist;
-            bestClusterId = (*clusters)[i].getId();
+            bestClusterId = i;
         }
     }
-
-    *nearestClusterId = bestClusterId;
+    *nearestClusterId = bestClusterId + 1;
 }
 
-// Codelet StarPU
+// Codelet StarPU com suporte CPU e CUDA
 static struct starpu_codelet cl_assign_point = {
     .cpu_funcs = {assign_point_to_cluster},
-    .nbuffers = 0, // Não usamos buffers StarPU diretamente
+    .cuda_funcs = {assign_point_to_cluster_cuda},
+    .nbuffers = 0,
     .modes = {}
 };
 
@@ -147,23 +154,33 @@ private:
         vector<int> nearestClusterIds(all_points.size());
         vector<struct starpu_task *> tasks(all_points.size());
 
-        for (size_t i = 0; i < all_points.size(); i++) {
-            StarPUArgs *args = new StarPUArgs{&all_points[i], &clusters, dimensions, &nearestClusterIds[i]};
+        vector<double> centroids(K * dimensions);
+        for (int i = 0; i < K; i++)
+            for (int j = 0; j < dimensions; j++)
+                centroids[i * dimensions + j] = clusters[i].getCentroidByPos(j);
 
-            // Criação da tarefa StarPU
+        for (size_t i = 0; i < all_points.size(); i++) {
+            double *point_values = new double[dimensions];
+            for (int d = 0; d < dimensions; d++)
+                point_values[d] = all_points[i].getVal(d);
+
+            StarPUArgs *args = new StarPUArgs{
+                point_values,
+                centroids.data(),
+                K,
+                dimensions,
+                &nearestClusterIds[i]
+            };
+
             tasks[i] = starpu_task_create();
             tasks[i]->cl = &cl_assign_point;
             tasks[i]->cl_arg = args;
             tasks[i]->cl_arg_size = sizeof(StarPUArgs);
-
-            // Submissão da tarefa
             starpu_task_submit(tasks[i]);
         }
 
-        // Espera todas as tarefas terminarem
         starpu_task_wait_for_all();
 
-        // Atualiza os clusters dos pontos
         for (size_t i = 0; i < all_points.size(); i++) {
             all_points[i].setCluster(nearestClusterIds[i]);
         }
@@ -180,13 +197,11 @@ public:
         total_points = all_points.size();
         dimensions = all_points[0].getDimensions();
 
-        // Inicialização dos clusters
         vector<int> used_pointIds;
 
         for (int i = 1; i <= K; i++) {
             while (true) {
                 int index = rand() % total_points;
-
                 if (find(used_pointIds.begin(), used_pointIds.end(), index) == used_pointIds.end()) {
                     used_pointIds.push_back(index);
                     all_points[index].setCluster(i);
@@ -196,9 +211,7 @@ public:
                 }
             }
         }
-        cout << "Clusters initialized = " << clusters.size() << endl
-             << endl;
-
+        cout << "Clusters initialized = " << clusters.size() << endl << endl;
         cout << "Running K-Means Clustering.." << endl;
 
         int iter = 1;
@@ -206,21 +219,15 @@ public:
             cout << "Iter - " << iter << "/" << iters << endl;
             bool done = true;
 
-            // Atribuir pontos aos clusters mais próximos usando StarPU
             assignPointsToClusters(all_points);
-
-            // Limpa os clusters existentes
             clearClusters();
 
-            // Reatribui pontos aos novos clusters
             for (int i = 0; i < total_points; i++) {
                 clusters[all_points[i].getCluster() - 1].addPoint(all_points[i]);
             }
 
-            // Recalcula os centros de cada cluster
             for (int i = 0; i < K; i++) {
                 int ClusterSize = clusters[i].getSize();
-
                 for (int j = 0; j < dimensions; j++) {
                     double sum = 0.0;
                     if (ClusterSize > 0) {
@@ -233,14 +240,12 @@ public:
             }
 
             if (done || iter >= iters) {
-                cout << "Clustering completed in iteration : " << iter << endl
-                     << endl;
+                cout << "Clustering completed in iteration : " << iter << endl << endl;
                 break;
             }
             iter++;
         }
 
-        // Salva os resultados
         ofstream pointsFile;
         pointsFile.open(output_dir + "/" + to_string(K) + "-points.txt", ios::out);
 
@@ -269,6 +274,29 @@ public:
     }
 };
 
+void print_starpu_worker_usage() {
+    unsigned nworkers = starpu_worker_get_count();
+    unsigned cpu_count = 0, cuda_count = 0, other_count = 0;
+    cout << "Workers StarPU disponíveis:" << endl;
+    for (unsigned i = 0; i < nworkers; i++) {
+        enum starpu_worker_archtype type = starpu_worker_get_type(i);
+        char name[64];
+        starpu_worker_get_name(i, name, sizeof(name));        
+        if (type == STARPU_CPU_WORKER) {
+            cout << "Worker " << i << ": CPU (" << name << ")" << endl;
+            cpu_count++;
+        } else if (type == STARPU_CUDA_WORKER) {
+            cout << "Worker " << i << ": GPU/CUDA (" << name << ")" << endl;
+            cuda_count++;
+        } else {
+            cout << "Worker " << i << ": Outro tipo (" << name << ")" << endl;
+            other_count++;
+        }
+    }
+    cout << "Resumo: " << cpu_count << " CPU(s), " << cuda_count << " GPU(s), " << other_count << " outros." << endl;
+    cout << "Se houver GPU(s) listada(s) acima, o StarPU está pronto para usá-las." << endl;
+}
+
 int main(int argc, char **argv) {
     if (argc != 4) {
         cout << "Error: command-line argument count mismatch. \n ./kmeans <INPUT> <K> <OUT-DIR>" << endl;
@@ -296,8 +324,7 @@ int main(int argc, char **argv) {
     }
 
     infile.close();
-    cout << "\nData fetched successfully!" << endl
-         << endl;
+    cout << "\nData fetched successfully!" << endl << endl;
 
     if ((int)all_points.size() < K) {
         cout << "Error: Number of clusters greater than number of points." << endl;
@@ -306,23 +333,33 @@ int main(int argc, char **argv) {
 
     int iters = 100;
 
-    // Inicializa o StarPU
     starpu_init(NULL);
 
-    // Início da medição de tempo
     auto start = high_resolution_clock::now();
 
     KMeans kmeans(K, iters, output_dir);
     kmeans.run(all_points);
 
-    // Fim da medição de tempo
     auto end = high_resolution_clock::now();
     auto duration = duration_cast<milliseconds>(end - start);
 
     cout << "Execution time: " << duration.count() << " ms" << endl;
 
-    // Finaliza o StarPU
+   print_starpu_worker_usage();
+
     starpu_shutdown();
+
+    const char* sched = getenv("STARPU_SCHED");
+    if (sched)
+        cout << "Escalonador StarPU ativo: " << sched << endl;
+    else
+        cout << "Escalonador StarPU padrão (ws) em uso." << endl;
+
+    int n_cuda = get_cuda_kernel_calls();
+    if (n_cuda > 0)
+        cout << "O kernel CUDA foi executado " << n_cuda << " vez(es)!" << endl;
+    else
+        cout << "O kernel CUDA NÃO foi executado!" << endl;
 
     return 0;
 }
