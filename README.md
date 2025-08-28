@@ -8,10 +8,15 @@
 
 - **Para CUDA (NVIDIA):**
   - Instale o driver NVIDIA mais recente para sua GPU.
-  - Instale o [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html) para permitir acesso à GPU dentro do Docker.
   - Verifique se o comando abaixo mostra sua GPU:
     ```bash
     nvidia-smi
+    ```
+  - Instale o CUDA Toolkit compatível com seu driver.
+  - Certifique-se de que o CUDA está no PATH e LD_LIBRARY_PATH:
+    ```bash
+    export PATH=/usr/local/cuda/bin:$PATH
+    export LD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH
     ```
 
 - **Para OpenCL (AMD/Intel/NVIDIA):**
@@ -20,58 +25,38 @@
   - Para Intel: [Intel OpenCL Runtime](https://github.com/intel/compute-runtime).
   - Para NVIDIA: O driver já inclui suporte OpenCL.
 
+- **Para MPI:**
+  - Instale o OpenMPI ou MPICH:
+    ```bash
+    sudo apt-get install -y libopenmpi-dev openmpi-bin
+    ```
+
 ---
 
-### 2. Baixando a Imagem Docker
+### 2. (Opcional) Ambiente Docker
 
 - **Para CUDA (NVIDIA):**
   ```bash
   docker pull nvidia/cuda:12.9.1-devel-ubuntu24.04
   ```
+  > Use `--gpus all` ao rodar o container para expor a GPU.
 
 - **Para OpenCL (AMD/Intel):**
   - Use uma imagem Ubuntu padrão e instale o driver OpenCL dentro do container, ou utilize uma imagem ROCm para AMD.
 
-- **Para ambas (recomendado para heterogeneidade):**
-  - Use a imagem CUDA acima e instale o pacote OpenCL dentro do container.
-
 ---
 
-### 3. Criando e Iniciando o Container
-
-- **Com suporte a CUDA (NVIDIA):**
-  ```bash
-  docker run --gpus all -it \
-    -v /CAMINHO/DO/SEU/PROJETO:/workspace \
-    nvidia/cuda:12.9.1-devel-ubuntu24.04 \
-    /bin/bash
-  ```
-  > Substitua `/CAMINHO/DO/SEU/PROJETO` pelo caminho real do seu projeto no host.
-
-- **Com suporte a OpenCL (AMD/Intel):**
-  ```bash
-  docker run -it \
-    -v /CAMINHO/DO/SEU/PROJETO:/workspace \
-    ubuntu:24.04 \
-    /bin/bash
-  ```
-  > Dentro do container, instale o driver OpenCL e o ICD correspondente ao seu hardware.
-
----
-
-### 4. Instalando Dependências no Container
+### 3. Instalando Dependências no Host/Container
 
 ```bash
-apt-get update
-apt-get install -y build-essential git ocl-icd-opencl-dev libhwloc-dev wget pkg-config vim
+sudo apt-get update
+sudo apt-get install -y build-essential git ocl-icd-opencl-dev libhwloc-dev wget pkg-config vim
+sudo apt-get install -y libopenmpi-dev openmpi-bin
 ```
-
-- **Para CUDA:** (já incluso na imagem CUDA)
-- **Para OpenCL:** O comando acima instala o ICD genérico. Para AMD/Intel, consulte a documentação do fabricante para instalar o runtime específico.
 
 ---
 
-### 5. Instalando a StarPU (se necessário)
+### 4. Instalando a StarPU (se necessário)
 
 ```bash
 wget https://files.inria.fr/starpu/starpu-1.4.0/starpu-1.4.0.tar.gz
@@ -79,25 +64,18 @@ tar xzf starpu-1.4.0.tar.gz
 cd starpu-1.4.0
 ./configure --enable-cuda --enable-opencl
 make -j$(nproc)
-make install
+sudo make install
 cd ..
 ```
 
 ---
 
-### 6. Configurando Variáveis de Ambiente
+### 5. Configurando Variáveis de Ambiente
 
 ```bash
 export LD_LIBRARY_PATH=/usr/local/lib:/usr/local/cuda/lib64:$LD_LIBRARY_PATH
 export PATH=/usr/local/cuda/bin:$PATH
-```
-
----
-
-### 7. Acesse o diretório do projeto
-
-```bash
-cd /workspace
+export STARPU_NCUDA=1
 ```
 
 ---
@@ -120,7 +98,7 @@ g++ -O3 kmeans_starpu.cpp -o kmeans_starpu_cpu \
 
 ```bash
 # Compile o kernel CUDA
-nvcc -I/usr/local/include/starpu/1.4 -I/usr/local/include -c assign_point_cuda.cu -o assign_point_cuda.o
+nvcc -I/home/bridge/starpu_install/include/starpu/1.4 -I/usr/local/include -I/usr/local/cuda/include -c assign_point_cuda.cu -o assign_point_cuda.o
 
 # Linke tudo
 g++ -O3 kmeans_starpu.cpp assign_point_cuda.o -o kmeans_starpu_cuda \
@@ -135,10 +113,10 @@ g++ -O3 kmeans_starpu.cpp assign_point_cuda.o -o kmeans_starpu_cuda \
 
 ```bash
 # Compile o kernel CUDA
-nvcc -I/usr/local/include/starpu/1.4 -I/usr/local/include -c assign_point_cuda.cu -o assign_point_cuda.o
+nvcc -I/home/bridge/starpu_install/include/starpu/1.4 -I/usr/local/include -I/usr/local/cuda/include -c assign_point_cuda.cu -o assign_point_cuda.o
 
 # Compile o kernel OpenCL
-gcc -I/usr/local/include/starpu/1.4 -I/usr/local/include -I/usr/local/cuda/include -c assign_point_opencl.c -o assign_point_opencl.o
+gcc -I/home/bridge/starpu_install/include/starpu/1.4 -I/usr/local/include -I/usr/local/cuda/include -c assign_point_opencl.c -o assign_point_opencl.o
 
 # Linke tudo
 g++ -O3 -DSTARPU_USE_CUDA -DSTARPU_USE_OPENCL \
@@ -150,10 +128,22 @@ g++ -O3 -DSTARPU_USE_CUDA -DSTARPU_USE_OPENCL \
 
 ---
 
+### 4. CPU + CUDA + OpenCL + MPI (paralelo distribuído)
+
+```bash
+mpicxx -O3 -DSTARPU_USE_CUDA -DSTARPU_USE_OPENCL \
+    kmeans_starpu_prime.cpp assign_point_opencl.o assign_point_cuda.o -o kmeans_starpu_prime \
+    -I/home/bridge/starpu_install/include/starpu/1.4 -I/usr/local/cuda/include \
+    -L/home/bridge/starpu_install/lib -L/usr/local/cuda/lib64 \
+    -lstarpu-1.4 -lcuda -lcudart -lOpenCL -lpthread -lm
+```
+
+---
+
 > **Observações:**
+> - Ajuste os caminhos de include/lib conforme seu ambiente.
 > - Se não quiser OpenCL, basta não compilar/linkar `assign_point_opencl.c` e não usar `-DSTARPU_USE_OPENCL`.
 > - Se não quiser CUDA, basta não compilar/linkar `assign_point_cuda.cu` e não usar `-DSTARPU_USE_CUDA`.
-> - Ajuste os caminhos de include/lib se necessário conforme seu ambiente.
 > - Se aparecer erro de referência a OpenCL, remova todas as referências a `assign_point_to_cluster_opencl` e `get_opencl_kernel_calls` do código.
 
 ---
@@ -163,15 +153,43 @@ g++ -O3 -DSTARPU_USE_CUDA -DSTARPU_USE_OPENCL \
 Antes de rodar, garanta que as bibliotecas estejam no `LD_LIBRARY_PATH`:
 
 ```bash
-export LD_LIBRARY_PATH=./starpu/src/.libs:/usr/local/lib:/usr/local/cuda/lib64:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=/home/bridge/starpu_install/lib:/usr/local/lib:/usr/local/cuda/lib64:$LD_LIBRARY_PATH
 ```
 
-Execute o programa conforme o binário gerado, por exemplo:
+### Execução Serial
 
 ```bash
 ./kmeans_starpu_cuda_opencl <INPUT> <K> <OUT-DIR>
 ```
 
+### Execução Paralela com MPI
+
+```bash
+mpirun -np <NPROC> ./kmeans_starpu_prime <INPUT> <K> <OUT-DIR>
+```
+- `<NPROC>`: número de processos MPI (ex: 2, 4, 8...)
+
 ---
 
-Pronto! Agora seu ambiente está preparado para rodar em máquinas com GPU NVIDIA (CUDA), OpenCL (AMD/Intel/NVIDIA) ou ambas,
+## Dicas de Troubleshooting
+
+- **Verifique se a GPU está disponível:**  
+  ```bash
+  nvidia-smi
+  ```
+- **Verifique se o StarPU detecta CUDA:**  
+  ```bash
+  starpu_machine_display
+  ```
+  Procure por "CUDA worker" na saída.
+- **Se não detectar GPU:**  
+  - Confirme se o driver e toolkit CUDA estão instalados.
+  - Confirme se o StarPU foi compilado com `--enable-cuda`.
+  - Garanta que as bibliotecas CUDA estão no `LD_LIBRARY_PATH`.
+  - Crie links simbólicos para `libcuda.so` em `/usr/local/cuda/lib64` se necessário.
+- **Para OpenCL:**  
+  - Confirme se o ICD e runtime estão instalados e visíveis.
+
+---
+
+Pronto! Agora seu ambiente está preparado para rodar em máquinas com CPU, GPU NVIDIA (CUDA), OpenCL (AMD/Intel/NVIDIA) e também em paralelo distribuído via MPI.
