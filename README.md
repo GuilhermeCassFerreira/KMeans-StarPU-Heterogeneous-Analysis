@@ -193,3 +193,27 @@ mpirun -np <NPROC> ./kmeans_starpu_prime <INPUT> <K> <OUT-DIR>
 ---
 
 Pronto! Agora seu ambiente está preparado para rodar em máquinas com CPU, GPU NVIDIA (CUDA), OpenCL (AMD/Intel/NVIDIA) e também em paralelo distribuído via MPI.
+
+
+bridge-VJFH51F11X-B2211H% nvcc -I/home/bridge/starpu_install/include/starpu/1.4 -I/usr/local/include -I/usr/local/cuda/include -c assign_point_cuda.cu -o assign_point_cuda.o
+
+# Compile o kernel OpenCL
+gcc -I/home/bridge/starpu_install/include/starpu/1.4 -I/usr/local/include -I/usr/local/cuda/include -c assign_point_opencl.c -o assign_point_opencl.o
+
+# Compile o binário principal com CUDA e OpenCL e MPI
+mpicxx -O3 -DSTARPU_USE_CUDA -DSTARPU_USE_OPENCL \
+    kmeans_starpu_prime.cpp assign_point_opencl.o assign_point_cuda.o -o kmeans_starpu_prime_cuda \
+    -I/home/bridge/starpu_install/include/starpu/1.4 -I/usr/local/cuda/include \
+    -L/home/bridge/starpu_install/lib -L/usr/local/cuda/lib64 \
+    -lstarpu-1.4 -lcuda -lcudart -lOpenCL -lpthread -lm
+zsh: command not found: #
+zsh: command not found: #
+kmeans_starpu_prime.cpp: In function ‘int main(int, char**)’:
+kmeans_starpu_prime.cpp:517:16: warning: ignoring return value of ‘int starpu_init(starpu_conf*)’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+  517 |     starpu_init(NULL);
+      |     ~~~~~~~~~~~^~~~~~
+kmeans_starpu_prime.cpp: In member function ‘void KMeans::assignPointsToClusters(std::vector<Point>&)’:
+kmeans_starpu_prime.cpp:213:31: warning: ignoring return value of ‘int starpu_task_submit(starpu_task*)’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+  213 |             starpu_task_submit(tasks[i]);
+      |             ~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+bridge-VJFH51F11X-B2211H% 
