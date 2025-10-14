@@ -21,6 +21,7 @@ using namespace chrono;
 
 #ifdef STARPU_USE_CUDA
 extern "C" void assign_point_to_cluster_cuda(void *buffers[], void *cl_arg);
+extern "C" void calculate_partial_sums_cuda(void *buffers[], void *cl_arg);
 extern "C" int get_cuda_kernel_calls();
 #else
 static int get_cuda_kernel_calls() { return 0; }
@@ -34,19 +35,82 @@ static int get_opencl_kernel_calls() { return 0; }
 #endif
 
 static int cpu_kernel_calls = 0;
+static int cpu_assign_calls = 0;
+static int cpu_calculate_calls = 0;
+extern "C" int cuda_assign_calls;
+extern "C" int cuda_calculate_calls;
+static int opencl_assign_calls = 0;
+static int opencl_calculate_calls = 0;
 bool use_heterogeneous_chunks = false;
 bool init_on_gpu = false;
 bool use_dynamic_chunks = false;
 bool auto_adjust_chunks = false;
 
-// Estrutura simplificada para argumentos (sem dados, apenas metadados)
+// Estrutura simplificada para argumentos (metadados)
 struct HandleArgs {
     int K;
     int dimensions;
     int chunk_size;
 };
 
+// ...existing code...
 void print_kernel_usage_metrics() {
+    // Totais por kernel
+    long total_assign = (long)cpu_assign_calls + (long)cuda_assign_calls + (long)opencl_assign_calls;
+    long total_calculate = (long)cpu_calculate_calls + (long)cuda_calculate_calls + (long)opencl_calculate_calls;
+
+    // Totais agregados
+    long total_all = total_assign + total_calculate;
+
+    auto pct = [](long part, long total)->double {
+        if (total <= 0) return 0.0;
+        return (double)part * 100.0 / (double)total;
+    };
+
+    cout << "Métricas de Execução:" << endl;
+    cout << fixed << setprecision(1);
+
+    // assign_point_to_cluster
+    {
+        long cpu = cpu_assign_calls;
+        long cuda = cuda_assign_calls;
+        long opencl = opencl_assign_calls;
+        long tot = total_assign;
+        cout << "- assign_point_to_cluster  (" << tot << " execs): ["
+             << "CPU: " << pct(cpu, tot) << "% | "
+             << "CUDA: " << pct(cuda, tot) << "% | "
+             << "OpenCL: " << pct(opencl, tot) << "%]" << endl;
+    }
+
+    // calculate_partial_sums
+    {
+        long cpu = cpu_calculate_calls;
+        long cuda = cuda_calculate_calls;
+        long opencl = opencl_calculate_calls;
+        long tot = total_calculate;
+        cout << "- calculate_partial_sums   (" << tot << " execs): ["
+             << "CPU: " << pct(cpu, tot) << "% | "
+             << "CUDA: " << pct(cuda, tot) << "% | "
+             << "OpenCL: " << pct(opencl, tot) << "%]" << endl;
+    }
+
+    // Totais agregados
+    {
+        long cpu = cpu_assign_calls + cpu_calculate_calls;
+        long cuda = cuda_assign_calls + cuda_calculate_calls;
+        long opencl = opencl_assign_calls + opencl_calculate_calls;
+        long tot = total_all;
+        cout << "- TOTAIS                   (" << tot << " execs): ["
+             << "CPU: " << pct(cpu, tot) << "% | "
+             << "CUDA: " << pct(cuda, tot) << "% | "
+             << "OpenCL: " << pct(opencl, tot) << "%]" << endl;
+    }
+
+    cout << defaultfloat;
+}
+
+void print_starpu_worker_usage() {
+    // Mantemos compatibilidade com chamada anterior — exibe somente resumo global (consistente)
     long cpu = cpu_kernel_calls;
     long cuda = get_cuda_kernel_calls();
     long opencl = get_opencl_kernel_calls();
@@ -72,10 +136,13 @@ void print_kernel_usage_metrics() {
     cout << "Total:  " << total << " chamadas" << endl;
     cout << defaultfloat;
 }
+// ...existing code...
 
-// Kernel CPU usando handles (sem debug)
+// Kernel CPU usando handles
 void assign_point_to_cluster_handles(void *buffers[], void *cl_arg) {
     cpu_kernel_calls++;
+    cpu_assign_calls++;
+
     HandleArgs *args = (HandleArgs *)cl_arg;
     if (!args) return;
 
@@ -92,10 +159,8 @@ void assign_point_to_cluster_handles(void *buffers[], void *cl_arg) {
         double *point_values = points_values + idx * dimensions;
         double min_dist2 = numeric_limits<double>::max();
         int bestClusterId = -1;
-        //@Tirei o sqrt para evitar raiz quadrada desnecessária
         for (int i = 0; i < K; i++) {
             double dist2 = 0.0;
-            // soma dos quadrados das diferenças (distância ao quadrado)
             for (int j = 0; j < dimensions; j++) {
                 double diff = centroids[i * dimensions + j] - point_values[j];
                 dist2 += diff * diff;
@@ -105,9 +170,52 @@ void assign_point_to_cluster_handles(void *buffers[], void *cl_arg) {
                 bestClusterId = i;
             }
         }
-
-        // armazena id do cluster (mantendo +1 como no código original)
         nearestClusterIds[idx] = bestClusterId + 1;
+    }
+}
+
+// Kernel para calcular somas parciais e contagens
+void calculate_partial_sums(void *buffers[], void *cl_arg) {
+    cpu_calculate_calls++;
+
+
+    HandleArgs *args = (HandleArgs *)cl_arg;
+    if (!args) {
+        cerr << "[ERROR] Argumentos inválidos no kernel CPU calculate_partial_sums." << endl;
+        return;
+    }
+
+    double *points_values = (double *)STARPU_VECTOR_GET_PTR(buffers[0]);
+    int *nearestClusterIds = (int *)STARPU_VECTOR_GET_PTR(buffers[1]);
+    double *partial_sums = (double *)STARPU_VECTOR_GET_PTR(buffers[2]);
+    int *partial_counts = (int *)STARPU_VECTOR_GET_PTR(buffers[3]);
+
+    if (!points_values || !nearestClusterIds || !partial_sums || !partial_counts) {
+        cerr << "[ERROR] Buffers inválidos no kernel CPU calculate_partial_sums." << endl;
+        return;
+    }
+
+    int K = args->K;
+    int dimensions = args->dimensions;
+    int chunk_size = args->chunk_size;
+
+    // Inicializa somas e contagens parciais
+    for (int c = 0; c < K; ++c) {
+        for (int d = 0; d < dimensions; ++d) {
+            partial_sums[c * dimensions + d] = 0.0;
+        }
+        partial_counts[c] = 0;
+    }
+
+    // Processa os pontos do chunk
+    for (int idx = 0; idx < chunk_size; ++idx) {
+        int cluster_id = nearestClusterIds[idx] - 1; // Ajusta para índice 0
+        if (cluster_id >= 0 && cluster_id < K) {
+            partial_counts[cluster_id]++;
+            for (int d = 0; d < dimensions; ++d) {
+                partial_sums[cluster_id * dimensions + d] += points_values[idx * dimensions + d];
+            }
+        }
     }
 }
 
@@ -121,7 +229,20 @@ static struct starpu_codelet cl_assign_point_handles = {
     .opencl_funcs = {assign_point_to_cluster_opencl},
 #endif
     .nbuffers = 3,
-    .modes = {STARPU_R, STARPU_R, STARPU_W} // Leitura, Leitura, Escrita
+    .modes = {STARPU_R, STARPU_R, STARPU_W}
+};
+
+// Codelet para cálculo parcial
+static struct starpu_codelet cl_calculate_partial_sums = {
+    .cpu_funcs = {calculate_partial_sums},
+#ifdef STARPU_USE_CUDA
+    .cuda_funcs = {calculate_partial_sums_cuda},
+#endif
+#ifdef STARPU_USE_OPENCL
+    .opencl_funcs = {assign_point_to_cluster_opencl}, // se houver implementação OpenCL específica, ajustar
+#endif
+    .nbuffers = 4,
+    .modes = {STARPU_R, STARPU_R, STARPU_W, STARPU_W}
 };
 
 class Point {
@@ -146,7 +267,6 @@ private:
             values.push_back(stod(tmp));
             tmp = "";
         }
-
         return values;
     }
 
@@ -214,22 +334,18 @@ private:
     int chunk_size;
     bool use_heterogeneous_chunks;
 
-    // NOVOS MEMBROS: dados e handles persistentes
-    vector<double> points_data;                     // flattened points (persistente)
-    vector<int> nearestClusterIds;                  // saída persistente
+    vector<double> points_data;
+    vector<int> nearestClusterIds;
     starpu_data_handle_t points_handle = nullptr;
     starpu_data_handle_t output_handle = nullptr;
-    vector<starpu_data_handle_t> points_children;   // child handles por chunk
+    vector<starpu_data_handle_t> points_children;
     vector<starpu_data_handle_t> outputs_children;
     int num_chunks;
 
     vector<double> centroids_data;
-    // Handles persistentes
     starpu_data_handle_t centroids_handle = nullptr;
-    // aqui mantemos points_handle e output_handle como membros da classe
 
 #ifdef STARPU_USE_CUDA
-    // ponteiros device (se alocados quando init_on_gpu)
     void *device_points_ptr = nullptr;
     void *device_output_ptr = nullptr;
 #endif
@@ -243,41 +359,30 @@ private:
     void assignPointsToClusters(vector<Point> &all_points) {
         int N = all_points.size();
 
-        // @ Atualiza vetor persistente centroids_data com os centroides atuais
-        //   (centroids_data é membro da classe para manter ponteiro estável)
-        if ((int)centroids_data.size() != K * dimensions) centroids_data.resize(K * dimensions); // @ garante espaço estável
+        if ((int)centroids_data.size() != K * dimensions) centroids_data.resize(K * dimensions);
         for (int i = 0; i < K; i++) {
             for (int j = 0; j < dimensions; j++) {
                 centroids_data[i * dimensions + j] = clusters[i].getCentroidByPos(j);
             }
         }
 
-        // @ Uso do handle persistente: idealmente registrado em run(); aqui apenas fallback de segurança
         if (!centroids_handle) {
-            // @ starpu_vector_data_register retorna void — registrar e depois verificar handle
             starpu_vector_data_register(&centroids_handle, STARPU_MAIN_RAM,
-                                        (uintptr_t)centroids_data.data(), K * dimensions, sizeof(double)); // @ alteração
+                                        (uintptr_t)centroids_data.data(), K * dimensions, sizeof(double));
             if (!centroids_handle) {
                 cerr << "[ERROR] Registro de centroids_handle falhou (assignPointsToClusters fallback)." << endl;
                 return;
             }
-            // @ Nota: preferível que isso nunca ocorra porque run() já registrou o centroids_handle.
         }
 
-        // --- NÃO recriar points_data nem registrar points_handle aqui ---
-        // Usar handles e children já criados em run()
-
-        // alocar args em vetor para liberar depois
         vector<HandleArgs*> allocated_args;
         allocated_args.reserve(num_chunks);
 
-        // Proteção: num_chunks e children devem ser válidos
         if ((int)points_children.size() != num_chunks || (int)outputs_children.size() != num_chunks) {
             cerr << "[ERROR] points_children/outputs_children size mismatch num_chunks=" << num_chunks << endl;
             return;
         }
 
-        // SUBMETA TODAS AS TASKS SEM ESPERAR A CADA UMA (permite sobreposição e maior paralelismo)
         vector<struct starpu_task*> pending;
         pending.reserve(num_chunks);
         int submitted = 0;
@@ -285,7 +390,7 @@ private:
 
         for (int chunk_id = 0; chunk_id < num_chunks; chunk_id++) {
             int this_chunk = min(chunk_size, N - chunk_id * chunk_size);
-            if (this_chunk <= 0) break; // nada mais a processar
+            if (this_chunk <= 0) break;
 
             HandleArgs *args = new HandleArgs{K, dimensions, this_chunk};
             allocated_args.push_back(args);
@@ -293,7 +398,7 @@ private:
             struct starpu_task *task = starpu_task_create();
             task->cl = &cl_assign_point_handles;
             task->handles[0] = points_children[chunk_id];
-            task->handles[1] = centroids_handle;          // @ usa o handle persistente aqui
+            task->handles[1] = centroids_handle;
             task->handles[2] = outputs_children[chunk_id];
             task->cl_arg = args;
             task->cl_arg_size = sizeof(HandleArgs);
@@ -308,35 +413,30 @@ private:
             submitted++;
         }
 
-        // Espera todas as tasks terminarem de uma vez
         if (submitted > 0) {
             starpu_task_wait_for_all();
             auto overall_end = high_resolution_clock::now();
             double elapsed_total = duration_cast<milliseconds>(overall_end - overall_start).count() / 1000.0;
             double per_chunk = elapsed_total / (double)submitted;
-            // Preenche device_times com estimativa média por chunk (usado no ajuste automático)
             device_times.insert(device_times.end(), submitted, per_chunk);
         }
 
-        // liberar args (alocados acima)
         for (auto a : allocated_args) delete a;
         allocated_args.clear();
 
-        // Atualiza os clusters dos pontos a partir da saída persistente
         for (int i = 0; i < N; i++) {
             all_points[i].setCluster(nearestClusterIds[i]);
         }
     }
 
     void adjust_chunk_size_based_on_performance(vector<double> &device_times, int &chunk_size) {
-        if (device_times.empty()) return; // evita divisão por zero
+        if (device_times.empty()) return;
 
         double avg_time = accumulate(device_times.begin(), device_times.end(), 0.0) / device_times.size();
 
-        // Ajusta o tamanho do chunk com base no tempo médio (limiares em segundos)
-        if (avg_time < 0.05) { // muito rápido -> aumentar
+        if (avg_time < 0.05) {
             chunk_size = min(chunk_size * 2, 8192);
-        } else if (avg_time > 0.2) { // lento -> reduzir
+        } else if (avg_time > 0.2) {
             chunk_size = max(chunk_size / 2, 128);
         }
 
@@ -350,6 +450,72 @@ private:
         cout << "[INFO] Chunk size ajustado para " << chunk_size << ", num_chunks = " << num_chunks << endl;
     }
 
+    void calculateCentroids(vector<Point> &all_points) {
+        int N = all_points.size();
+
+        vector<double> partial_sums(K * dimensions, 0.0);
+        vector<int> partial_counts(K, 0);
+
+        starpu_data_handle_t partial_sums_handle, partial_counts_handle;
+        starpu_vector_data_register(&partial_sums_handle, STARPU_MAIN_RAM,
+                                    (uintptr_t)partial_sums.data(), K * dimensions, sizeof(double));
+        starpu_vector_data_register(&partial_counts_handle, STARPU_MAIN_RAM,
+                                    (uintptr_t)partial_counts.data(), K, sizeof(int));
+
+        vector<HandleArgs*> allocated_args;
+        allocated_args.reserve(num_chunks);
+
+        for (int chunk_id = 0; chunk_id < num_chunks; ++chunk_id) {
+            int this_chunk = min(chunk_size, N - chunk_id * chunk_size);
+            if (this_chunk <= 0) break;
+
+            HandleArgs *args = new HandleArgs{K, dimensions, this_chunk};
+            allocated_args.push_back(args);
+
+            struct starpu_task *task = starpu_task_create();
+            task->cl = &cl_calculate_partial_sums;
+            task->handles[0] = points_children[chunk_id];
+            task->handles[1] = outputs_children[chunk_id];
+            task->handles[2] = partial_sums_handle;
+            task->handles[3] = partial_counts_handle;
+            task->cl_arg = args;
+            task->cl_arg_size = sizeof(HandleArgs);
+
+            int ret = starpu_task_submit(task);
+            if (ret < 0) {
+                cerr << "[ERROR] starpu_task_submit falhou para chunk " << chunk_id << " com retorno " << ret << endl;
+                delete args;
+                break;
+            }
+        }
+
+        starpu_task_wait_for_all();
+
+        vector<vector<double>> sums(K, vector<double>(dimensions, 0.0));
+        vector<int> counts(K, 0);
+
+        for (int c = 0; c < K; ++c) {
+            counts[c] += partial_counts[c];
+            for (int d = 0; d < dimensions; ++d) {
+                sums[c][d] += partial_sums[c * dimensions + d];
+            }
+        }
+
+        for (int c = 0; c < K; ++c) {
+            if (counts[c] > 0) {
+                for (int d = 0; d < dimensions; ++d) {
+                    clusters[c].setCentroidByPos(d, sums[c][d] / counts[c]);
+                }
+            }
+        }
+
+        starpu_data_unregister(partial_sums_handle);
+        starpu_data_unregister(partial_counts_handle);
+
+        for (auto a : allocated_args) delete a;
+        allocated_args.clear();
+    }
+
 public:
     KMeans(int K, int iterations, string output_dir, int chunk_size, bool use_heterogeneous_chunks) {
         this->K = K;
@@ -359,175 +525,125 @@ public:
         this->use_heterogeneous_chunks = use_heterogeneous_chunks;
     }
 
-void run(vector<Point> &all_points) {
-    total_points = all_points.size();
-    dimensions = all_points[0].getDimensions();
+    void run(vector<Point> &all_points) {
+        total_points = all_points.size();
+        dimensions = all_points[0].getDimensions();
 
-    int N = total_points;
-    points_data.resize(N * dimensions);
-    for (int i = 0; i < N; i++) {
-        for (int d = 0; d < dimensions; d++) {
-            points_data[i * dimensions + d] = all_points[i].getVal(d);
-        }
-    }
-    nearestClusterIds.assign(N, 0);
-
-    // Registro dos buffers points/output
-    points_handle = nullptr;
-    output_handle = nullptr;
-    starpu_vector_data_register(&points_handle, STARPU_MAIN_RAM,
-                                (uintptr_t)points_data.data(), N * dimensions, sizeof(double));
-    starpu_vector_data_register(&output_handle, STARPU_MAIN_RAM,
-                                (uintptr_t)nearestClusterIds.data(), N, sizeof(int));
-    if (points_handle == nullptr || output_handle == nullptr) {
-        cerr << "[ERROR] Registro MAIN_RAM para points/output falhou." << endl;
-        return;
-    }
-
-    // Cálculo de num_chunks e partição
-    unsigned workers = starpu_worker_get_count();
-    int desired_tasks_per_worker = 4;
-    int desired_num_chunks = max(1, (int)workers * desired_tasks_per_worker);
-    chunk_size = max(1, (N + desired_num_chunks - 1) / desired_num_chunks);
-    num_chunks = (N + chunk_size - 1) / chunk_size;
-
-    struct starpu_data_filter points_filter = {
-        .filter_func = starpu_vector_filter_block,
-        .nchildren = (unsigned)num_chunks
-    };
-    struct starpu_data_filter output_filter = {
-        .filter_func = starpu_vector_filter_block,
-        .nchildren = (unsigned)num_chunks
-    };
-    starpu_data_partition(points_handle, &points_filter);
-    starpu_data_partition(output_handle, &output_filter);
-
-    points_children.resize(num_chunks);
-    outputs_children.resize(num_chunks);
-    for (int i = 0; i < num_chunks; ++i) {
-        points_children[i] = starpu_data_get_child(points_handle, i);
-        outputs_children[i] = starpu_data_get_child(output_handle, i);
-    }
-
-    // Inicializa clusters
-    clusters.clear();
-    for (int i = 0; i < K; i++) {
-        clusters.emplace_back(i + 1, all_points[i]);
-    }
-
-    // Registra centroids_data uma vez (handle persistente)
-    centroids_data.resize(K * dimensions);
-    for (int i = 0; i < K; i++) {
-        for (int j = 0; j < dimensions; j++) {
-            centroids_data[i * dimensions + j] = clusters[i].getCentroidByPos(j);
-        }
-    }
-    centroids_handle = nullptr;
-    starpu_vector_data_register(&centroids_handle, STARPU_MAIN_RAM,
-                                (uintptr_t)centroids_data.data(), K * dimensions, sizeof(double));
-    if (!centroids_handle) {
-        cerr << "[WARN] Falha ao registrar centroids_handle persistente em run()." << endl;
-    }
-
-    // Loop principal de iterações
-    for (int it = 0; it < iters; ++it) {
-        clearClusters();
-        assignPointsToClusters(all_points);
-
-        if (use_dynamic_chunks) {
-            adjust_chunk_size_based_on_performance(device_times, chunk_size);
-            device_times.clear();
-
-            // Reparticiona se num_chunks mudou
-            starpu_data_unpartition(points_handle, STARPU_MAIN_RAM);
-            starpu_data_unpartition(output_handle, STARPU_MAIN_RAM);
-
-            struct starpu_data_filter points_filter2 = {
-                .filter_func = starpu_vector_filter_block,
-                .nchildren = (unsigned)num_chunks
-            };
-            struct starpu_data_filter output_filter2 = {
-                .filter_func = starpu_vector_filter_block,
-                .nchildren = (unsigned)num_chunks
-            };
-            starpu_data_partition(points_handle, &points_filter2);
-            starpu_data_partition(output_handle, &output_filter2);
-
-            points_children.resize(num_chunks);
-            outputs_children.resize(num_chunks);
-            for (int i = 0; i < num_chunks; ++i) {
-                points_children[i] = starpu_data_get_child(points_handle, i);
-                outputs_children[i] = starpu_data_get_child(output_handle, i);
+        int N = total_points;
+        points_data.resize(N * dimensions);
+        for (int i = 0; i < N; i++) {
+            for (int d = 0; d < dimensions; d++) {
+                points_data[i * dimensions + d] = all_points[i].getVal(d);
             }
         }
+        nearestClusterIds.assign(N, 0);
 
-        // Recalcula novos centros
-        vector<vector<double>> sums(K, vector<double>(dimensions, 0.0));
-        vector<int> counts(K, 0);
-        for (int p = 0; p < (int)all_points.size(); ++p) {
-            int cid = all_points[p].getCluster() - 1;
-            if (cid >= 0 && cid < K) {
-                counts[cid]++;
-                for (int d = 0; d < dimensions; ++d) {
-                    sums[cid][d] += all_points[p].getVal(d);
-                }
-            }
-        }
-        for (int c = 0; c < K; ++c) {
-            if (counts[c] > 0) {
-                for (int d = 0; d < dimensions; ++d) {
-                    clusters[c].setCentroidByPos(d, sums[c][d] / counts[c]);
-                }
-            }
+        points_handle = nullptr;
+        output_handle = nullptr;
+        starpu_vector_data_register(&points_handle, STARPU_MAIN_RAM,
+                                    (uintptr_t)points_data.data(), N * dimensions, sizeof(double));
+        starpu_vector_data_register(&output_handle, STARPU_MAIN_RAM,
+                                    (uintptr_t)nearestClusterIds.data(), N, sizeof(int));
+        if (points_handle == nullptr || output_handle == nullptr) {
+            cerr << "[ERROR] Registro MAIN_RAM para points/output falhou." << endl;
+            return;
         }
 
-        // Atualiza centroids_data para a próxima iteração (mantendo mesmo ponteiro)
+        unsigned workers = starpu_worker_get_count();
+        int desired_tasks_per_worker = 4;
+        int desired_num_chunks = max(1, (int)workers * desired_tasks_per_worker);
+        chunk_size = max(1, (N + desired_num_chunks - 1) / desired_num_chunks);
+        num_chunks = (N + chunk_size - 1) / chunk_size;
+
+        struct starpu_data_filter points_filter = {
+            .filter_func = starpu_vector_filter_block,
+            .nchildren = (unsigned)num_chunks
+        };
+        struct starpu_data_filter output_filter = {
+            .filter_func = starpu_vector_filter_block,
+            .nchildren = (unsigned)num_chunks
+        };
+        starpu_data_partition(points_handle, &points_filter);
+        starpu_data_partition(output_handle, &output_filter);
+
+        points_children.resize(num_chunks);
+        outputs_children.resize(num_chunks);
+        for (int i = 0; i < num_chunks; ++i) {
+            points_children[i] = starpu_data_get_child(points_handle, i);
+            outputs_children[i] = starpu_data_get_child(output_handle, i);
+        }
+
+        clusters.clear();
+        for (int i = 0; i < K; i++) {
+            clusters.emplace_back(i + 1, all_points[i]);
+        }
+
+        centroids_data.resize(K * dimensions);
         for (int i = 0; i < K; i++) {
             for (int j = 0; j < dimensions; j++) {
                 centroids_data[i * dimensions + j] = clusters[i].getCentroidByPos(j);
             }
         }
-        // OBS: centroids_handle já referencia centroids_data; não é necessário re-registrar.
-    }
-
-    // Garante que todas as tarefas terminaram antes da liberação
-    starpu_task_wait_for_all();
-
-    // Desregistra centroids_handle se foi registrado
-    if (centroids_handle) {
-        starpu_data_unregister(centroids_handle);
         centroids_handle = nullptr;
-    }
+        starpu_vector_data_register(&centroids_handle, STARPU_MAIN_RAM,
+                                    (uintptr_t)centroids_data.data(), K * dimensions, sizeof(double));
+        if (!centroids_handle) {
+            cerr << "[WARN] Falha ao registrar centroids_handle persistente em run()." << endl;
+        }
 
-    // Cleanup de points/output handles
-    if (points_handle) starpu_data_unpartition(points_handle, STARPU_MAIN_RAM);
-    if (output_handle) starpu_data_unpartition(output_handle, STARPU_MAIN_RAM);
-    if (points_handle) starpu_data_unregister(points_handle);
-    if (output_handle) starpu_data_unregister(output_handle);
-}
+        for (int it = 0; it < iters; ++it) {
+            clearClusters();
+            assignPointsToClusters(all_points);
 
-    void print_starpu_worker_usage() {
-        unsigned nworkers = starpu_worker_get_count();
-        unsigned cpu_count = 0, cuda_count = 0, other_count = 0;
-        cout << "Workers StarPU disponíveis:" << endl;
-        for (unsigned i = 0; i < nworkers; i++) {
-            enum starpu_worker_archtype type = starpu_worker_get_type(i);
-            char name[64];
-            starpu_worker_get_name(i, name, sizeof(name));
-            if (type == STARPU_CPU_WORKER) {
-                cout << "Worker " << i << ": CPU (" << name << ")" << endl;
-                cpu_count++;
-            } else if (type == STARPU_CUDA_WORKER) {
-                cout << "Worker " << i << ": GPU/CUDA (" << name << ")" << endl;
-                cuda_count++;
-            } else {
-                cout << "Worker " << i << ": Outro tipo (" << name << ")" << endl;
-                other_count++;
+            if (use_dynamic_chunks) {
+                adjust_chunk_size_based_on_performance(device_times, chunk_size);
+                device_times.clear();
+
+                starpu_data_unpartition(points_handle, STARPU_MAIN_RAM);
+                starpu_data_unpartition(output_handle, STARPU_MAIN_RAM);
+
+                struct starpu_data_filter points_filter2 = {
+                    .filter_func = starpu_vector_filter_block,
+                    .nchildren = (unsigned)num_chunks
+                };
+                struct starpu_data_filter output_filter2 = {
+                    .filter_func = starpu_vector_filter_block,
+                    .nchildren = (unsigned)num_chunks
+                };
+                starpu_data_partition(points_handle, &points_filter2);
+                starpu_data_partition(output_handle, &output_filter2);
+
+                points_children.resize(num_chunks);
+                outputs_children.resize(num_chunks);
+                for (int i = 0; i < num_chunks; ++i) {
+                    points_children[i] = starpu_data_get_child(points_handle, i);
+                    outputs_children[i] = starpu_data_get_child(output_handle, i);
+                }
+            }
+
+            calculateCentroids(all_points);
+
+            for (int i = 0; i < K; i++) {
+                for (int j = 0; j < dimensions; j++) {
+                    centroids_data[i * dimensions + j] = clusters[i].getCentroidByPos(j);
+                }
             }
         }
-        cout << "Resumo: " << cpu_count << " CPU(s), " << cuda_count << " GPU(s), " << other_count << " outros." << endl;
+
+        starpu_task_wait_for_all();
+
+        if (centroids_handle) {
+            starpu_data_unregister(centroids_handle);
+            centroids_handle = nullptr;
+        }
+
+        if (points_handle) starpu_data_unpartition(points_handle, STARPU_MAIN_RAM);
+        if (output_handle) starpu_data_unpartition(output_handle, STARPU_MAIN_RAM);
+        if (points_handle) starpu_data_unregister(points_handle);
+        if (output_handle) starpu_data_unregister(output_handle);
     }
 };
+
 
 int main(int argc, char **argv) {
     bool use_big_cores = false;
@@ -585,7 +701,7 @@ int main(int argc, char **argv) {
 
     if (chunk_size == -1) {
         unsigned workers = starpu_worker_get_count();
-        int desired_tasks_per_worker = 4; // heurística segura
+        int desired_tasks_per_worker = 4;
         int desired_num_chunks = max(1, (int)workers * desired_tasks_per_worker);
         chunk_size = max(1, (int)((N + desired_num_chunks - 1) / desired_num_chunks));
     }
@@ -599,7 +715,7 @@ int main(int argc, char **argv) {
     auto duration = duration_cast<milliseconds>(end - start);
 
     cout << "Execution time: " << duration.count() << " ms" << endl;
-    kmeans.print_starpu_worker_usage();
+    print_starpu_worker_usage();
 
     starpu_shutdown();
 
@@ -609,8 +725,7 @@ int main(int argc, char **argv) {
     else
         cout << "Escalonador StarPU padrão (ws) em uso." << endl;
 
-    // usa o novo método que imprime contadores e porcentagens
     print_kernel_usage_metrics();
 
     return 0;
-} 
+}
