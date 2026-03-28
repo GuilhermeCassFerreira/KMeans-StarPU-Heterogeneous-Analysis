@@ -10,7 +10,7 @@ using namespace std;
 using namespace chrono;
 
 int main(int argc, char **argv) {
-    int rank, size; // pega o rank e o tamanho do comunicador 
+    int rank, size; 
     int mpi_provided;
     auto start = high_resolution_clock::now();
 

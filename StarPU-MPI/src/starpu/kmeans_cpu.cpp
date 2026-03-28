@@ -134,3 +134,21 @@ void redux_int_reduce_cpu(void *buffers[], void *cl_arg) {
         dst[i] += src[i];
     }
 }
+
+/* Função para acumular os buffers de outros nodos pela rede */
+void accumulate_nodes_cpu(void *buffers[], void *cl_arg) {
+    int K, dimensions;
+    starpu_codelet_unpack_args(cl_arg, &K, &dimensions);
+
+    double *sums_dest = (double *)STARPU_VECTOR_GET_PTR(buffers[0]);
+    int *counts_dest = (int *)STARPU_VECTOR_GET_PTR(buffers[1]);
+    double *sums_src = (double *)STARPU_VECTOR_GET_PTR(buffers[2]);
+    int *counts_src = (int *)STARPU_VECTOR_GET_PTR(buffers[3]);
+
+    for(int i = 0; i < K * dimensions; i++) {
+        sums_dest[i] += sums_src[i];
+    }
+    for(int i = 0; i < K; i++) {
+        counts_dest[i] += counts_src[i];
+    }
+}
