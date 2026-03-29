@@ -39,6 +39,7 @@ void assign_point_to_cluster_handles(void *buffers[], void *cl_arg);
 void calculate_partial_sums(void *buffers[], void *cl_arg);
 void clean_buffers_cpu(void *buffers[], void *cl_arg);
 void update_centroids_cpu(void *buffers[], void *cl_arg);
+void accumulate_nodes_cpu(void *buffers[], void *cl_arg);
 
 /* ========================================================================== */
 /* Declarações das funções CUDA (implementadas em kmeans_cuda.cu)            */
@@ -80,6 +81,7 @@ extern struct starpu_codelet cl_assign_point_handles;
 extern struct starpu_codelet cl_calculate_partial_sums;
 extern struct starpu_codelet cl_clean_buffers;
 extern struct starpu_codelet cl_update_centroids;
+extern struct starpu_codelet cl_accumulate_nodes;
 
 /* ========================================================================== */
 /* Performance Models StarPU                                                  */
@@ -122,8 +124,8 @@ private:
 
     double *partial_sums_ptr;
     int *partial_counts_ptr;
-    starpu_data_handle_t partial_sums_handle;
-    starpu_data_handle_t partial_counts_handle;
+    std::vector<starpu_data_handle_t> partial_sums_handle;
+    std::vector<starpu_data_handle_t> partial_counts_handle;
 
     std::vector<double> centroids_data;
     starpu_data_handle_t centroids_handle;
@@ -137,6 +139,7 @@ private:
     void assignPointsToClusters(int N);
     void calculateCentroids(int N);
     void reduceCentroidsAcrossNodes();
+    
 
 public:
     KMeans(int K, int iterations, std::string output_dir, int chunk_size,
