@@ -1,8 +1,19 @@
 # =============================================================================
-# Makefile Principal - KMeans StarPU Heterogeneous
+# Makefile Principal - KMeans StarPU Heterogeneous (Híbrido Automático)
 # =============================================================================
 
-# Incluir configurações de compilação do StarPU
+# 1. AUTO-DETEÇÃO DO CUDA
+NVCC_PATH := $(shell command -v nvcc 2> /dev/null)
+
+ifdef NVCC_PATH
+    $(info ===> [AUTO-CONFIG] GPU CUDA detetada. Compilando modo Hibrido (CPU+GPU).)
+    USE_CUDA = 1
+else
+    $(info ===> [AUTO-CONFIG] GPU CUDA NAO detetada. Compilando modo Exclusivo CPU.)
+    USE_CUDA = 0
+endif
+
+# Incluir configurações de compilação do StarPU (compiladores e bibliotecas)
 include src/starpu/starpu.mk
 
 # Diretórios
@@ -10,25 +21,30 @@ INCLUDE_DIR = include
 SRC_COMMON  = src/common
 SRC_STARPU  = src/starpu
 
-# Includes do projeto (headers locais + StarPU/CUDA)
+# Includes do projeto
 PROJECT_INCLUDES = -I$(INCLUDE_DIR) -I$(SRC_STARPU) $(INCLUDES)
 
 # Diretório de saída dos objetos
 BUILD_DIR = build
 
-# Objetos
+# Objetos BASE (Sempre compilados, independente de ter GPU)
 OBJS = $(BUILD_DIR)/io.o \
-	   $(BUILD_DIR)/metrics.o \
-	   $(BUILD_DIR)/kmeans_cpu.o \
-	   $(BUILD_DIR)/kmeans_cuda.o \
-	   $(BUILD_DIR)/kmeans_mpi.o \
-	   $(BUILD_DIR)/kmeans_main.o
+       $(BUILD_DIR)/metrics.o \
+       $(BUILD_DIR)/kmeans_cpu.o \
+       $(BUILD_DIR)/kmeans_mpi.o \
+       $(BUILD_DIR)/kmeans_main.o
+
+# 2. INJEÇÃO CONDICIONAL (Se tiver GPU, adiciona as flags e o arquivo .cu)
+ifeq ($(USE_CUDA), 1)
+    CXXFLAGS += -DSTARPU_USE_CUDA
+    OBJS += $(BUILD_DIR)/kmeans_cuda.o
+endif
 
 # Alvo final
 TARGET = kmeans_starpu
 
 # =============================================================================
-# Regras
+# Regras de Compilação
 # =============================================================================
 
 all: $(BUILD_DIR) $(TARGET)
