@@ -60,8 +60,8 @@ if __name__ == "__main__":
     # Exemplo de uso
     generate_large_input_file(
         filename="input.txt",
-        num_points=50_000_000,
-        dimensions=3,
+        num_points=100,  # 1 mil pontos
+        dimensions=2    ,
         value_range=(-1000, 1000),
         num_processes=None  # ou ex: num_processes=4
     )
