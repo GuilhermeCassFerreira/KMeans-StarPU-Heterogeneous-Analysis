@@ -14,9 +14,15 @@ int main(int argc, char **argv) {
     int mpi_provided;
     auto start = high_resolution_clock::now();
 
-    MPI_Init_thread(&argc, &argv, MPI_THREAD_SERIALIZED, &mpi_provided);
+    MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &mpi_provided);
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &size);
+
+    if (rank == 0 && mpi_provided < MPI_THREAD_MULTIPLE) {
+        cout << "[AVISO] O OpenMPI nao forneceu MPI_THREAD_MULTIPLE." << endl;
+        cout << "Nivel fornecido: " << mpi_provided << endl;
+        cout << "Isso pode causar gargalos de comunicacao no StarPU." << endl;
+    }
 
     // ---- Parsing de argumentos ----
     vector<string> args;
