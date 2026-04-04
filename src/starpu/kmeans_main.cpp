@@ -30,10 +30,10 @@ int main(int argc, char **argv) {
         args.push_back(argv[i]);
     }
 
-    if (args.size() < 3 || args.size() > 4) {
+    if (args.size() < 3 || args.size() > 5) {
         if (rank == 0)
             cout << "Error: command-line argument count mismatch.\n"
-                 << " ./kmeans_starpu <INPUT> <K> <OUT-DIR> [CHUNK_SIZE]" << endl;
+                 << " ./kmeans_starpu <INPUT> <K> <OUT-DIR> [CHUNK_SIZE] [ASYMMETRIC_LOAD]" << endl;
         MPI_Finalize();
         return 1;
     }
@@ -42,6 +42,7 @@ int main(int argc, char **argv) {
     int K = stoi(args[1]);
     string output_dir = args[2];
     int chunk_size = (args.size() == 4) ? stoi(args[3]) : -1;
+    bool asymmetric_flag = (args.size() == 5) ? (stoi(args[4]) == 1) : false;
 
     // ---- Leitura dos pontos (apenas no nodo 0) ----
     vector<Point> all_points;
@@ -109,7 +110,7 @@ int main(int argc, char **argv) {
 
     bool use_heterogeneous_chunks_val = false;
 
-    KMeans kmeans(K, iters, output_dir, chunk_size, use_heterogeneous_chunks_val, rank, size, dimensions);
+    KMeans kmeans(K, iters, output_dir, chunk_size, use_heterogeneous_chunks_val, rank, size, dimensions, asymmetric_flag);
     kmeans.run(all_points, N);
 
     auto end = high_resolution_clock::now();

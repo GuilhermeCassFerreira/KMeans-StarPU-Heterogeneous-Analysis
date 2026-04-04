@@ -52,6 +52,9 @@ extern "C" {
 
 void assign_point_to_cluster_cuda(void *buffers[], void *cl_arg);
 void calculate_partial_sums_cuda(void *buffers[], void *cl_arg);
+void clean_buffers_cuda(void *buffers[], void *cl_arg);    
+void update_centroids_cuda(void *buffers[], void *cl_arg);
+void accumulate_nodes_cuda(void *buffers[], void *cl_arg); // <-- ADICIONADO PARA FULL GPU MPI
 
 // Redux CUDA (opcionais, mantidos por compatibilidade)
 void redux_double_init_cuda(void *buffers[], void *cl_arg);
@@ -112,6 +115,7 @@ private:
     std::string output_dir;
     int chunk_size;
     bool use_heterogeneous_chunks;
+    bool asymmetric_load;
     int mpi_rank, world_size;
 
     std::vector<double> points_data;
@@ -143,7 +147,7 @@ private:
 
 public:
     KMeans(int K, int iterations, std::string output_dir, int chunk_size,
-           bool use_heterogeneous_chunks, int rank, int size, int dims);
+           bool use_heterogeneous_chunks, int rank, int size, int dims, bool asymmetric_load);
 
     void run(std::vector<Point> &all_points, int N);
 };

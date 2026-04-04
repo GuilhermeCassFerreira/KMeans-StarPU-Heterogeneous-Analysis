@@ -61,6 +61,10 @@ struct starpu_codelet cl_calculate_partial_sums = {
 
 struct starpu_codelet cl_clean_buffers = {
     .cpu_funcs = {clean_buffers_cpu},
+#ifdef STARPU_USE_CUDA
+    .cuda_funcs = {clean_buffers_cuda}, 
+    .cuda_flags = {STARPU_CUDA_ASYNC},
+#endif
     .nbuffers = 2,
     .modes = {STARPU_W, STARPU_W},
     .model = &clean_perf_model
@@ -68,13 +72,22 @@ struct starpu_codelet cl_clean_buffers = {
 
 struct starpu_codelet cl_update_centroids = {
     .cpu_funcs = {update_centroids_cpu},
+#ifdef STARPU_USE_CUDA
+    .cuda_funcs = {update_centroids_cuda}, 
+    .cuda_flags = {STARPU_CUDA_ASYNC},
+#endif
     .nbuffers = 3,
     .modes = {STARPU_R, STARPU_R, STARPU_W},
     .model = &update_perf_model
 };
 
+
 struct starpu_codelet cl_accumulate_nodes = {
     .cpu_funcs = {accumulate_nodes_cpu},
+#ifdef STARPU_USE_CUDA
+    .cuda_funcs = {accumulate_nodes_cuda}, 
+    .cuda_flags = {STARPU_CUDA_ASYNC},
+#endif
     .nbuffers = 4,
     .modes = {STARPU_RW, STARPU_RW, STARPU_R, STARPU_R},
     .name = "kmeans_accumulate_mpi"
@@ -84,10 +97,10 @@ struct starpu_codelet cl_accumulate_nodes = {
 /* ========================================================================== */
 
 KMeans::KMeans(int K, int iterations, string output_dir, int chunk_size,
-               bool use_heterogeneous_chunks, int rank, int size, int dims)
+               bool use_heterogeneous_chunks, int rank, int size, int dims, bool asymmetric_load)
     : K(K), iters(iterations), output_dir(output_dir), chunk_size(chunk_size),
       use_heterogeneous_chunks(use_heterogeneous_chunks), mpi_rank(rank),
-      world_size(size), dimensions(dims),
+      world_size(size), dimensions(dims), asymmetric_load(asymmetric_load),
       points_handle(nullptr), output_handle(nullptr),
       num_chunks(0), partial_sums_ptr(nullptr), partial_counts_ptr(nullptr),
       centroids_handle(nullptr), points_ptr(nullptr), labels_ptr(nullptr),
@@ -275,17 +288,34 @@ for (int i = 0; i < num_chunks; ++i) {
 
     // Inicializar centroides
     centroids_data.resize(K * dimensions);
+
     if (mpi_rank == 0) {
-        for (int i = 0; i < K; ++i) {
-            clusters.emplace_back(i + 1, all_points[i]);
-            for (int j = 0; j < dimensions; j++)
-                centroids_data[i * dimensions + j] = clusters[i].getCentroidByPos(j);
+        srand(42); 
+
+        std::vector<int> chosen_indices;
+        
+        while ((int)chosen_indices.size() < K) {
+            int r = rand() % N; 
+            if (std::find(chosen_indices.begin(), chosen_indices.end(), r) == chosen_indices.end()) {
+                chosen_indices.push_back(r);
+            }
         }
+
+        for (int i = 0; i < K; ++i) {
+            int point_idx = chosen_indices[i];
+            
+            clusters.emplace_back(i + 1, all_points[point_idx]);
+            
+            for (int j = 0; j < dimensions; j++) {
+                centroids_data[i * dimensions + j] = all_points[point_idx].getVal(j);
+            }
+        }
+        
+        cout << "[INFO] Centroides iniciais escolhidos aleatoriamente (Seed: 42)" << endl;
     }
+
     MPI_Bcast(centroids_data.data(), K * dimensions, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
- // Registro dos centroides (Nodo 0 é o dono)
-// Registro dos centroides (Nodo 0 é o dono)
     starpu_vector_data_register(&centroids_handle, STARPU_MAIN_RAM, (uintptr_t)centroids_data.data(), K * dimensions, sizeof(double));
     starpu_mpi_data_register(centroids_handle, 4, 0);
 
@@ -294,8 +324,6 @@ for (int i = 0; i < num_chunks; ++i) {
     for (int it = 0; it < iters; ++it) {
             assignPointsToClusters(N);
             calculateCentroids(N);
-            
-            // Sincronização obrigatória para evitar Deadlock em comunicações complexas
             starpu_mpi_wait_for_all(MPI_COMM_WORLD); 
             MPI_Barrier(MPI_COMM_WORLD);
         }
@@ -308,19 +336,13 @@ for (int i = 0; i < num_chunks; ++i) {
     }
     starpu_mpi_wait_for_all(MPI_COMM_WORLD);
 
-    // Coletar resultados
-// Coletar resultados
-    // Desfazemos a partição em todos os nodos de forma segura
     starpu_data_unpartition(points_handle, STARPU_MAIN_RAM);
     starpu_data_unpartition(output_handle, STARPU_MAIN_RAM);
 
-    // 2. Coleta dos resultados para a estrutura de dados do C++
     if (mpi_rank == 0) {
-        // Garante a posse do dado consolidado
         starpu_mpi_get_data_on_node_detached(MPI_COMM_WORLD, output_handle, 0, NULL, NULL);
         
         starpu_data_acquire(output_handle, STARPU_R);
-        // Agora labels_ptr tem o resultado de TODOS os nodos
         for (int i = 0; i < N; i++) {
             all_points[i].setCluster(labels_ptr[i]);
         }

@@ -279,6 +279,96 @@ void redux_int_reduce_cuda(void *buffers[], void *cl_arg) {
     CUDA_CHECK(cudaStreamSynchronize(stream));
 }
 
+/* ========================================================================== */
+/* KERNELS DE LIMPEZA E ATUALIZAÇÃO (CUDA)                                    */
+/* ========================================================================== */
+
+__global__ void clean_buffers_cuda_kernel(double *partial_sums, int *partial_counts, int total_doubles, int K) {
+    int idx = blockIdx.x * blockDim.x + threadIdx.x;
+    if (idx < total_doubles) {
+        partial_sums[idx] = 0.0;
+    }
+    if (idx < K) {
+        partial_counts[idx] = 0;
+    }
+}
+
+void clean_buffers_cuda(void *buffers[], void *cl_arg) {
+    int K, dimensions, dummy_chunk;
+    starpu_codelet_unpack_args(cl_arg, &K, &dimensions, &dummy_chunk);
+
+    double *partial_sums = (double *)STARPU_VECTOR_GET_PTR(buffers[0]);
+    int *partial_counts = (int *)STARPU_VECTOR_GET_PTR(buffers[1]);
+
+    int total_doubles = K * dimensions;
+    int threads = 256;
+    int blocks = (total_doubles + threads - 1) / threads;
+
+    cudaStream_t stream = starpu_cuda_get_local_stream();
+    clean_buffers_cuda_kernel<<<blocks, threads, 0, stream>>>(partial_sums, partial_counts, total_doubles, K);
+    cudaStreamSynchronize(stream);
+}
+
+__global__ void update_centroids_cuda_kernel(double *partial_sums, int *partial_counts, double *centroids, int K, int dimensions) {
+    int c = blockIdx.x * blockDim.x + threadIdx.x;
+    if (c < K) {
+        if (partial_counts[c] > 0) {
+            for (int d = 0; d < dimensions; ++d) {
+                centroids[c * dimensions + d] = partial_sums[c * dimensions + d] / partial_counts[c];
+            }
+        }
+    }
+}
+
+void update_centroids_cuda(void *buffers[], void *cl_arg) {
+    int K, dimensions, dummy_chunk;
+    starpu_codelet_unpack_args(cl_arg, &K, &dimensions, &dummy_chunk);
+
+    double *partial_sums = (double *)STARPU_VECTOR_GET_PTR(buffers[0]);
+    int *partial_counts = (int *)STARPU_VECTOR_GET_PTR(buffers[1]);
+    double *centroids = (double *)STARPU_VECTOR_GET_PTR(buffers[2]);
+
+    int threads = 256;
+    int blocks = (K + threads - 1) / threads;
+
+    cudaStream_t stream = starpu_cuda_get_local_stream();
+    update_centroids_cuda_kernel<<<blocks, threads, 0, stream>>>(partial_sums, partial_counts, centroids, K, dimensions);
+    cudaStreamSynchronize(stream);
+}
+
+__global__ void accumulate_nodes_cuda_kernel(double *master_sums, int *master_counts, 
+                                           double *node_sums, int *node_counts, 
+                                           int K, int dimensions) {
+    int c = blockIdx.x * blockDim.x + threadIdx.x;
+    if (c < K) {
+        // Soma as contagens de pontos
+        master_counts[c] += node_counts[c];
+        
+        // Soma as coordenadas acumuladas
+        for (int d = 0; d < dimensions; d++) {
+            master_sums[c * dimensions + d] += node_sums[c * dimensions + d];
+        }
+    }
+}
+
+extern "C" void accumulate_nodes_cuda(void *buffers[], void *cl_arg) {
+    int K, dimensions;
+    starpu_codelet_unpack_args(cl_arg, &K, &dimensions);
+
+    double *master_sums   = (double *)STARPU_VECTOR_GET_PTR(buffers[0]);
+    int    *master_counts = (int *)STARPU_VECTOR_GET_PTR(buffers[1]);
+    double *node_sums     = (double *)STARPU_VECTOR_GET_PTR(buffers[2]);
+    int    *node_counts   = (int *)STARPU_VECTOR_GET_PTR(buffers[3]);
+
+    int threads = 256;
+    int blocks = (K + threads - 1) / threads;
+
+    cudaStream_t stream = starpu_cuda_get_local_stream();
+    accumulate_nodes_cuda_kernel<<<blocks, threads, 0, stream>>>(
+        master_sums, master_counts, node_sums, node_counts, K, dimensions
+    );
+}
+
 int get_cuda_kernel_calls() { return cuda_kernel_calls; }
 
 } // extern "C"
