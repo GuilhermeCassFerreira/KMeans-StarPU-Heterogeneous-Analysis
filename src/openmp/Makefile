@@ -1,19 +1,14 @@
-# Compilador MPI
+# O segredo é sobrescrever a variável que o OpenMPI usa internamente
 CXX = mpicxx
+export OMPI_CXX = g++
 
-# Forçamos o uso do g++ ou clang++ via MPI sem as flags de GPU
-# Adicionamos -fNo-stack-protector e -fcf-protection=none para evitar o erro do mkoffload
-COMMON_FLAGS = -O3 -Wall -fopenmp -fcf-protection=none -I../../include -g
+# Flags padrão de CPU (funcionam em qualquer x86_64)
+CXXFLAGS = -O3 -Wall -fopenmp -I../../include -g
+LDFLAGS = -fopenmp
 
-# Flags de Compilação
-CXXFLAGS = $(COMMON_FLAGS)
-
-# Flags de Linkagem (Removendo tudo que é GPU/Offload)
-# O -foffload=disable é o segredo para o GCC ignorar a GPU e não dar erro de mkoffload
-LDFLAGS = -fopenmp -foffload=disable
-
-# Objetos
-OBJS = kmeans_main.o kmeans_cpu.o kmeans_gpu.o ../../build/io.o
+# Caminho do objeto IO (ajuste se o StarPU salvar em outro lugar)
+# Se estiver no build da raiz: ../../build/io.o
+IO_OBJ = ../../build/io.o
 
 all: kmeans_openmp
 
@@ -26,8 +21,8 @@ kmeans_cpu.o: kmeans_cpu.cpp
 kmeans_gpu.o: kmeans_gpu.cpp
 	$(CXX) $(CXXFLAGS) -c kmeans_gpu.cpp -o kmeans_gpu.o
 
-kmeans_openmp: $(OBJS)
-	$(CXX) $(OBJS) $(LDFLAGS) -o kmeans_openmp
+kmeans_openmp: kmeans_main.o kmeans_cpu.o kmeans_gpu.o
+	$(CXX) $(CXXFLAGS) -o kmeans_openmp kmeans_main.o kmeans_cpu.o kmeans_gpu.o $(IO_OBJ) $(LDFLAGS)
 
 clean:
 	rm -f *.o kmeans_openmp
