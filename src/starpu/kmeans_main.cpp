@@ -32,8 +32,7 @@ int main(int argc, char **argv) {
 
     if (args.size() < 3 || args.size() > 5) {
         if (rank == 0)
-            cout << "Error: command-line argument count mismatch.\n"
-                 << " ./kmeans_starpu <INPUT> <K> <OUT-DIR> [CHUNK_SIZE] [ASYMMETRIC_LOAD]" << endl;
+            cout << "Uso: ./kmeans_starpu <INPUT> <K> <OUT-DIR> [CHUNK_SIZE] [DYNAMIC_SCHED]" << endl;
         MPI_Finalize();
         return 1;
     }
@@ -41,8 +40,15 @@ int main(int argc, char **argv) {
     string filename = args[0];
     int K = stoi(args[1]);
     string output_dir = args[2];
-    int chunk_size = (args.size() == 4) ? stoi(args[3]) : -1;
-    bool asymmetric_flag = (args.size() == 5) ? (stoi(args[4]) == 1) : false;
+    int chunk_size = (args.size() >= 4) ? stoi(args[3]) : -1;
+    
+    // NOVA FLAG: 0 = Estático (EXECUTE_ON_NODE), 1 = Dinâmico (StarPU decide)
+    bool dynamic_sched = (args.size() == 5) ? (stoi(args[4]) == 1) : false;
+
+    if (rank == 0) {
+        if (dynamic_sched) cout << "[MODO] Escalonamento DINAMICO (StarPU-MPI decide - Sem EXECUTE_ON_NODE)" << endl;
+        else cout << "[MODO] Escalonamento ESTATICO (Manual via EXECUTE_ON_NODE)" << endl;
+    }
 
     // ---- Leitura dos pontos (apenas no nodo 0) ----
     vector<Point> all_points;
@@ -80,7 +86,10 @@ int main(int argc, char **argv) {
     #ifdef STARPU_USE_CUDA
         local_gpus = starpu_cuda_worker_get_count();
     #endif
-    cout <<  "Total de CPUs locais: " << local_cpus << " | Total de GPUs locais: " << local_gpus << endl;
+
+    if (rank == 0) {
+        cout <<  "Total de CPUs locais: " << local_cpus << " | Total de GPUs locais: " << local_gpus << endl;
+    }
 
     unsigned global_cpus = 0;
     unsigned global_gpus = 0;
@@ -110,7 +119,8 @@ int main(int argc, char **argv) {
 
     bool use_heterogeneous_chunks_val = false;
 
-    KMeans kmeans(K, iters, output_dir, chunk_size, use_heterogeneous_chunks_val, rank, size, dimensions, asymmetric_flag);
+    // Passamos o dynamic_sched para o KMeans
+    KMeans kmeans(K, iters, output_dir, chunk_size, use_heterogeneous_chunks_val, rank, size, dimensions, dynamic_sched);
     kmeans.run(all_points, N);
 
     auto end = high_resolution_clock::now();
