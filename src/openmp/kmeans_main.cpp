@@ -22,6 +22,15 @@ int main(int argc, char **argv) {
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &size);
 
+    // --- NOVO: Captura e exibe o nome do nó/IP ---
+    char processor_name[MPI_MAX_PROCESSOR_NAME];
+    int name_len;
+    MPI_Get_processor_name(processor_name, &name_len);
+
+    // Imprime em todos os nós para confirmar a distribuição
+    printf("[RANK %d/%d] Operando no host: %s\n", rank, size, processor_name);
+    // --------------------------------------------
+
     if (argc < 4) {
         if (rank == 0) {
             cout << "Uso: mpirun -np X ./kmeans_openmp <INPUT> <K> <OUT-DIR> [MODO]" << endl;
@@ -37,11 +46,9 @@ int main(int argc, char **argv) {
     
     const int nIters = 100; 
 
-    // Seleção de hardware padrão (CPU)
     assign_fn assign_points = assign_point_to_cluster_cpu;
     calculate_fn calc_sums = calculate_partial_sums_cpu;
 
-// --- INÍCIO DA LÓGICA DE ESCALABILIDADE DE HARDWARE ---
 #ifdef USE_GPU
     if (mode == 1) {
         assign_points = assign_point_to_cluster_gpu;
@@ -56,12 +63,11 @@ int main(int argc, char **argv) {
     }
 #else
     if (mode == 1 || mode == 2) {
-        if (rank == 0) cout << ">> AVISO: Binário compilado sem suporte a GPU (-DUSE_GPU desativado). Forçando modo 100% CPU." << endl;
+        if (rank == 0) cout << ">> AVISO: Binário compilado sem suporte a GPU. Forçando modo 100% CPU." << endl;
     } else {
         if (rank == 0) cout << ">> Modo: 100% CPU (OpenMP)" << endl;
     }
 #endif
-// --- FIM DA LÓGICA DE ESCALABILIDADE ---
 
     int N = 0, dimensions = 0;
     double *global_points = nullptr;
@@ -174,7 +180,6 @@ int main(int argc, char **argv) {
         auto duration = duration_cast<milliseconds>(end_time - start_time);
         cout << "\nExecution time: " << duration.count() << " ms" << endl;
 
-// --- INÍCIO DA VERIFICAÇÃO CONDICIONAL DE GPU ---
 #ifdef USE_GPU
         printf("\n========================================\n");
         printf("[VERIFICACAO DE OFFLOAD - OPENMP]\n");
@@ -182,7 +187,6 @@ int main(int argc, char **argv) {
         printf("Chamadas na GPU (Calculate): %d\n", cuda_calculate_calls);
         printf("========================================\n");
 #endif
-// --- FIM DA VERIFICAÇÃO ---
     }
 
     delete[] local_points; delete[] local_labels;
