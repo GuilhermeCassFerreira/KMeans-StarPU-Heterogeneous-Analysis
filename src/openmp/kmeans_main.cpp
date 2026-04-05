@@ -5,7 +5,7 @@
 #include <chrono>
 #include <cstdlib>
 #include <cstring>
-#include <algorithm> // Necessário para o std::find
+#include <algorithm>
 #include "../../include/kmeans_types.h"
 #include "kmeans_omp_mpi.h"
 
@@ -33,20 +33,20 @@ int main(int argc, char **argv) {
 
     string filename = argv[1];
     int K = stoi(argv[2]);
-    string output_dir = argv[3];
     int mode = (argc >= 5) ? stoi(argv[4]) : 0;
     
-    // Bate de frente com os 100 do seu StarPU
     const int nIters = 100; 
 
-    // Seleção de hardware (Contrato de ponteiros)
+    // Seleção de hardware padrão (CPU)
     assign_fn assign_points = assign_point_to_cluster_cpu;
     calculate_fn calc_sums = calculate_partial_sums_cpu;
 
+// --- INÍCIO DA LÓGICA DE ESCALABILIDADE DE HARDWARE ---
+#ifdef USE_GPU
     if (mode == 1) {
         assign_points = assign_point_to_cluster_gpu;
         calc_sums = calculate_partial_sums_gpu;
-        if (rank == 0) cout << ">> Modo: 100% GPU (OpenMP Target)" << endl;
+        if (rank == 0) cout << ">> Modo: 100% GPU (OpenMP Target ativado)" << endl;
     } else if (mode == 2) {
         assign_points = assign_point_to_cluster_gpu; 
         calc_sums = calculate_partial_sums_cpu;      
@@ -54,13 +54,20 @@ int main(int argc, char **argv) {
     } else {
         if (rank == 0) cout << ">> Modo: 100% CPU (OpenMP)" << endl;
     }
+#else
+    if (mode == 1 || mode == 2) {
+        if (rank == 0) cout << ">> AVISO: Binário compilado sem suporte a GPU (-DUSE_GPU desativado). Forçando modo 100% CPU." << endl;
+    } else {
+        if (rank == 0) cout << ">> Modo: 100% CPU (OpenMP)" << endl;
+    }
+#endif
+// --- FIM DA LÓGICA DE ESCALABILIDADE ---
 
     int N = 0, dimensions = 0;
     double *global_points = nullptr;
     int *global_labels = nullptr;
     double *global_centroids = nullptr;
 
-    // Leitura e Inicialização no Master (Igual ao seu StarPU)
     if (rank == 0) {
         vector<Point> all_points;
         if (!read_points_from_file(filename, all_points, N, dimensions)) {
@@ -78,7 +85,6 @@ int main(int argc, char **argv) {
             global_labels[i] = 0;
         }
         
-        // --- INÍCIO DA INICIALIZAÇÃO ALEATÓRIA (SEED 42) ---
         srand(42); 
         std::vector<int> chosen_indices;
         
@@ -95,8 +101,6 @@ int main(int argc, char **argv) {
                 global_centroids[i * dimensions + d] = all_points[point_idx].getVal(d);
             }
         }
-        cout << "[INFO] Centroides iniciais escolhidos aleatoriamente (Seed: 42)" << endl;
-        // --- FIM DA INICIALIZAÇÃO ALEATÓRIA ---
     }
 
     MPI_Bcast(&N, 1, MPI_INT, 0, MPI_COMM_WORLD);
@@ -108,9 +112,8 @@ int main(int argc, char **argv) {
     }
     MPI_Bcast(global_centroids, K * dimensions, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
-    // Divisão de Carga Estática
-    int base = N / size; // minimo de pontos que cada nodo vai receber
-    int rem = N % size;//resto caso seja N = 10 e size = 3, rem = 1 
+    int base = N / size;
+    int rem = N % size;
     int *sendCountsPts = new int[size];
     int *displsPts = new int[size];
     int *sendCountsLbls = new int[size];
@@ -142,7 +145,6 @@ int main(int argc, char **argv) {
     MPI_Barrier(MPI_COMM_WORLD);
     auto start_time = high_resolution_clock::now();
 
-    // Loop de Treinamento
     for (int iter = 0; iter < nIters; iter++) {
         memset(local_sums, 0, K * dimensions * sizeof(double));
         memset(local_counts, 0, K * sizeof(int));
@@ -150,7 +152,6 @@ int main(int argc, char **argv) {
         assign_points(local_points, global_centroids, local_labels, local_n, K, dimensions);
         calc_sums(local_points, local_labels, local_sums, local_counts, local_n, K, dimensions);
 
-        // Equivalente ao seu reduceCentroidsAcrossNodes()
         MPI_Allreduce(local_sums, global_sums, K * dimensions, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
         MPI_Allreduce(local_counts, global_counts, K, MPI_INT, MPI_SUM, MPI_COMM_WORLD);
 
@@ -166,7 +167,6 @@ int main(int argc, char **argv) {
     MPI_Barrier(MPI_COMM_WORLD);
     auto end_time = high_resolution_clock::now();
 
-    // Coleta final dos labels
     MPI_Gatherv(local_labels, local_n, MPI_INT, 
                 global_labels, sendCountsLbls, displsLbls, MPI_INT, 0, MPI_COMM_WORLD);
 
@@ -174,16 +174,15 @@ int main(int argc, char **argv) {
         auto duration = duration_cast<milliseconds>(end_time - start_time);
         cout << "\nExecution time: " << duration.count() << " ms" << endl;
 
-        // --- INÍCIO DA VERIFICAÇÃO DE OFFLOAD ---
-        extern int cuda_assign_calls;
-        extern int cuda_calculate_calls;
-        
+// --- INÍCIO DA VERIFICAÇÃO CONDICIONAL DE GPU ---
+#ifdef USE_GPU
         printf("\n========================================\n");
         printf("[VERIFICACAO DE OFFLOAD - OPENMP]\n");
         printf("Chamadas na GPU (Assign): %d\n", cuda_assign_calls);
         printf("Chamadas na GPU (Calculate): %d\n", cuda_calculate_calls);
         printf("========================================\n");
-        // --- FIM DA VERIFICAÇÃO DE OFFLOAD ---
+#endif
+// --- FIM DA VERIFICAÇÃO ---
     }
 
     delete[] local_points; delete[] local_labels;
