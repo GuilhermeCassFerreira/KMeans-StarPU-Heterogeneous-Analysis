@@ -1,10 +1,15 @@
+# Força o MPI a usar o G++ 13 (Moderno) em vez do G++ 11 padrão do seu sistema
+ifeq ($(GPU), 1)
+    export OMPI_CXX=g++-13
+endif
+
 CXX = mpicxx
 
-# Por padrão, compila sem GPU para você testar agora
+# Por padrão, compila sem GPU. Para usar GPU: make GPU=1
 GPU ?= 0
 
-# Flags básicas de CPU
-CXXFLAGS = -O3 -Wall -fopenmp -fcf-protection=none -I../../include -g
+# Flags básicas de CPU (Adicionado -fno-stack-protector para evitar conflito com a GPU)
+CXXFLAGS = -O3 -Wall -fopenmp -fcf-protection=none -fno-stack-protector -I../../include -g
 LDFLAGS = -fopenmp
 
 # Lista base de objetos (Main e CPU)
@@ -13,13 +18,14 @@ IO_OBJ = ../../build/io.o
 
 # --- A CHAVE DE ESCALABILIDADE ---
 ifeq ($(GPU), 1)
-    $(info >>> Compilando COM suporte a GPU (Offload ativado))
-    # Adiciona a flag no C++ para ativar os #ifdefs
+    $(info >>> Compilando COM suporte a GPU via GCC 13 (Offload ativado))
+    # Adiciona a flag no C++ para ativar os #ifdefs no código
     CXXFLAGS += -DUSE_GPU
-    # Adiciona as flags insanas que o seu driver da NVIDIA exige
-    # (Quando você consertar o GCC ou for pro Clang, você mexe nessas flags)
-    CXXFLAGS += -foffload=nvptx-none="-misa=sm_70 -fcf-protection=none"
-    LDFLAGS += -foffload=nvptx-none="-misa=sm_70 -fcf-protection=none"
+    
+    # Com o GCC 13, podemos usar o sm_70 com segurança!
+    CXXFLAGS += -foffload=nvptx-none="-misa=sm_70 -fcf-protection=none -fno-stack-protector"
+    LDFLAGS += -foffload=nvptx-none="-misa=sm_70 -fcf-protection=none -fno-stack-protector"
+    
     # Adiciona o arquivo da GPU na lista de compilação
     OBJS += kmeans_gpu.o
 else
@@ -29,13 +35,13 @@ endif
 
 all: kmeans_openmp
 
-kmeans_main.o: kmeans_main.cpp
+kmeans_main.o: kmeans_main.cpp kmeans_omp_mpi.h
 	$(CXX) $(CXXFLAGS) -c kmeans_main.cpp -o kmeans_main.o
 
-kmeans_cpu.o: kmeans_cpu.cpp
+kmeans_cpu.o: kmeans_cpu.cpp kmeans_omp_mpi.h
 	$(CXX) $(CXXFLAGS) -c kmeans_cpu.cpp -o kmeans_cpu.o
 
-kmeans_gpu.o: kmeans_gpu.cpp
+kmeans_gpu.o: kmeans_gpu.cpp kmeans_omp_mpi.h
 	$(CXX) $(CXXFLAGS) -c kmeans_gpu.cpp -o kmeans_gpu.o
 
 kmeans_openmp: $(OBJS)

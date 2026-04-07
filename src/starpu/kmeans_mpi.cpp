@@ -125,7 +125,6 @@ void KMeans::assignPointsToClusters(int N) {
         if (this_chunk <= 0) break;
 
         if (this->dynamic_sched) {
-            // Modo Dinâmico: StarPU decide onde executar
             starpu_mpi_task_insert(MPI_COMM_WORLD, &cl_assign_point_handles,
                 STARPU_R, points_children[chunk_id],
                 STARPU_R, centroids_handle,
@@ -135,7 +134,6 @@ void KMeans::assignPointsToClusters(int N) {
                 STARPU_VALUE, &this_chunk, sizeof(int),
                 0);
         } else {
-            // Modo Estático: Executa forçadamente no dono do chunk
             starpu_mpi_task_insert(MPI_COMM_WORLD, &cl_assign_point_handles,
                 STARPU_R, points_children[chunk_id],
                 STARPU_R, centroids_handle,
@@ -152,7 +150,6 @@ void KMeans::assignPointsToClusters(int N) {
 void KMeans::calculateCentroids(int N) {
     int dummy_chunk = 0;
 
-    // A limpeza de buffers ocorre sempre nos respectivos nodos de forma fixa
     for (int n = 0; n < world_size; n++) {
         starpu_mpi_task_insert(MPI_COMM_WORLD, &cl_clean_buffers,
             STARPU_W, partial_sums_handle[n],
@@ -212,16 +209,15 @@ void KMeans::calculateCentroids(int N) {
 void KMeans::reduceCentroidsAcrossNodes() {
     if (world_size <= 1) return;
 
-    // O Nodo 0 vai puxar e somar os buffers de todos os outros nodos (1, 2, 3...)
     for (int n = 1; n < world_size; n++) {
         starpu_mpi_task_insert(MPI_COMM_WORLD, &cl_accumulate_nodes,
-            STARPU_RW, partial_sums_handle[0],   // Onde o resultado vai ser acumulado
-            STARPU_RW, partial_counts_handle[0], // Onde a contagem vai ser acumulada
-            STARPU_R, partial_sums_handle[n],    // De onde vem o dado (Nodo N)
-            STARPU_R, partial_counts_handle[n],  // De onde vem a contagem (Nodo N)
+            STARPU_RW, partial_sums_handle[0],   
+            STARPU_RW, partial_counts_handle[0], 
+            STARPU_R, partial_sums_handle[n],    
+            STARPU_R, partial_counts_handle[n],  
             STARPU_VALUE, &K, sizeof(int),
             STARPU_VALUE, &dimensions, sizeof(int),
-            STARPU_EXECUTE_ON_NODE, 0,           // Apenas o Nodo 0 faz as somas finais
+            STARPU_EXECUTE_ON_NODE, 0,    
             0);
     }
 }
@@ -256,8 +252,6 @@ void KMeans::run(vector<Point> &all_points, int N) {
     memset(partial_sums_ptr, 0, sums_bytes);
     memset(partial_counts_ptr, 0, counts_bytes);
 
-    // Registrar handles StarPU
-    // Como alocamos memória (starpu_malloc) em todos os nodos, todos registram na MAIN_RAM
     starpu_vector_data_register(&points_handle, STARPU_MAIN_RAM, (uintptr_t)points_ptr, N, dimensions * sizeof(double));
     starpu_vector_data_register(&output_handle, STARPU_MAIN_RAM, (uintptr_t)labels_ptr, N, sizeof(int));
 
@@ -281,24 +275,21 @@ void KMeans::run(vector<Point> &all_points, int N) {
 
     // Particionar pontos e labels em chunks
     num_chunks = (N + this->chunk_size - 1) / this->chunk_size;
-    struct starpu_data_filter f = {
+    struct starpu_data_filter filterChunks = {
         .filter_func = starpu_vector_filter_block,
         .nchildren = (unsigned)num_chunks
     };
 
-    starpu_data_partition(points_handle, &f);
-    starpu_data_partition(output_handle, &f);
+    starpu_data_partition(points_handle, &filterChunks);
+    starpu_data_partition(output_handle, &filterChunks);
 
     // Distribuir chunks round-robin entre nodos
     chunk_owners.resize(num_chunks);
     points_children.resize(num_chunks);
     outputs_children.resize(num_chunks);
 
-    vector<int> chunks_per_node(world_size, 0);
-
     for (int i = 0; i < num_chunks; ++i) {
         chunk_owners[i] = getChunkOwner(i);
-        chunks_per_node[chunk_owners[i]]++;
 
         points_children[i] = starpu_data_get_child(points_handle, i);
         outputs_children[i] = starpu_data_get_child(output_handle, i);
@@ -306,13 +297,6 @@ void KMeans::run(vector<Point> &all_points, int N) {
         // O dado nasce no Nodo 0
         starpu_mpi_data_register(points_children[i], 100000 + i, 0); 
         starpu_mpi_data_register(outputs_children[i], 1000000 + i, 0);
-    }
-
-    if (mpi_rank == 0) {
-        cout << "[MPI-DIST] Distribuicao de chunks entre " << world_size << " nodos:" << endl;
-        for (int n = 0; n < world_size; n++) {
-            cout << "  Nodo " << n << ": " << chunks_per_node[n] << " chunks" << endl;
-        }
     }
 
     // Inicializar centroides

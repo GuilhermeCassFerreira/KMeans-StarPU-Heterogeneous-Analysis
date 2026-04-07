@@ -41,8 +41,6 @@ int main(int argc, char **argv) {
     int K = stoi(args[1]);
     string output_dir = args[2];
     int chunk_size = (args.size() >= 4) ? stoi(args[3]) : -1;
-    
-    // NOVA FLAG: 0 = Estático (EXECUTE_ON_NODE), 1 = Dinâmico (StarPU decide)
     bool dynamic_sched = (args.size() == 5) ? (stoi(args[4]) == 1) : false;
 
     if (rank == 0) {
@@ -70,7 +68,7 @@ int main(int argc, char **argv) {
         return 1;
     }
 
-    int iters = 100;
+    int iters = 1;
 
     // ---- Inicialização do StarPU-MPI ----
     int ret = starpu_mpi_init_conf(&argc, &argv, 0, MPI_COMM_WORLD, NULL);
@@ -119,7 +117,6 @@ int main(int argc, char **argv) {
 
     bool use_heterogeneous_chunks_val = false;
 
-    // Passamos o dynamic_sched para o KMeans
     KMeans kmeans(K, iters, output_dir, chunk_size, use_heterogeneous_chunks_val, rank, size, dimensions, dynamic_sched);
     kmeans.run(all_points, N);
 

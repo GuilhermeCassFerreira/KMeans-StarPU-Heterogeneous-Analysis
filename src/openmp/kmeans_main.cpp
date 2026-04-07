@@ -1,4 +1,5 @@
 #include <mpi.h>
+#include <omp.h> // Necessário para omp_get_max_threads()
 #include <iostream>
 #include <vector>
 #include <string>
@@ -22,19 +23,18 @@ int main(int argc, char **argv) {
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &size);
 
-    // --- NOVO: Captura e exibe o nome do nó/IP ---
     char processor_name[MPI_MAX_PROCESSOR_NAME];
     int name_len;
     MPI_Get_processor_name(processor_name, &name_len);
 
-    // Imprime em todos os nós para confirmar a distribuição
     printf("[RANK %d/%d] Operando no host: %s\n", rank, size, processor_name);
     // --------------------------------------------
 
     if (argc < 4) {
         if (rank == 0) {
-            cout << "Uso: mpirun -np X ./kmeans_openmp <INPUT> <K> <OUT-DIR> [MODO]" << endl;
+            cout << "Uso: mpirun -np X ./kmeans_openmp <INPUT> <K> <OUT-DIR> [MODO] [CHUNKS]" << endl;
             cout << "Modos: 0 (CPU) | 1 (GPU) | 2 (Hibrido)" << endl;
+            cout << "Chunks: 0 para automatico, ou valor > 0 para manual" << endl;
         }
         MPI_Finalize();
         return 1;
@@ -43,31 +43,32 @@ int main(int argc, char **argv) {
     string filename = argv[1];
     int K = stoi(argv[2]);
     int mode = (argc >= 5) ? stoi(argv[4]) : 0;
+    int requested_chunks = (argc >= 6) ? stoi(argv[5]) : 0; // Novo parâmetro
     
     const int nIters = 100; 
 
     assign_fn assign_points = assign_point_to_cluster_cpu;
     calculate_fn calc_sums = calculate_partial_sums_cpu;
 
-#ifdef USE_GPU
-    if (mode == 1) {
-        assign_points = assign_point_to_cluster_gpu;
-        calc_sums = calculate_partial_sums_gpu;
-        if (rank == 0) cout << ">> Modo: 100% GPU (OpenMP Target ativado)" << endl;
-    } else if (mode == 2) {
-        assign_points = assign_point_to_cluster_gpu; 
-        calc_sums = calculate_partial_sums_cpu;      
-        if (rank == 0) cout << ">> Modo: HIBRIDO (Assign: GPU | Sums: CPU)" << endl;
-    } else {
-        if (rank == 0) cout << ">> Modo: 100% CPU (OpenMP)" << endl;
-    }
-#else
-    if (mode == 1 || mode == 2) {
-        if (rank == 0) cout << ">> AVISO: Binário compilado sem suporte a GPU. Forçando modo 100% CPU." << endl;
-    } else {
-        if (rank == 0) cout << ">> Modo: 100% CPU (OpenMP)" << endl;
-    }
-#endif
+    #ifdef USE_GPU
+        if (mode == 1) { // FULL GPU
+            assign_points = assign_point_to_cluster_gpu;
+            calc_sums = calculate_partial_sums_gpu;
+            if (rank == 0) cout << ">> MODO 1: FULL GPU (Assign e Sums na GPU)" << endl;
+        } 
+        else if (mode == 2) { 
+            assign_points = assign_point_to_cluster_gpu; // Parte custosa (Distâncias)
+            calc_sums = calculate_partial_sums_cpu;      // Parte leve (Somas parciais)
+            if (rank == 0) cout << ">> MODO 2: HIBRIDO (Assign: GPU | Sums: CPU)" << endl;
+        } 
+        else { // FULL CPU
+            if (rank == 0) cout << ">> MODO 0: FULL CPU (OpenMP)" << endl;
+        }
+    #else
+        if (rank == 0 && (mode == 1 || mode == 2)) {
+            cout << ">> AVISO: Binário sem suporte a GPU. Forçando FULL CPU." << endl;
+        }
+    #endif
 
     int N = 0, dimensions = 0;
     double *global_points = nullptr;
@@ -143,6 +144,27 @@ int main(int argc, char **argv) {
     MPI_Scatterv(global_points, sendCountsPts, displsPts, MPI_DOUBLE,
                  local_points, sendCountsPts[rank], MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
+    // --- DEFINIÇÃO DOS CHUNKS ---
+    int num_chunks;
+    if (requested_chunks > 0) {
+        num_chunks = requested_chunks; // Decidido via parâmetro
+    } else {
+        // Sistema decide: usa o máximo de threads disponíveis na CPU
+        num_chunks = omp_get_max_threads(); 
+        if (num_chunks > local_n && local_n > 0) {
+            num_chunks = local_n; // Evita ter mais chunks que pontos
+        }
+        if (num_chunks <= 0) num_chunks = 1; // Proteção extra
+    }
+    int chunk_size = (local_n + num_chunks - 1) / num_chunks;
+
+    if (rank == 0) {
+        cout << ">> Processando " << local_n << " pontos por Rank em " 
+             << num_chunks << " chunk(s) " 
+             << (requested_chunks > 0 ? "(Manual)" : "(Automatico)") << "." << endl;
+    }
+    // ----------------------------
+
     double *local_sums = new double[K * dimensions];
     int *local_counts = new int[K];
     double *global_sums = new double[K * dimensions];
@@ -155,8 +177,20 @@ int main(int argc, char **argv) {
         memset(local_sums, 0, K * dimensions * sizeof(double));
         memset(local_counts, 0, K * sizeof(int));
 
-        assign_points(local_points, global_centroids, local_labels, local_n, K, dimensions);
-        calc_sums(local_points, local_labels, local_sums, local_counts, local_n, K, dimensions);
+        for (int chunk_id = 0; chunk_id < num_chunks; chunk_id++) {
+            int offset = chunk_id * chunk_size;
+            
+            int this_chunk = min(chunk_size, local_n - offset);
+            if (this_chunk <= 0) break; // Trava de segurança
+
+            // Passamos os ponteiros deslocados e o tamanho da fatia (this_chunk)
+            assign_points(&local_points[offset * dimensions], global_centroids, 
+                          &local_labels[offset], this_chunk, K, dimensions);
+                          
+            calc_sums(&local_points[offset * dimensions], &local_labels[offset], 
+                      local_sums, local_counts, this_chunk, K, dimensions);
+        }
+        // ----------------------------------------
 
         MPI_Allreduce(local_sums, global_sums, K * dimensions, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
         MPI_Allreduce(local_counts, global_counts, K, MPI_INT, MPI_SUM, MPI_COMM_WORLD);
