@@ -68,7 +68,7 @@ int main(int argc, char **argv) {
         return 1;
     }
 
-    int iters = 1;
+    int iters = 100;
 
     // ---- Inicialização do StarPU-MPI ----
     int ret = starpu_mpi_init_conf(&argc, &argv, 0, MPI_COMM_WORLD, NULL);
