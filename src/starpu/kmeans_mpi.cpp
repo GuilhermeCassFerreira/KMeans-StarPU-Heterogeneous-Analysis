@@ -5,8 +5,8 @@
 #include <vector>
 #include <cstring>
 #include <cstdlib>
-#include <iomanip> // Adicionado para formatação na escrita
-#include <fstream> // Adicionado para manipulação de arquivos
+#include <iomanip> 
+#include <fstream> 
 
 using namespace std;
 
@@ -292,7 +292,6 @@ void KMeans::run(vector<Point> &all_points, int N) {
         points_children[i] = starpu_data_get_child(points_handle, i);
         outputs_children[i] = starpu_data_get_child(output_handle, i);
 
-        // O dado nasce no Nodo 0
         starpu_mpi_data_register(points_children[i], 100000 + i, 0); 
         starpu_mpi_data_register(outputs_children[i], 1000000 + i, 0);
     }
@@ -352,26 +351,19 @@ void KMeans::run(vector<Point> &all_points, int N) {
     starpu_data_unpartition(output_handle, STARPU_MAIN_RAM);
 
     if (mpi_rank == 0) {
-        // Puxa o dado completo final para o Nodo 0
         starpu_data_acquire(output_handle, STARPU_R);
         for (int i = 0; i < N; i++) {
             all_points[i].setCluster(labels_ptr[i]);
         }
         starpu_data_release(output_handle);
-
-        // ==================================================================
-        // ESCRITA DE RESULTADOS (APENAS CENTRÓIDES)
-        // ==================================================================
         
         cout << "[INFO] Salvando centróides finais..." << endl;
 
-        // Garante que a pasta de saída exista no sistema
         string cmd = "mkdir -p " + output_dir;
         if (system(cmd.c_str()) != 0) {
             cerr << "[AVISO] Falha ao tentar criar o diretório: " << output_dir << endl;
         }
 
-        // Salva as coordenadas finais dos centróides (ex: out/2-clusters.txt)
         string clusters_filename = output_dir + "/" + to_string(K) + "-clusters.txt";
         ofstream outfile(clusters_filename);
 
@@ -389,7 +381,6 @@ void KMeans::run(vector<Point> &all_points, int N) {
             outfile.close();
             cout << "[INFO] Arquivo de centróides salvo com sucesso em: " << clusters_filename << endl;
         }
-        // ==================================================================
     }
 
     // Limpeza de Memória e Handles
