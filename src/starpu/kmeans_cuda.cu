@@ -34,13 +34,11 @@ __device__ double atomicAdd(double* address, double val)
 #endif
 
 extern "C" {
-
-/* ========================================================================== */
-/* Contadores para métricas                                                   */
-/* ========================================================================== */
-
 int cuda_assign_calls = 0;
 int cuda_calculate_calls = 0;
+int cuda_clean_calls = 0;
+int cuda_update_calls = 0;
+int cuda_accumulate_calls = 0;
 static int cuda_kernel_calls = 0;
 
 /* ========================================================================== */
@@ -294,6 +292,9 @@ __global__ void clean_buffers_cuda_kernel(double *partial_sums, int *partial_cou
 }
 
 void clean_buffers_cuda(void *buffers[], void *cl_arg) {
+    cuda_clean_calls++;     
+    cuda_kernel_calls++;
+
     int K, dimensions, dummy_chunk;
     starpu_codelet_unpack_args(cl_arg, &K, &dimensions, &dummy_chunk);
 
@@ -321,6 +322,9 @@ __global__ void update_centroids_cuda_kernel(double *partial_sums, int *partial_
 }
 
 void update_centroids_cuda(void *buffers[], void *cl_arg) {
+    cuda_update_calls++;    
+    cuda_kernel_calls++;
+
     int K, dimensions, dummy_chunk;
     starpu_codelet_unpack_args(cl_arg, &K, &dimensions, &dummy_chunk);
 
@@ -341,10 +345,7 @@ __global__ void accumulate_nodes_cuda_kernel(double *master_sums, int *master_co
                                            int K, int dimensions) {
     int c = blockIdx.x * blockDim.x + threadIdx.x;
     if (c < K) {
-        // Soma as contagens de pontos
         master_counts[c] += node_counts[c];
-        
-        // Soma as coordenadas acumuladas
         for (int d = 0; d < dimensions; d++) {
             master_sums[c * dimensions + d] += node_sums[c * dimensions + d];
         }
@@ -352,6 +353,9 @@ __global__ void accumulate_nodes_cuda_kernel(double *master_sums, int *master_co
 }
 
 extern "C" void accumulate_nodes_cuda(void *buffers[], void *cl_arg) {
+    cuda_accumulate_calls++;
+    cuda_kernel_calls++;
+
     int K, dimensions;
     starpu_codelet_unpack_args(cl_arg, &K, &dimensions);
 

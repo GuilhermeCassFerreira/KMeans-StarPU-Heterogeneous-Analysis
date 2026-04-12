@@ -12,8 +12,15 @@
 int cpu_kernel_calls = 0;
 int cpu_assign_calls = 0;
 int cpu_calculate_calls = 0;
+int cpu_clean_calls = 0;
+int cpu_update_calls = 0;
+int cpu_accumulate_calls = 0;
+
 int opencl_assign_calls = 0;
 int opencl_calculate_calls = 0;
+int opencl_clean_calls = 0;
+int opencl_update_calls = 0;
+int opencl_accumulate_calls = 0;
 
 /* ========================================================================== */
 /* TASKS DE NEGÓCIO (CPU)                                                     */
@@ -50,6 +57,7 @@ void assign_point_to_cluster_handles(void *buffers[], void *cl_arg) {
 }
 
 void calculate_partial_sums(void *buffers[], void *cl_arg) {
+    cpu_kernel_calls++;
     cpu_calculate_calls++;
 
     int K, dimensions, chunk_size;
@@ -72,6 +80,9 @@ void calculate_partial_sums(void *buffers[], void *cl_arg) {
 }
 
 void clean_buffers_cpu(void *buffers[], void *cl_arg) {
+    cpu_kernel_calls++;
+    cpu_clean_calls++;
+
     int K, dimensions, dummy_chunk;
     starpu_codelet_unpack_args(cl_arg, &K, &dimensions, &dummy_chunk);
 
@@ -83,6 +94,9 @@ void clean_buffers_cpu(void *buffers[], void *cl_arg) {
 }
 
 void update_centroids_cpu(void *buffers[], void *cl_arg) {
+    cpu_kernel_calls++;
+    cpu_update_calls++;
+
     int K, dimensions, dummy_chunk;
     starpu_codelet_unpack_args(cl_arg, &K, &dimensions, &dummy_chunk);
 
@@ -96,6 +110,26 @@ void update_centroids_cpu(void *buffers[], void *cl_arg) {
                 centroids[c * dimensions + d] = partial_sums[c * dimensions + d] / partial_counts[c];
             }
         }
+    }
+}
+
+void accumulate_nodes_cpu(void *buffers[], void *cl_arg) {
+    cpu_kernel_calls++;
+    cpu_accumulate_calls++;
+
+    int K, dimensions;
+    starpu_codelet_unpack_args(cl_arg, &K, &dimensions);
+
+    double *sums_dest = (double *)STARPU_VECTOR_GET_PTR(buffers[0]);
+    int *counts_dest = (int *)STARPU_VECTOR_GET_PTR(buffers[1]);
+    double *sums_src = (double *)STARPU_VECTOR_GET_PTR(buffers[2]);
+    int *counts_src = (int *)STARPU_VECTOR_GET_PTR(buffers[3]);
+
+    for(int i = 0; i < K * dimensions; i++) {
+        sums_dest[i] += sums_src[i];
+    }
+    for(int i = 0; i < K; i++) {
+        counts_dest[i] += counts_src[i];
     }
 }
 
@@ -132,23 +166,5 @@ void redux_int_reduce_cpu(void *buffers[], void *cl_arg) {
 
     for (int i = 0; i < n; i++) {
         dst[i] += src[i];
-    }
-}
-
-/* Função para acumular os buffers de outros nodos pela rede */
-void accumulate_nodes_cpu(void *buffers[], void *cl_arg) {
-    int K, dimensions;
-    starpu_codelet_unpack_args(cl_arg, &K, &dimensions);
-
-    double *sums_dest = (double *)STARPU_VECTOR_GET_PTR(buffers[0]);
-    int *counts_dest = (int *)STARPU_VECTOR_GET_PTR(buffers[1]);
-    double *sums_src = (double *)STARPU_VECTOR_GET_PTR(buffers[2]);
-    int *counts_src = (int *)STARPU_VECTOR_GET_PTR(buffers[3]);
-
-    for(int i = 0; i < K * dimensions; i++) {
-        sums_dest[i] += sums_src[i];
-    }
-    for(int i = 0; i < K; i++) {
-        counts_dest[i] += counts_src[i];
     }
 }

@@ -8,8 +8,14 @@ CXX = mpicxx
 # Por padrão, compila sem GPU. Para usar GPU: make GPU=1
 GPU ?= 0
 
-# Flags básicas de CPU (Adicionado -fno-stack-protector para evitar conflito com a GPU)
-CXXFLAGS = -O3 -Wall -fopenmp -fcf-protection=none -fno-stack-protector -I../../include -g
+# ==============================================================================
+# FLAGS DE PERFORMANCE EXTREMA (CPU)
+# -O3: Nível máximo de otimização
+# -march=native -mtune=native: Destrava AVX/AVX2/AVX-512 (Vetorização)
+# -ffast-math: Ativa FMA (Fused Multiply-Add) para matemática ultrarrápida
+# -DNDEBUG: Remove asserções de Debug do código C++
+# ==============================================================================
+CXXFLAGS = -O3 -march=native -mtune=native -ffast-math -DNDEBUG -Wall -fopenmp -fcf-protection=none -fno-stack-protector -I../../include
 LDFLAGS = -fopenmp
 
 # Lista base de objetos (Main e CPU)
@@ -19,12 +25,18 @@ IO_OBJ = ../../build/io.o
 # --- A CHAVE DE ESCALABILIDADE ---
 ifeq ($(GPU), 1)
     $(info >>> Compilando COM suporte a GPU via GCC 13 (Offload ativado))
-    # Adiciona a flag no C++ para ativar os #ifdefs no código
+    
     CXXFLAGS += -DUSE_GPU
     
-    # Com o GCC 13, podemos usar o sm_70 com segurança!
-    CXXFLAGS += -foffload=nvptx-none="-misa=sm_70 -fcf-protection=none -fno-stack-protector"
-    LDFLAGS += -foffload=nvptx-none="-misa=sm_70 -fcf-protection=none -fno-stack-protector"
+    # ==============================================================================
+    # FLAGS DE PERFORMANCE EXTREMA (GPU OFFLOAD)
+    # Adicionamos -O3 e -ffast-math DENTRO da string do PTX para garantir
+    # que o Assembly da placa de vídeo seja agressivamente otimizado.
+    # ==============================================================================
+    OFFLOAD_FLAGS = -foffload=nvptx-none="-O3 -ffast-math -misa=sm_70 -fcf-protection=none -fno-stack-protector"
+    
+    CXXFLAGS += $(OFFLOAD_FLAGS)
+    LDFLAGS += $(OFFLOAD_FLAGS)
     
     # Adiciona o arquivo da GPU na lista de compilação
     OBJS += kmeans_gpu.o

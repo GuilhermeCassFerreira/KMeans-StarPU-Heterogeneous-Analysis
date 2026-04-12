@@ -5,7 +5,8 @@
 #include <vector>
 #include <cstring>
 #include <cstdlib>
-#include <iomanip>
+#include <iomanip> // Adicionado para formatação na escrita
+#include <fstream> // Adicionado para manipulação de arquivos
 
 using namespace std;
 
@@ -101,7 +102,7 @@ KMeans::KMeans(int K, int iterations, string output_dir, int chunk_size,
                bool use_heterogeneous_chunks, int rank, int size, int dims, bool dynamic_sched)
     : K(K), iters(iterations), output_dir(output_dir), chunk_size(chunk_size),
       use_heterogeneous_chunks(use_heterogeneous_chunks), mpi_rank(rank),
-      world_size(size), dimensions(dims), dynamic_sched(dynamic_sched), // <-- Atualizado aqui
+      world_size(size), dimensions(dims), dynamic_sched(dynamic_sched),
       points_handle(nullptr), output_handle(nullptr),
       num_chunks(0), partial_sums_ptr(nullptr), partial_counts_ptr(nullptr),
       centroids_handle(nullptr), points_ptr(nullptr), labels_ptr(nullptr),
@@ -167,9 +168,8 @@ void KMeans::calculateCentroids(int N) {
         if (this_chunk <= 0) break;
 
         if (this->dynamic_sched) {
-            // Modo Dinâmico: StarPU decide onde executar
-            starpu_mpi_task_insert(MPI_COMM_WORLD, &cl_calculate_partial_sums,
-                STARPU_R, points_children[chunk_id],
+            starpu_mpi_task_insert(MPI_COMM_WORLD, &cl_calculate_partial_sums, //3 nodos, 3 chuncks: [2,5], [65,3], [66,3], k = 3,12
+                STARPU_R, points_children[chunk_id],                               // calcula a distancia: nodo 0 = [2,5]
                 STARPU_R, outputs_children[chunk_id],
                 STARPU_RW, partial_sums_handle[owners],
                 STARPU_RW, partial_counts_handle[owners],
@@ -178,7 +178,6 @@ void KMeans::calculateCentroids(int N) {
                 STARPU_VALUE, &this_chunk, sizeof(int),
                 0);
         } else {
-            // Modo Estático: Executa forçadamente no dono do chunk
             starpu_mpi_task_insert(MPI_COMM_WORLD, &cl_calculate_partial_sums,
                 STARPU_R, points_children[chunk_id],
                 STARPU_R, outputs_children[chunk_id],
@@ -194,7 +193,6 @@ void KMeans::calculateCentroids(int N) {
 
     reduceCentroidsAcrossNodes();
 
-    // A consolidação final dos centroides ocorre sempre no Nodo 0
     starpu_mpi_task_insert(MPI_COMM_WORLD, &cl_update_centroids,
         STARPU_R, partial_sums_handle[0],
         STARPU_R, partial_counts_handle[0],
@@ -337,29 +335,61 @@ void KMeans::run(vector<Point> &all_points, int N) {
     for (int it = 0; it < iters; ++it) {
         assignPointsToClusters(N);
         calculateCentroids(N);
-        starpu_mpi_wait_for_all(MPI_COMM_WORLD); 
-        MPI_Barrier(MPI_COMM_WORLD);
     }
 
+    // Aguarda o término de todas as tarefas assíncronas
     starpu_task_wait_for_all();
     starpu_mpi_wait_for_all(MPI_COMM_WORLD);
 
+    // Garante que o Nodo 0 detenha a versão mais recente dos labels
     for (int i = 0; i < num_chunks; i++) {
         starpu_mpi_get_data_on_node_detached(MPI_COMM_WORLD, outputs_children[i], 0, NULL, NULL);
     }
     starpu_mpi_wait_for_all(MPI_COMM_WORLD);
 
+    // Remove o particionamento
     starpu_data_unpartition(points_handle, STARPU_MAIN_RAM);
     starpu_data_unpartition(output_handle, STARPU_MAIN_RAM);
 
     if (mpi_rank == 0) {
-        starpu_mpi_get_data_on_node_detached(MPI_COMM_WORLD, output_handle, 0, NULL, NULL);
-        
+        // Puxa o dado completo final para o Nodo 0
         starpu_data_acquire(output_handle, STARPU_R);
         for (int i = 0; i < N; i++) {
             all_points[i].setCluster(labels_ptr[i]);
         }
         starpu_data_release(output_handle);
+
+        // ==================================================================
+        // ESCRITA DE RESULTADOS (APENAS CENTRÓIDES)
+        // ==================================================================
+        
+        cout << "[INFO] Salvando centróides finais..." << endl;
+
+        // Garante que a pasta de saída exista no sistema
+        string cmd = "mkdir -p " + output_dir;
+        if (system(cmd.c_str()) != 0) {
+            cerr << "[AVISO] Falha ao tentar criar o diretório: " << output_dir << endl;
+        }
+
+        // Salva as coordenadas finais dos centróides (ex: out/2-clusters.txt)
+        string clusters_filename = output_dir + "/" + to_string(K) + "-clusters.txt";
+        ofstream outfile(clusters_filename);
+
+        if (!outfile.is_open()) {
+            cerr << "[ERRO] Não foi possível criar o arquivo: " << clusters_filename << endl;
+        } else {
+            outfile << fixed << setprecision(6);
+            for (int i = 0; i < K; i++) {
+                for (int j = 0; j < dimensions; j++) {
+                    double val = centroids_data[i * dimensions + j];
+                    outfile << val << " ";
+                }
+                outfile << endl;
+            }
+            outfile.close();
+            cout << "[INFO] Arquivo de centróides salvo com sucesso em: " << clusters_filename << endl;
+        }
+        // ==================================================================
     }
 
     // Limpeza de Memória e Handles

@@ -33,3 +33,16 @@ void calculate_partial_sums_cpu(double *points, int *labels, double *partial_sum
         }
     }
 }
+
+void update_centroids_cpu(double *global_sums, int *global_counts, double *centroids, int K, int dimensions) {
+    // Paraleliza a divisão entre os clusters. 
+    // Cada thread da CPU cuidará de atualizar um (ou mais) centróides independentes.
+    #pragma omp parallel for
+    for (int k = 0; k < K; k++) {
+        if (global_counts[k] > 0) {
+            for (int d = 0; d < dimensions; d++) {
+                centroids[k * dimensions + d] = global_sums[k * dimensions + d] / global_counts[k];
+            }
+        }
+    }
+}
