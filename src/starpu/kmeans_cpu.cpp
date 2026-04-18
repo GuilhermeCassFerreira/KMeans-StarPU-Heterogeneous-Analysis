@@ -23,12 +23,16 @@ int opencl_update_calls = 0;
 int opencl_accumulate_calls = 0;
 
 /* ========================================================================== */
-/* TASKS DE NEGÓCIO (CPU)                                                     */
+/* TASKS DE NEGÓCIO (CPU) - Com Ghost Tasks (Early Exit)                      */
 /* ========================================================================== */
 
 void assign_point_to_cluster_handles(void *buffers[], void *cl_arg) {
     cpu_kernel_calls++;
     cpu_assign_calls++;
+
+    // Verifica convergência (Buffer 3)
+    int *converged = (int *)STARPU_VARIABLE_GET_PTR(buffers[3]);
+    if (*converged == 1) return; // EARLY EXIT: Ghost Task
 
     int K, dimensions, chunk_size;
     starpu_codelet_unpack_args(cl_arg, &K, &dimensions, &chunk_size);
@@ -60,6 +64,10 @@ void calculate_partial_sums(void *buffers[], void *cl_arg) {
     cpu_kernel_calls++;
     cpu_calculate_calls++;
 
+    // Verifica convergência (Buffer 4)
+    int *converged = (int *)STARPU_VARIABLE_GET_PTR(buffers[4]);
+    if (*converged == 1) return; // EARLY EXIT: Ghost Task
+
     int K, dimensions, chunk_size;
     starpu_codelet_unpack_args(cl_arg, &K, &dimensions, &chunk_size);
 
@@ -83,6 +91,10 @@ void clean_buffers_cpu(void *buffers[], void *cl_arg) {
     cpu_kernel_calls++;
     cpu_clean_calls++;
 
+    // Verifica convergência (Buffer 2)
+    int *converged = (int *)STARPU_VARIABLE_GET_PTR(buffers[2]);
+    if (*converged == 1) return; // EARLY EXIT: Ghost Task
+
     int K, dimensions, dummy_chunk;
     starpu_codelet_unpack_args(cl_arg, &K, &dimensions, &dummy_chunk);
 
@@ -97,6 +109,10 @@ void update_centroids_cpu(void *buffers[], void *cl_arg) {
     cpu_kernel_calls++;
     cpu_update_calls++;
 
+    // Verifica convergência (Buffer 3)
+    int *converged = (int *)STARPU_VARIABLE_GET_PTR(buffers[3]);
+    if (*converged == 1) return; // EARLY EXIT: Ghost Task
+
     int K, dimensions, dummy_chunk;
     starpu_codelet_unpack_args(cl_arg, &K, &dimensions, &dummy_chunk);
 
@@ -104,18 +120,39 @@ void update_centroids_cpu(void *buffers[], void *cl_arg) {
     int *partial_counts = (int *)STARPU_VECTOR_GET_PTR(buffers[1]);
     double *centroids = (double *)STARPU_VECTOR_GET_PTR(buffers[2]);
 
+    double max_movement = 0.0;
+
     for (int c = 0; c < K; ++c) {
         if (partial_counts[c] > 0) {
+            double dist = 0.0;
             for (int d = 0; d < dimensions; ++d) {
-                centroids[c * dimensions + d] = partial_sums[c * dimensions + d] / partial_counts[c];
+                double old_val = centroids[c * dimensions + d];
+                double new_val = partial_sums[c * dimensions + d] / partial_counts[c];
+                
+                double diff = new_val - old_val;
+                dist += diff * diff; // Distância Euclidiana ao quadrado
+                
+                centroids[c * dimensions + d] = new_val;
+            }
+            if (dist > max_movement) {
+                max_movement = dist;
             }
         }
+    }
+
+    // Se nenhum centroide se moveu além do threshold, sinaliza a convergência global!
+    if (max_movement < 1e-6) {
+        *converged = 1; 
     }
 }
 
 void accumulate_nodes_cpu(void *buffers[], void *cl_arg) {
     cpu_kernel_calls++;
     cpu_accumulate_calls++;
+
+    // Verifica convergência (Buffer 4)
+    int *converged = (int *)STARPU_VARIABLE_GET_PTR(buffers[4]);
+    if (*converged == 1) return; // EARLY EXIT: Ghost Task
 
     int K, dimensions;
     starpu_codelet_unpack_args(cl_arg, &K, &dimensions);
@@ -133,7 +170,7 @@ void accumulate_nodes_cpu(void *buffers[], void *cl_arg) {
     }
 }
 
-/* ========================================================================== */
+/* =================a========================================================= */
 /* FUNÇÕES DE REDUÇÃO (CPU)                                                   */
 /* ========================================================================== */
 

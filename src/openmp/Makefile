@@ -1,18 +1,17 @@
 # ==============================================================================
-# CONFIGURAÇÃO DE AMBIENTE - BRIDGE LABS
+# CONFIGURAÇÃO DE AMBIENTE - BRIDGE LABS / UFSC
 # ==============================================================================
-# Apontamos para o binário do compilador diretamente
-NVC_BIN = /opt/nvidia/hpc_sdk/Linux_x86_64/26.3/compilers/bin/nvc++
-
-# Garantimos que o PATH do sistema e do CUDA estejam visíveis para o MPI
-export PATH := /usr/local/cuda/bin:/usr/bin:/bin:$(PATH)
-export OMPI_CXX = $(NVC_BIN)
-export NVHPC_CUDA_HOME = /usr/local/cuda
+# Caminhos para o CUDA e Compilador NVIDIA
+export NVHPC_CUDA_HOME := /usr/local/cuda
+export PATH := /usr/local/cuda/bin:/opt/nvidia/hpc_sdk/Linux_x86_64/26.3/compilers/bin:$(PATH)
+export OMPI_CXX := /opt/nvidia/hpc_sdk/Linux_x86_64/26.3/compilers/bin/nvc++
 
 CXX = mpicxx
 GPU ?= 0
 
-# Flags de Performance NVC++
+# Flags de Performance:
+# -fast: Otimização máxima para i7 (AVX2) e NVIDIA.
+# -Minfo=mp: Relatório de paralelismo.
 CXXFLAGS = -fast -DNDEBUG -Wall -I../../include
 LDFLAGS = 
 
@@ -20,22 +19,18 @@ OBJS = kmeans_main.o kmeans_cpu.o
 IO_OBJ = ../../build/io.o
 
 ifeq ($(GPU), 1)
-    $(info >>> Compilando MODO GPU (Redução em Shared Memory) <<<)
-    CXXFLAGS += -DUSE_GPU
-    # cc86 é a sua RTX 2050 (Ampere)
-    OFFLOAD_FLAGS = -mp=gpu -gpu=cc86 -Minfo=mp
-    CXXFLAGS += $(OFFLOAD_FLAGS)
-    LDFLAGS += $(OFFLOAD_FLAGS)
+    $(info >>> COMPILANDO MODO MULTI-GPU (NVC++) <<<)
+    CXXFLAGS += -DUSE_GPU -mp=gpu -gpu=cc86 -Minfo=mp
+    LDFLAGS += -mp=gpu -gpu=cc86
     OBJS += kmeans_gpu.o
 else
-    $(info >>> Compilando MODO CPU (Vetorização AVX2) <<<)
+    $(info >>> COMPILANDO MODO CPU (Vetorização AVX2) <<<)
     CXXFLAGS += -mp
     LDFLAGS += -mp
 endif
 
 all: kmeans_openmp
 
-# Regra genérica para objetos
 %.o: %.cpp kmeans_omp_mpi.h
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 

@@ -114,11 +114,7 @@ private:
     std::vector<Cluster> clusters;
     std::string output_dir;
     int chunk_size;
-    bool use_heterogeneous_chunks;
-    
-    // Variavel atualizada de asymmetric_load para dynamic_sched
-    bool dynamic_sched; 
-    
+    int seed;
     int mpi_rank, world_size;
 
     std::vector<double> points_data;
@@ -143,15 +139,13 @@ private:
 
     void clearClusters();
     int getChunkOwner(int chunk_id);
-    void assignPointsToClusters(int N);
-    void calculateCentroids(int N);
-    void reduceCentroidsAcrossNodes();
+    void assignPointsToClusters(int N, starpu_data_handle_t converged_handle);
+    void calculateCentroids(int N, starpu_data_handle_t converged_handle);
+    void reduceCentroidsAcrossNodes(starpu_data_handle_t converged_handle);
     
 
 public:
-    // Assinatura do construtor atualizada para receber dynamic_sched
-    KMeans(int K, int iterations, std::string output_dir, int chunk_size,
-           bool use_heterogeneous_chunks, int rank, int size, int dims, bool dynamic_sched);
+    KMeans(int K, int iterations, std::string output_dir, int chunk_size, int rank, int size, int dims, int seed);
 
     void run(std::vector<Point> &all_points, int N);
 };
