@@ -30,9 +30,8 @@ void assign_point_to_cluster_handles(void *buffers[], void *cl_arg) {
     cpu_kernel_calls++;
     cpu_assign_calls++;
 
-    // Verifica convergência (Buffer 3)
     int *converged = (int *)STARPU_VARIABLE_GET_PTR(buffers[3]);
-    if (*converged == 1) return; // EARLY EXIT: Ghost Task
+    if (*converged == 1) return; 
 
     int K, dimensions, chunk_size;
     starpu_codelet_unpack_args(cl_arg, &K, &dimensions, &chunk_size);
@@ -64,9 +63,8 @@ void calculate_partial_sums(void *buffers[], void *cl_arg) {
     cpu_kernel_calls++;
     cpu_calculate_calls++;
 
-    // Verifica convergência (Buffer 4)
     int *converged = (int *)STARPU_VARIABLE_GET_PTR(buffers[4]);
-    if (*converged == 1) return; // EARLY EXIT: Ghost Task
+    if (*converged == 1) return; 
 
     int K, dimensions, chunk_size;
     starpu_codelet_unpack_args(cl_arg, &K, &dimensions, &chunk_size);
@@ -91,9 +89,8 @@ void clean_buffers_cpu(void *buffers[], void *cl_arg) {
     cpu_kernel_calls++;
     cpu_clean_calls++;
 
-    // Verifica convergência (Buffer 2)
     int *converged = (int *)STARPU_VARIABLE_GET_PTR(buffers[2]);
-    if (*converged == 1) return; // EARLY EXIT: Ghost Task
+    if (*converged == 1) return; 
 
     int K, dimensions, dummy_chunk;
     starpu_codelet_unpack_args(cl_arg, &K, &dimensions, &dummy_chunk);
@@ -109,9 +106,8 @@ void update_centroids_cpu(void *buffers[], void *cl_arg) {
     cpu_kernel_calls++;
     cpu_update_calls++;
 
-    // Verifica convergência (Buffer 3)
     int *converged = (int *)STARPU_VARIABLE_GET_PTR(buffers[3]);
-    if (*converged == 1) return; // EARLY EXIT: Ghost Task
+    if (*converged == 1) return; 
 
     int K, dimensions, dummy_chunk;
     starpu_codelet_unpack_args(cl_arg, &K, &dimensions, &dummy_chunk);
@@ -130,7 +126,7 @@ void update_centroids_cpu(void *buffers[], void *cl_arg) {
                 double new_val = partial_sums[c * dimensions + d] / partial_counts[c];
                 
                 double diff = new_val - old_val;
-                dist += diff * diff; // Distância Euclidiana ao quadrado
+                dist += diff * diff; 
                 
                 centroids[c * dimensions + d] = new_val;
             }
@@ -140,7 +136,6 @@ void update_centroids_cpu(void *buffers[], void *cl_arg) {
         }
     }
 
-    // Se nenhum centroide se moveu além do threshold, sinaliza a convergência global!
     if (max_movement < 1e-6) {
         *converged = 1; 
     }
@@ -150,9 +145,8 @@ void accumulate_nodes_cpu(void *buffers[], void *cl_arg) {
     cpu_kernel_calls++;
     cpu_accumulate_calls++;
 
-    // Verifica convergência (Buffer 4)
     int *converged = (int *)STARPU_VARIABLE_GET_PTR(buffers[4]);
-    if (*converged == 1) return; // EARLY EXIT: Ghost Task
+    if (*converged == 1) return; 
 
     int K, dimensions;
     starpu_codelet_unpack_args(cl_arg, &K, &dimensions);
@@ -167,41 +161,5 @@ void accumulate_nodes_cpu(void *buffers[], void *cl_arg) {
     }
     for(int i = 0; i < K; i++) {
         counts_dest[i] += counts_src[i];
-    }
-}
-
-/* =================a========================================================= */
-/* FUNÇÕES DE REDUÇÃO (CPU)                                                   */
-/* ========================================================================== */
-
-void redux_double_init_cpu(void *buffers[], void *cl_arg) {
-    double *arr = (double *)STARPU_VECTOR_GET_PTR(buffers[0]);
-    int n = STARPU_VECTOR_GET_NX(buffers[0]);
-    std::memset(arr, 0, n * sizeof(double));
-}
-
-void redux_double_reduce_cpu(void *buffers[], void *cl_arg) {
-    double *dst = (double *)STARPU_VECTOR_GET_PTR(buffers[0]);
-    double *src = (double *)STARPU_VECTOR_GET_PTR(buffers[1]);
-    int n = STARPU_VECTOR_GET_NX(buffers[0]);
-
-    for (int i = 0; i < n; i++) {
-        dst[i] += src[i];
-    }
-}
-
-void redux_int_init_cpu(void *buffers[], void *cl_arg) {
-    int *arr = (int *)STARPU_VECTOR_GET_PTR(buffers[0]);
-    int n = STARPU_VECTOR_GET_NX(buffers[0]);
-    std::memset(arr, 0, n * sizeof(int));
-}
-
-void redux_int_reduce_cpu(void *buffers[], void *cl_arg) {
-    int *dst = (int *)STARPU_VECTOR_GET_PTR(buffers[0]);
-    int *src = (int *)STARPU_VECTOR_GET_PTR(buffers[1]);
-    int n = STARPU_VECTOR_GET_NX(buffers[0]);
-
-    for (int i = 0; i < n; i++) {
-        dst[i] += src[i];
     }
 }

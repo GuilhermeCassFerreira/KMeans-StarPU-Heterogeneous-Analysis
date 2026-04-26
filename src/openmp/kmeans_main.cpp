@@ -10,6 +10,10 @@
 #include "../../include/kmeans_types.h"
 #include "kmeans_omp_mpi.h"
 
+#ifdef USE_GPU
+#include <cuda_runtime.h>
+#endif
+
 using namespace std;
 using namespace chrono;
 
@@ -31,11 +35,12 @@ int main(int argc, char **argv) {
 
     if (argc < 4) {
         if (rank == 0) {
-            cout << "Uso: mpirun -np X ./kmeans_openmp <INPUT> <K> <OUT-DIR> [MODO] [CHUNKS] [GPU_RATIO] [SEED]" << endl;
+            cout << "Uso: mpirun -np X ./kmeans_openmp <INPUT> <K> <OUT-DIR> [MODO] [CHUNKS] [GPU_RATIO] [SEED] [NITERS]" << endl;
             cout << "Modos: 0 (CPU) | 1 (GPU) | 2 (Hibrido)" << endl;
             cout << "Chunks: 0 para automatico, ou valor > 0 para manual" << endl;
             cout << "GPU_RATIO: (Modo 2) % de chunks na GPU (0.0 a 1.0)" << endl;
             cout << "SEED: Semente para geração aleatória (inteiro)" << endl;
+            cout << "NITERS: Número de iterações (inteiro)" << endl;
         }
         MPI_Finalize(); return 1;
     }
@@ -46,10 +51,8 @@ int main(int argc, char **argv) {
     int requested_chunks = (argc >= 6) ? stoi(argv[5]) : 0;
     double gpu_ratio = (argc >= 7) ? stod(argv[6]) : 0.5;
     unsigned int seed = (argc >= 8) ? (unsigned int)stoul(argv[7]) : 42;
-    
-    const int nIters = 1; 
+    int nIters = (argc >= 9) ? stoi(argv[8]) : 1;
 
-    // Inicialização usando os tipos do Header
     assign_fn assign_points = assign_point_to_cluster_cpu;
     calculate_fn calc_sums = calculate_partial_sums_cpu;
     update_fn update_cents = update_centroids_cpu;       
@@ -59,13 +62,13 @@ int main(int argc, char **argv) {
             assign_points = assign_point_to_cluster_gpu;
             calc_sums = calculate_partial_sums_gpu;
             update_cents = update_centroids_gpu;       
-            if (rank == 0) cout << ">> MODO 1: FULL GPU" << endl;
+            if (rank == 0) cout << ">> MODO 1: FULL GPU (Com Pinned Memory)" << endl;
         } 
         else if (mode == 2) {
             update_cents = update_centroids_gpu;        
             if (rank == 0) cout << ">> MODO 2: HIBRIDO - BALANCEAMENTO MANUAL (" 
                                 << (gpu_ratio * 100) << "% GPU | " 
-                                << ((1.0 - gpu_ratio) * 100) << "% CPU)" << endl;
+                                << ((1.0 - gpu_ratio) * 100) << "% CPU) (Com Pinned Memory)" << endl;
         }
         else { 
             if (rank == 0) cout << ">> MODO 0: FULL CPU (OpenMP)" << endl;
@@ -87,6 +90,7 @@ int main(int argc, char **argv) {
         global_points = new double[N * dimensions];
         global_labels = new int[N];
         global_centroids = new double[K * dimensions];
+        
         for (int i = 0; i < N; i++) {
             for (int d = 0; d < dimensions; d++) global_points[i * dimensions + d] = all_points[i].getVal(d);
             global_labels[i] = 0;
@@ -102,8 +106,15 @@ int main(int argc, char **argv) {
     MPI_Bcast(&N, 1, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Bcast(&dimensions, 1, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Bcast(&K, 1, MPI_INT, 0, MPI_COMM_WORLD);
+    
     if (rank != 0) global_centroids = new double[K * dimensions];
     MPI_Bcast(global_centroids, K * dimensions, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+
+    #ifdef USE_GPU
+    if (mode == 1 || mode == 2) {
+        cudaHostRegister(global_centroids, K * dimensions * sizeof(double), cudaHostRegisterDefault);
+    }
+    #endif
 
     int base = N / size, rem = N % size;
     int *sendCountsPts = new int[size], *displsPts = new int[size];
@@ -118,6 +129,14 @@ int main(int argc, char **argv) {
     int local_n = sendCountsLbls[rank];
     double *local_points = new double[local_n * dimensions];
     int *local_labels = new int[local_n];
+    
+    #ifdef USE_GPU
+    if (mode == 1 || mode == 2) {
+        cudaHostRegister(local_points, local_n * dimensions * sizeof(double), cudaHostRegisterDefault);
+        cudaHostRegister(local_labels, local_n * sizeof(int), cudaHostRegisterDefault);
+    }
+    #endif
+
     MPI_Scatterv(global_points, sendCountsPts, displsPts, MPI_DOUBLE, local_points, sendCountsPts[rank], MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
     int num_chunks = (requested_chunks > 0) ? requested_chunks : max(1, (int)omp_get_max_threads());
@@ -135,6 +154,13 @@ int main(int argc, char **argv) {
 
     double *local_sums = new double[K * dimensions], *global_sums = new double[K * dimensions];
     int *local_counts = new int[K], *global_counts = new int[K];
+
+    #ifdef USE_GPU
+    if (mode == 1 || mode == 2) {
+        cudaHostRegister(local_sums, K * dimensions * sizeof(double), cudaHostRegisterDefault);
+        cudaHostRegister(local_counts, K * sizeof(int), cudaHostRegisterDefault);
+    }
+    #endif
 
     MPI_Barrier(MPI_COMM_WORLD);
     auto start_t = high_resolution_clock::now();
@@ -201,6 +227,16 @@ int main(int argc, char **argv) {
         printf("========================================\n");
 #endif
     }
+
+    #ifdef USE_GPU
+    if (mode == 1 || mode == 2) {
+        cudaHostUnregister(local_sums);
+        cudaHostUnregister(local_counts);
+        cudaHostUnregister(local_points);
+        cudaHostUnregister(local_labels);
+        cudaHostUnregister(global_centroids);
+    }
+    #endif
 
     delete[] local_points; delete[] local_labels; delete[] local_sums; delete[] local_counts;
     delete[] global_sums; delete[] global_counts; delete[] global_centroids;

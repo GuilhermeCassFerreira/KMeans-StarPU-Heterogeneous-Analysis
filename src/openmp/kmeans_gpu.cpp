@@ -10,8 +10,6 @@ int assign_point_to_cluster_gpu(double *points, double *centroids, int *labels, 
     int changes = 0;
     int on_device = 0;
     
-    // Usamos 'present' para points e labels porque eles ficam na GPU o tempo todo
-    // 'to' para centroids porque eles mudam a cada iteração
     #pragma omp target teams distribute parallel for \
         map(to: centroids[0:K*dimensions]) \
         map(present: points[0:n_points*dimensions], labels[0:n_points]) \

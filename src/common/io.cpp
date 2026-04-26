@@ -3,7 +3,6 @@
 #include <iostream>
 #include <vector>
 #include <string>
-#include <mpi.h>
 
 bool read_points_from_file(const std::string &filename, std::vector<Point> &all_points, int &N, int &dimensions) {
     std::ifstream infile(filename.c_str());
