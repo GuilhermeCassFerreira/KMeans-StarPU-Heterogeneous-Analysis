@@ -56,12 +56,10 @@ void clean_buffers_cuda(void *buffers[], void *cl_arg);
 void update_centroids_cuda(void *buffers[], void *cl_arg);
 void accumulate_nodes_cuda(void *buffers[], void *cl_arg); 
 
-
 #ifdef __cplusplus
 }
 #endif
 #endif
-
 
 /* ========================================================================== */
 /* Codelets StarPU (definidas em kmeans_mpi.cpp)                             */
@@ -126,10 +124,9 @@ private:
 
     void clearClusters();
     int getChunkOwner(int chunk_id);
-    void assignPointsToClusters(int N, starpu_data_handle_t converged_handle);
-    void calculateCentroids(int N, starpu_data_handle_t converged_handle);
-    void reduceCentroidsAcrossNodes(starpu_data_handle_t converged_handle);
     
+    // Função unificada
+    void submitTasks(int N, starpu_data_handle_t converged_handle);
 
 public:
     KMeans(int K, int iterations, std::string output_dir, int chunk_size, int rank, int size, int dims, int seed);

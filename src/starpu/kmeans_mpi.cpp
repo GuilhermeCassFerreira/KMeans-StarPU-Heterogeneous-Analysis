@@ -118,7 +118,9 @@ int KMeans::getChunkOwner(int chunk_id) {
     return chunk_id % world_size;
 }
 
-void KMeans::assignPointsToClusters(int N, starpu_data_handle_t converged_handle) {
+void KMeans::submitTasks(int N, starpu_data_handle_t converged_handle) {
+    int dummy_chunk = 0;
+
     for (int chunk_id = 0; chunk_id < num_chunks; chunk_id++) {
         int this_chunk = starpu_vector_get_nx(points_children[chunk_id]);
         if (this_chunk <= 0) break;
@@ -132,11 +134,7 @@ void KMeans::assignPointsToClusters(int N, starpu_data_handle_t converged_handle
             STARPU_VALUE, &dimensions, sizeof(int),
             STARPU_VALUE, &this_chunk, sizeof(int),
             0);
-    }
-}
-
-void KMeans::calculateCentroids(int N, starpu_data_handle_t converged_handle) {
-    int dummy_chunk = 0;
+        }
 
     for (int n = 0; n < world_size; n++) {
         starpu_mpi_task_insert(MPI_COMM_WORLD, &cl_clean_buffers,
@@ -167,36 +165,33 @@ void KMeans::calculateCentroids(int N, starpu_data_handle_t converged_handle) {
             0);
     }
 
-    reduceCentroidsAcrossNodes(converged_handle);
+    if (world_size > 1) {
+            for (int n = 1; n < world_size; n++) {
+                starpu_mpi_task_insert(MPI_COMM_WORLD, &cl_accumulate_nodes,
+                    STARPU_RW, partial_sums_handle[0],   
+                    STARPU_RW, partial_counts_handle[0], 
+                    STARPU_R, partial_sums_handle[n],    
+                    STARPU_R, partial_counts_handle[n],  
+                    STARPU_R, converged_handle, 
+                    STARPU_VALUE, &K, sizeof(int),
+                    STARPU_VALUE, &dimensions, sizeof(int),
+                    STARPU_EXECUTE_ON_NODE, 0,    
+                    0);
+            }
+        }
 
-    starpu_mpi_task_insert(MPI_COMM_WORLD, &cl_update_centroids,
-        STARPU_R, partial_sums_handle[0],
-        STARPU_R, partial_counts_handle[0],
-        STARPU_RW, centroids_handle, 
-        STARPU_RW, converged_handle, 
-        STARPU_VALUE, &K, sizeof(int),
-        STARPU_VALUE, &dimensions, sizeof(int),
-        STARPU_VALUE, &dummy_chunk, sizeof(int),
-        STARPU_EXECUTE_ON_NODE, 0,
-        0);
-}
-
-void KMeans::reduceCentroidsAcrossNodes(starpu_data_handle_t converged_handle) {
-    if (world_size <= 1) return;
-
-    for (int n = 1; n < world_size; n++) {
-        starpu_mpi_task_insert(MPI_COMM_WORLD, &cl_accumulate_nodes,
-            STARPU_RW, partial_sums_handle[0],   
-            STARPU_RW, partial_counts_handle[0], 
-            STARPU_R, partial_sums_handle[n],    
-            STARPU_R, partial_counts_handle[n],  
-            STARPU_R, converged_handle, 
+        // A ATUALIZAÇÃO DOS CENTRÓIDES RODA SEMPRE, seja com 1 ou 100 nodos!
+        starpu_mpi_task_insert(MPI_COMM_WORLD, &cl_update_centroids,
+            STARPU_R, partial_sums_handle[0],
+            STARPU_R, partial_counts_handle[0],
+            STARPU_RW, centroids_handle, 
+            STARPU_RW, converged_handle, 
             STARPU_VALUE, &K, sizeof(int),
             STARPU_VALUE, &dimensions, sizeof(int),
-            STARPU_EXECUTE_ON_NODE, 0,    
+            STARPU_VALUE, &dummy_chunk, sizeof(int),
+            STARPU_EXECUTE_ON_NODE, 0,
             0);
     }
-}
 
 void KMeans::run(vector<Point> &all_points, int N) {
     total_points = N;
@@ -311,8 +306,7 @@ void KMeans::run(vector<Point> &all_points, int N) {
     starpu_mpi_data_register(converged_handle, KMeansTags::CONVERGED_TAG, 0);
 
     for (int it = 0; it < iters; ++it) {
-        assignPointsToClusters(N, converged_handle);
-        calculateCentroids(N, converged_handle);
+        submitTasks(N, converged_handle);
     }
 
     starpu_task_wait_for_all();
