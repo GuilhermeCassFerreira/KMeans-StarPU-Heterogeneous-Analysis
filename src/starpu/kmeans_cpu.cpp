@@ -12,16 +12,26 @@
 int cpu_kernel_calls = 0;
 int cpu_assign_calls = 0;
 int cpu_calculate_calls = 0;
+int cpu_clean_calls = 0;
+int cpu_update_calls = 0;
+int cpu_accumulate_calls = 0;
+
 int opencl_assign_calls = 0;
 int opencl_calculate_calls = 0;
+int opencl_clean_calls = 0;
+int opencl_update_calls = 0;
+int opencl_accumulate_calls = 0;
 
 /* ========================================================================== */
-/* TASKS DE NEGÓCIO (CPU)                                                     */
+/* TASKS DE NEGÓCIO (CPU) - Com Ghost Tasks (Early Exit)                      */
 /* ========================================================================== */
 
 void assign_point_to_cluster_handles(void *buffers[], void *cl_arg) {
     cpu_kernel_calls++;
     cpu_assign_calls++;
+
+    int *converged = (int *)STARPU_VARIABLE_GET_PTR(buffers[3]);
+    if (*converged == 1) return; 
 
     int K, dimensions, chunk_size;
     starpu_codelet_unpack_args(cl_arg, &K, &dimensions, &chunk_size);
@@ -50,7 +60,11 @@ void assign_point_to_cluster_handles(void *buffers[], void *cl_arg) {
 }
 
 void calculate_partial_sums(void *buffers[], void *cl_arg) {
+    cpu_kernel_calls++;
     cpu_calculate_calls++;
+
+    int *converged = (int *)STARPU_VARIABLE_GET_PTR(buffers[4]);
+    if (*converged == 1) return; 
 
     int K, dimensions, chunk_size;
     starpu_codelet_unpack_args(cl_arg, &K, &dimensions, &chunk_size);
@@ -72,6 +86,12 @@ void calculate_partial_sums(void *buffers[], void *cl_arg) {
 }
 
 void clean_buffers_cpu(void *buffers[], void *cl_arg) {
+    cpu_kernel_calls++;
+    cpu_clean_calls++;
+
+    int *converged = (int *)STARPU_VARIABLE_GET_PTR(buffers[2]);
+    if (*converged == 1) return; 
+
     int K, dimensions, dummy_chunk;
     starpu_codelet_unpack_args(cl_arg, &K, &dimensions, &dummy_chunk);
 
@@ -83,6 +103,12 @@ void clean_buffers_cpu(void *buffers[], void *cl_arg) {
 }
 
 void update_centroids_cpu(void *buffers[], void *cl_arg) {
+    cpu_kernel_calls++;
+    cpu_update_calls++;
+
+    int *converged = (int *)STARPU_VARIABLE_GET_PTR(buffers[3]);
+    if (*converged == 1) return; 
+
     int K, dimensions, dummy_chunk;
     starpu_codelet_unpack_args(cl_arg, &K, &dimensions, &dummy_chunk);
 
@@ -90,53 +116,38 @@ void update_centroids_cpu(void *buffers[], void *cl_arg) {
     int *partial_counts = (int *)STARPU_VECTOR_GET_PTR(buffers[1]);
     double *centroids = (double *)STARPU_VECTOR_GET_PTR(buffers[2]);
 
+    double max_movement = 0.0;
+
     for (int c = 0; c < K; ++c) {
         if (partial_counts[c] > 0) {
+            double dist = 0.0;
             for (int d = 0; d < dimensions; ++d) {
-                centroids[c * dimensions + d] = partial_sums[c * dimensions + d] / partial_counts[c];
+                double old_val = centroids[c * dimensions + d];
+                double new_val = partial_sums[c * dimensions + d] / partial_counts[c];
+                
+                double diff = new_val - old_val;
+                dist += diff * diff; 
+                
+                centroids[c * dimensions + d] = new_val;
+            }
+            if (dist > max_movement) {
+                max_movement = dist;
             }
         }
     }
-}
 
-/* ========================================================================== */
-/* FUNÇÕES DE REDUÇÃO (CPU)                                                   */
-/* ========================================================================== */
-
-void redux_double_init_cpu(void *buffers[], void *cl_arg) {
-    double *arr = (double *)STARPU_VECTOR_GET_PTR(buffers[0]);
-    int n = STARPU_VECTOR_GET_NX(buffers[0]);
-    std::memset(arr, 0, n * sizeof(double));
-}
-
-void redux_double_reduce_cpu(void *buffers[], void *cl_arg) {
-    double *dst = (double *)STARPU_VECTOR_GET_PTR(buffers[0]);
-    double *src = (double *)STARPU_VECTOR_GET_PTR(buffers[1]);
-    int n = STARPU_VECTOR_GET_NX(buffers[0]);
-
-    for (int i = 0; i < n; i++) {
-        dst[i] += src[i];
+    if (max_movement < 1e-6) {
+        *converged = 1; 
     }
 }
 
-void redux_int_init_cpu(void *buffers[], void *cl_arg) {
-    int *arr = (int *)STARPU_VECTOR_GET_PTR(buffers[0]);
-    int n = STARPU_VECTOR_GET_NX(buffers[0]);
-    std::memset(arr, 0, n * sizeof(int));
-}
-
-void redux_int_reduce_cpu(void *buffers[], void *cl_arg) {
-    int *dst = (int *)STARPU_VECTOR_GET_PTR(buffers[0]);
-    int *src = (int *)STARPU_VECTOR_GET_PTR(buffers[1]);
-    int n = STARPU_VECTOR_GET_NX(buffers[0]);
-
-    for (int i = 0; i < n; i++) {
-        dst[i] += src[i];
-    }
-}
-
-/* Função para acumular os buffers de outros nodos pela rede */
 void accumulate_nodes_cpu(void *buffers[], void *cl_arg) {
+    cpu_kernel_calls++;
+    cpu_accumulate_calls++;
+
+    int *converged = (int *)STARPU_VARIABLE_GET_PTR(buffers[4]);
+    if (*converged == 1) return; 
+
     int K, dimensions;
     starpu_codelet_unpack_args(cl_arg, &K, &dimensions);
 
