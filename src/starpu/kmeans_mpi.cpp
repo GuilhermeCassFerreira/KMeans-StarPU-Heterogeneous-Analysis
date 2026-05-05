@@ -261,9 +261,14 @@ for (int i = 0; i < num_chunks; ++i) {
         points_children[i] = starpu_data_get_child(points_handle, i);
         outputs_children[i] = starpu_data_get_child(output_handle, i);
 
+<<<<<<< Updated upstream
         // CORREÇÃO: O terceiro parâmetro deve ser 0, pois o dado nasce no Nodo 0
         starpu_mpi_data_register(points_children[i], 100000 + i, 0); 
         starpu_mpi_data_register(outputs_children[i], 1000000 + i, 0);
+=======
+        starpu_mpi_data_register(points_children[i], KMeansTags::CHUNK_POINTS_BASE + i, chunk_owners[i]);
+        starpu_mpi_data_register(outputs_children[i], KMeansTags::CHUNK_LABELS_BASE + i, chunk_owners[i]);
+>>>>>>> Stashed changes
     }
 
     if (mpi_rank == 0) {
