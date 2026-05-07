@@ -11,9 +11,9 @@ struct KMeansOptions {
     int total_points;
     std::string input_file;
     std::string output_dir;
-    bool use_heterogeneous_chunks;
     int mpi_rank;
     int world_size;
+    int seed;
 };
 
 #endif // OPTIONS_H

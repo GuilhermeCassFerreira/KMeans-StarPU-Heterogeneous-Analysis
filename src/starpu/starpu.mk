@@ -1,23 +1,28 @@
-# Sub-Makefile com flags específicas do StarPU e NVCC
+# =============================================================================
+# Sub-Makefile com flags específicas do StarPU e NVCC (HPC SDK Version)
+# =============================================================================
 
 NVCC = nvcc
 CXX = mpic++
 
-# 1. Flags e caminhos BASE (Apenas CPU e StarPU)
+# Flags BASE
 CXXFLAGS = -O3 -std=c++11 -fPIC
-NVCCFLAGS = -ccbin /usr/bin/g++-11 -std=c++11 -Xcompiler "-fPIC" -O3 -DSTARPU_USE_CUDA
+NVCCFLAGS = -ccbin mpic++ -std=c++11 -Xcompiler "-fPIC" -O3 -DSTARPU_USE_CUDA \
+            -gencode arch=compute_86,code=sm_86 -gencode arch=compute_86,code=compute_86
 
 STARPU_PATH = /home/bridge/starpu_install
-CUDA_PATH = /usr/local/cuda
+CUDA_PATH = /opt/nvidia/hpc_sdk/Linux_x86_64/26.3/cuda/13.1
+MATH_PATH = /opt/nvidia/hpc_sdk/Linux_x86_64/26.3/math_libs/13.1/targets/x86_64-linux
 
 INCLUDES = -I$(STARPU_PATH)/include/starpu/1.4
-LDFLAGS = -L$(STARPU_PATH)/lib
-LDLIBS = -lstarpumpi-1.4 -lstarpu-1.4 -lpthread -lm
+LDLIBS   = -lstarpumpi-1.4 -lstarpu-1.4 -lpthread -lm
 
-# 2. Injeção Condicional (Ativada apenas se o Makefile principal disser USE_CUDA=1)
+# 🛠️ AQUI ESTÁ O TRUQUE: nvcc precisa de -Xlinker para o rpath
+LDFLAGS  = -L$(STARPU_PATH)/lib -Xlinker -rpath -Xlinker $(STARPU_PATH)/lib
+
 ifeq ($(USE_CUDA), 1)
     CXXFLAGS += -DSTARPU_USE_CUDA
-    INCLUDES += -I$(CUDA_PATH)/include
-    LDFLAGS += -L$(CUDA_PATH)/lib64
-    LDLIBS += -lcuda -lcudart
+    INCLUDES += -I$(CUDA_PATH)/include -I$(MATH_PATH)/include
+    LDFLAGS  += -L$(CUDA_PATH)/targets/x86_64-linux/lib -L$(MATH_PATH)/lib
+    LDLIBS   += -lcuda -lcudart
 endif

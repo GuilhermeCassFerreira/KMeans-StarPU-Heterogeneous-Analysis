@@ -52,26 +52,14 @@ extern "C" {
 
 void assign_point_to_cluster_cuda(void *buffers[], void *cl_arg);
 void calculate_partial_sums_cuda(void *buffers[], void *cl_arg);
-
-// Redux CUDA (opcionais, mantidos por compatibilidade)
-void redux_double_init_cuda(void *buffers[], void *cl_arg);
-void redux_double_reduce_cuda(void *buffers[], void *cl_arg);
-void redux_int_init_cuda(void *buffers[], void *cl_arg);
-void redux_int_reduce_cuda(void *buffers[], void *cl_arg);
+void clean_buffers_cuda(void *buffers[], void *cl_arg);    
+void update_centroids_cuda(void *buffers[], void *cl_arg);
+void accumulate_nodes_cuda(void *buffers[], void *cl_arg); 
 
 #ifdef __cplusplus
 }
 #endif
 #endif
-
-/* ========================================================================== */
-/* Declarações das funções Redux CPU (implementadas em kmeans_cpu.cpp)        */
-/* ========================================================================== */
-
-void redux_double_init_cpu(void *buffers[], void *cl_arg);
-void redux_double_reduce_cpu(void *buffers[], void *cl_arg);
-void redux_int_init_cpu(void *buffers[], void *cl_arg);
-void redux_int_reduce_cpu(void *buffers[], void *cl_arg);
 
 /* ========================================================================== */
 /* Codelets StarPU (definidas em kmeans_mpi.cpp)                             */
@@ -110,8 +98,8 @@ private:
     int K, iters, dimensions, total_points;
     std::vector<Cluster> clusters;
     std::string output_dir;
-    int chunk_size;
-    bool use_heterogeneous_chunks;
+    int chunks;
+    int seed;
     int mpi_rank, world_size;
 
     std::vector<double> points_data;
@@ -136,14 +124,12 @@ private:
 
     void clearClusters();
     int getChunkOwner(int chunk_id);
-    void assignPointsToClusters(int N);
-    void calculateCentroids(int N);
-    void reduceCentroidsAcrossNodes();
     
+    // Função unificada
+    void submitTasks(int N, starpu_data_handle_t converged_handle);
 
 public:
-    KMeans(int K, int iterations, std::string output_dir, int chunk_size,
-           bool use_heterogeneous_chunks, int rank, int size, int dims);
+    KMeans(int K, int iterations, std::string output_dir, int chunk_size, int rank, int size, int dims, int seed);
 
     void run(std::vector<Point> &all_points, int N);
 };
