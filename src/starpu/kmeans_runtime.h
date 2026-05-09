@@ -3,8 +3,11 @@
 
 #include <starpu.h>
 #include <starpu_mpi.h>
+#include <atomic>
+#include <chrono>
 #include "../../include/kmeans_types.h"
 #include "../../include/options.h"
+#include "metrics_simple.h"
 
 /* ========================================================================== */
 /* Contadores globais de métricas                                             */
@@ -89,6 +92,15 @@ void print_kernel_usage_metrics(int rank);
 void print_starpu_worker_usage(int rank);
 void print_node_usage_metrics(int rank, int world_size);
 
+class KMeans;   // forward declaration (definição abaixo no mesmo header)
+
+void compute_and_print_starpu_metrics(
+        const KMeans& kmeans,
+        const std::vector<Point>& all_points,
+        int N, int iters, int mpi_ranks,
+        std::chrono::high_resolution_clock::time_point t_start,
+        std::chrono::high_resolution_clock::time_point t_end);
+
 /* ========================================================================== */
 /* Classe KMeans (implementada em kmeans_mpi.cpp)                            */
 /* ========================================================================== */
@@ -126,12 +138,25 @@ private:
     int getChunkOwner(int chunk_id);
     
     // Função unificada
-    void submitTasks(int N, starpu_data_handle_t converged_handle);
+    void submitTasks(int N, starpu_data_handle_t converged_handle, int *converged_flag_ptr);
 
 public:
     KMeans(int K, int iterations, std::string output_dir, int chunk_size, int rank, int size, int dims, int seed);
 
     void run(std::vector<Point> &all_points, int N);
+
+    // Getter para o main calcular SSE após a execução
+    const std::vector<double>& getCentroids() const { return centroids_data; }
+    int getDimensions() const { return dimensions; }
+    int getK() const { return K; }
 };
+
+/* ========================================================================== */
+/* Tracking de convergência (definidos em kmeans_mpi.cpp)                     */
+/* ========================================================================== */
+extern std::atomic<int>  g_iter_converged;        // -1 se não convergiu
+extern std::atomic<bool> g_converge_captured;
+extern std::chrono::high_resolution_clock::time_point g_t_converge;
+extern std::chrono::high_resolution_clock::time_point g_t_start;
 
 #endif // KMEANS_RUNTIME_H

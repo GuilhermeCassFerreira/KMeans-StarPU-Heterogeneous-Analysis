@@ -91,9 +91,17 @@ void assign_point_to_cluster_cuda(void *buffers[], void *cl_arg) {
 
     cudaStream_t stream = starpu_cuda_get_local_stream();
 
-    // Assume convergido; o kernel reseta para 0 se qualquer label mudar
-    int one = 1;
-    CUDA_CHECK(cudaMemcpyAsync(converged, &one, sizeof(int),
+    // Assume convergido; o kernel reseta para 0 se qualquer label mudar.
+    // IMPORTANTE: cudaMemcpyAsync com source na STACK é UB porque o codelet
+    // retorna imediatamente (STARPU_CUDA_ASYNC) e a memcpy real acontece
+    // depois — a stack address já foi destruída. Usar cudaMemsetAsync
+    // que não precisa de buffer host. Para escrever int=1 via memset
+    // precisamos de 0x01010101 (não é exatamente 1, mas o kernel só testa
+    // por *converged != 0, então qualquer não-zero serve como "assume
+    // convergido"). Para ser semanticamente correto e pôr o valor 1 exato,
+    // usamos um buffer host estático (lifetime do programa).
+    static const int kOne = 1;
+    CUDA_CHECK(cudaMemcpyAsync(converged, &kOne, sizeof(int),
                                cudaMemcpyHostToDevice, stream));
 
     int threads = 256;

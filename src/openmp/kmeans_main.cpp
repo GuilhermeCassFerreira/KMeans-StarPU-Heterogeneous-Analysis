@@ -10,6 +10,7 @@
 #include <cstring>
 #include <algorithm>
 #include "../../include/kmeans_types.h"
+#include "../common/metrics_simple.h"
 #include "kmeans_omp_mpi.h"
 
 #ifdef USE_GPU
@@ -93,13 +94,13 @@ int main(int argc, char **argv) {
         global_points = new double[N * dimensions];
         global_labels = new int[N];
         global_centroids = new double[K * dimensions];
-        
+
         for (int i = 0; i < N; i++) {
             for (int d = 0; d < dimensions; d++) global_points[i * dimensions + d] = all_points[i].getVal(d);
             global_labels[i] = 0;
         }
         srand(seed);
-        if (rank == 0) cout << ">> Rank 0 inicializando centroides com SEED: " << seed << endl;
+        cout << ">> Rank 0 inicializando centroides com SEED: " << seed << endl;
 
         // Inicialização sem repetição — igual SEQ e StarPU
         vector<int> chosen_indices;
@@ -118,7 +119,7 @@ int main(int argc, char **argv) {
     MPI_Bcast(&N, 1, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Bcast(&dimensions, 1, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Bcast(&K, 1, MPI_INT, 0, MPI_COMM_WORLD);
-    
+
     if (rank != 0) global_centroids = new double[K * dimensions];
     MPI_Bcast(global_centroids, K * dimensions, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
@@ -141,7 +142,7 @@ int main(int argc, char **argv) {
     int local_n = sendCountsLbls[rank];
     double *local_points = new double[local_n * dimensions];
     int *local_labels = new int[local_n];
-    
+
     #ifdef USE_GPU
     if (mode == 1 || mode == 2) {
         cudaHostRegister(local_points, local_n * dimensions * sizeof(double), cudaHostRegisterDefault);
@@ -151,7 +152,7 @@ int main(int argc, char **argv) {
 
     MPI_Scatterv(global_points, sendCountsPts, displsPts, MPI_DOUBLE, local_points, sendCountsPts[rank], MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
-    int num_chunks = (requested_chunks > 0) ? requested_chunks : max(1, (int)omp_get_max_threads());
+    int num_chunks = requested_chunks;
     int chunk_size = (local_n + num_chunks - 1) / num_chunks;
     int gpu_chunks_target = (int)(num_chunks * gpu_ratio);
 
@@ -175,7 +176,10 @@ int main(int argc, char **argv) {
     #endif
 
     MPI_Barrier(MPI_COMM_WORLD);
-    auto start_t = high_resolution_clock::now();
+    auto t_start = high_resolution_clock::now();
+    auto t_converge = t_start;
+    int iter_converged = -1;
+
     #ifdef USE_GPU
         #pragma omp target enter data map(to: local_points[0:local_n*dimensions]) \
                                    map(to: local_labels[0:local_n])
@@ -211,14 +215,21 @@ int main(int argc, char **argv) {
         int global_changes = 0;
         MPI_Allreduce(&local_changes, &global_changes, 1, MPI_INT, MPI_SUM, MPI_COMM_WORLD);
         if (global_changes == 0) {
+            iter_converged = iter + 1;
+            t_converge = high_resolution_clock::now();
             if (rank == 0) cout << ">> Convergiu na iteracao " << iter + 1 << endl;
             break;
         }
-        cout << ">> Iteracao " << iter + 1 << " teve " << global_changes << " mudancas." << endl;
+        if (rank == 0) cout << ">> Iteracao " << iter + 1 << " teve " << global_changes << " mudancas." << endl;
 
         MPI_Allreduce(local_sums, global_sums, K * dimensions, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
         MPI_Allreduce(local_counts, global_counts, K, MPI_INT, MPI_SUM, MPI_COMM_WORLD);
         update_cents(global_sums, global_counts, global_centroids, K, dimensions);
+
+        if (iter == nIters - 1) {
+            iter_converged = nIters;       // limite atingido sem convergir
+            t_converge = high_resolution_clock::now();
+        }
     }
 
     #ifdef USE_GPU
@@ -226,9 +237,20 @@ int main(int argc, char **argv) {
     #endif
 
     MPI_Barrier(MPI_COMM_WORLD);
+    auto t_end = high_resolution_clock::now();
+
+    // ----- Coleta dos labels finais no rank 0 e gravação dos arquivos -----
+    // Mesmo formato de saída que SEQ e StarPU (K-points.txt, K-clusters.txt)
+    MPI_Gatherv(local_labels, local_n, MPI_INT,
+                global_labels, sendCountsLbls, displsLbls, MPI_INT,
+                0, MPI_COMM_WORLD);
+
     if (rank == 0) {
-        auto dur = duration_cast<milliseconds>(high_resolution_clock::now() - start_t);
-        cout << "\nExecution time: " << dur.count() << " ms" << endl;
+        // Métricas padronizadas (SSE + tempos + convergência)
+        compute_and_print_omp_metrics(global_points, global_labels, global_centroids,
+                                      N, K, dimensions,
+                                      iter_converged, nIters, size,
+                                      t_start, t_converge, t_end);
 
 #ifdef USE_GPU
         printf("\n========================================\n");
@@ -238,15 +260,7 @@ int main(int argc, char **argv) {
         printf("Chamadas na GPU (Update): %d\n", cuda_update_calls);
         printf("========================================\n");
 #endif
-    }
 
-    // ----- Coleta dos labels finais no rank 0 e gravação dos arquivos -----
-    // Mesmo formato de saída que SEQ e StarPU (K-points.txt, K-clusters.txt)
-    MPI_Gatherv(local_labels, local_n, MPI_INT,
-                global_labels, sendCountsLbls, displsLbls, MPI_INT,
-                0, MPI_COMM_WORLD);
-
-    if (rank == 0) {
         string cmd = "mkdir -p " + output_dir;
         if (system(cmd.c_str()) != 0) {
             cerr << "[AVISO] Falha ao criar diretório: " << output_dir << endl;

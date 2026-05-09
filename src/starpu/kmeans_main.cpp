@@ -75,14 +75,16 @@ int main(int argc, char **argv) {
     // espelhando o padrão da versão OMP (MPI_Barrier + timer)
     MPI_Barrier(MPI_COMM_WORLD);
     auto start = high_resolution_clock::now();
+    g_t_start = start;   // exposto pra callback poder calcular t_useful
 
     kmeans.run(all_points, N);
 
     MPI_Barrier(MPI_COMM_WORLD);
     auto end = high_resolution_clock::now();
-    auto duration = duration_cast<milliseconds>(end - start);
 
-    if (rank == 0) cout << "\nExecution time: " << duration.count() << " ms" << endl;
+    if (rank == 0) {
+        compute_and_print_starpu_metrics(kmeans, all_points, N, iters, size, start, end);
+    }
 
     print_starpu_worker_usage(rank);
     print_kernel_usage_metrics(rank);

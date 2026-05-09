@@ -20,22 +20,23 @@ GPU ?= 0
 # Flags de Performance:
 # -fast: Otimização máxima (vetorização, inlining, etc)
 # -Minfo=mp: Relatório de paralelismo (importante para ver o offload)
-CXXFLAGS = -fast -DNDEBUG -Wall -I../../include
-LDFLAGS  = 
+CXXFLAGS = -fast -DNDEBUG -Wall -I../../include -I../common
+LDFLAGS  =
 
 # Objetos do projeto
 OBJS = kmeans_main.o kmeans_cpu.o
 IO_OBJ = ../../build/io.o
+METRICS_OBJ = ../common/metrics_simple.o
 
 # Configuração para compilação com suporte a GPU (OpenMP Offload)
 ifeq ($(GPU), 1)
     $(info >>> COMPILANDO MODO MULTI-GPU (NVC++ / cc86) <<<)
     # cc86 é a arquitetura da RTX 2050/3060/4000
     CXXFLAGS += -DUSE_GPU -mp=gpu -gpu=cc86 -Minfo=mp
-    
+
     # ATENÇÃO: Adicionado -L e -lcudart para encontrar o cudaHostRegister
     LDFLAGS  += -mp=gpu -gpu=cc86 -L$(CUDA_HOME)/lib64 -lcudart
-    
+
     OBJS     += kmeans_gpu.o
 else
     $(info >>> COMPILANDO MODO CPU (OpenMP / AVX2) <<<)
@@ -46,14 +47,20 @@ endif
 # Alvo principal
 all: kmeans_openmp
 
-# Regra de compilação dos objetos
+# Regra de compilação dos objetos do diretório local
 %.o: %.cpp kmeans_omp_mpi.h
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
+# Regra para o metrics_simple.o em ../common/
+../common/metrics_simple.o: ../common/metrics_simple.cpp ../common/metrics_simple.h
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
 # Linkagem final
-kmeans_openmp: $(OBJS)
-	$(CXX) $(OBJS) $(IO_OBJ) $(LDFLAGS) -o kmeans_openmp
+kmeans_openmp: $(OBJS) $(METRICS_OBJ)
+	$(CXX) $(OBJS) $(IO_OBJ) $(METRICS_OBJ) $(LDFLAGS) -o kmeans_openmp
 
 # Limpeza
 clean:
-	rm -f *.o kmeans_openmp
+	rm -f *.o kmeans_openmp $(METRICS_OBJ)
+
+.PHONY: all clean

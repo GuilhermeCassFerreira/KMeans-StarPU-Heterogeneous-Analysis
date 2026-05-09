@@ -36,11 +36,11 @@ public:
         clusterId = 0;
     }
 
-    int getDimensions() { return dimensions; }
-    int getCluster() { return clusterId; }
-    int getID() { return pointId; }
+    int getDimensions() const { return dimensions; }
+    int getCluster() const { return clusterId; }
+    int getID() const { return pointId; }
     void setCluster(int val) { clusterId = val; }
-    double getVal(int pos) { return values[pos]; }
+    double getVal(int pos) const { return values[pos]; }
     void setValues(const std::vector<double>& vals) { values = vals; }
 };
 
