@@ -96,13 +96,13 @@ struct starpu_codelet cl_accumulate_nodes = {
 /* ========================================================================== */
 /* Implementação da classe KMeans                                             */
 /* ========================================================================== */
-KMeans::KMeans(int K, int iterations, string output_dir, int chunk_size,
+KMeans::KMeans(int K, int iterations, string output_dir, int num_chunks,
                bool use_heterogeneous_chunks, int rank, int size, int dims, bool dynamic_sched, int seed)
-    : K(K), iters(iterations), output_dir(output_dir), chunk_size(chunk_size),
+    : K(K), iters(iterations), output_dir(output_dir), num_chunks(num_chunks),
       use_heterogeneous_chunks(use_heterogeneous_chunks), mpi_rank(rank),
       world_size(size), dimensions(dims), dynamic_sched(dynamic_sched), seed(seed), 
       points_handle(nullptr), output_handle(nullptr),
-      num_chunks(0), partial_sums_ptr(nullptr), partial_counts_ptr(nullptr),
+      partial_sums_ptr(nullptr), partial_counts_ptr(nullptr),
       centroids_handle(nullptr), points_ptr(nullptr), labels_ptr(nullptr),
       total_points(0)
 {
@@ -120,8 +120,8 @@ int KMeans::getChunkOwner(int chunk_id) {
 
 void KMeans::assignPointsToClusters(int N) {
     for (int chunk_id = 0; chunk_id < num_chunks; chunk_id++) {
-        int this_chunk = min(chunk_size, N - chunk_id * chunk_size);
-        if (this_chunk <= 0) break;
+        int this_chunk = starpu_vector_get_nx(points_children[chunk_id]);
+        if (this_chunk <= 0) continue;
 
         if (this->dynamic_sched) {
             starpu_mpi_task_insert(MPI_COMM_WORLD, &cl_assign_point_handles,
@@ -162,8 +162,8 @@ void KMeans::calculateCentroids(int N) {
     
     for (int chunk_id = 0; chunk_id < num_chunks; ++chunk_id) {
         int owners = chunk_owners[chunk_id];
-        int this_chunk = min(chunk_size, N - chunk_id * chunk_size);
-        if (this_chunk <= 0) break;
+        int this_chunk = starpu_vector_get_nx(points_children[chunk_id]);
+        if (this_chunk <= 0) continue;
 
         if (this->dynamic_sched) {
             // Modo Dinâmico: StarPU decide onde executar
@@ -273,7 +273,7 @@ void KMeans::run(vector<Point> &all_points, int N) {
     }
 
     // Particionar pontos e labels em chunks
-    num_chunks = (N + this->chunk_size - 1) / this->chunk_size;
+    if (num_chunks > N) num_chunks = N;   // nao faz sentido mais chunks que pontos
     struct starpu_data_filter filterChunks = {
         .filter_func = starpu_vector_filter_block,
         .nchildren = (unsigned)num_chunks

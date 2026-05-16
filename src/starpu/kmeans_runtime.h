@@ -113,7 +113,7 @@ private:
     int K, iters, dimensions, total_points;
     std::vector<Cluster> clusters;
     std::string output_dir;
-    int chunk_size;
+    int num_chunks;
     bool use_heterogeneous_chunks;
     
     // Variavel atualizada de asymmetric_load para dynamic_sched
@@ -129,7 +129,6 @@ private:
     starpu_data_handle_t output_handle;
     std::vector<starpu_data_handle_t> points_children;
     std::vector<starpu_data_handle_t> outputs_children;
-    int num_chunks;
 
     double *partial_sums_ptr;
     int *partial_counts_ptr;
@@ -152,7 +151,7 @@ private:
 
 public:
     // Assinatura do construtor atualizada para receber dynamic_sched
-    KMeans(int K, int iterations, std::string output_dir, int chunk_size,
+    KMeans(int K, int iterations, std::string output_dir, int num_chunks,
            bool use_heterogeneous_chunks, int rank, int size, int dims, bool dynamic_sched, int seed);
 
     void run(std::vector<Point> &all_points, int N);

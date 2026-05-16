@@ -32,7 +32,7 @@ int main(int argc, char **argv) {
 
     if (args.size() < 3 || args.size() > 6) {
         if (rank == 0)
-            cout << "Uso: ./kmeans_starpu <INPUT> <K> <OUT-DIR> [CHUNK_SIZE] [DYNAMIC_SCHED] [SEED]" << endl;
+            cout << "Uso: ./kmeans_starpu <INPUT> <K> <OUT-DIR> [NUM_CHUNCK] [DYNAMIC_SCHED] [SEED]" << endl;
         MPI_Finalize();
         return 1;
     }
@@ -40,7 +40,7 @@ int main(int argc, char **argv) {
     string filename = args[0];
     int K = stoi(args[1]);
     string output_dir = args[2];
-    int chunk_size = (args.size() >= 4) ? stoi(args[3]) : -1;
+    int num_chunks = (args.size() >= 4) ? stoi(args[3]) : -1;
     bool dynamic_sched = (args.size() == 5) ? (stoi(args[4]) == 1) : false;
     int seed = (args.size() == 6) ? stoi(args[5]) : 42;
     MPI_Bcast(&seed, 1, MPI_INT, 0, MPI_COMM_WORLD);
@@ -80,46 +80,11 @@ int main(int argc, char **argv) {
         return 1;
     }
 
-    // ---- Auto-configuração do chunk_size ----
-    unsigned local_cpus = starpu_cpu_worker_get_count();
-    unsigned local_gpus = 0;
-    #ifdef STARPU_USE_CUDA
-        local_gpus = starpu_cuda_worker_get_count();
-    #endif
-
-    if (rank == 0) {
-        cout <<  "Total de CPUs locais: " << local_cpus << " | Total de GPUs locais: " << local_gpus << endl;
-    }
-
-    unsigned global_cpus = 0;
-    unsigned global_gpus = 0;
-
-    MPI_Reduce(&local_cpus, &global_cpus, 1, MPI_UNSIGNED, MPI_SUM, 0, MPI_COMM_WORLD);
-    MPI_Reduce(&local_gpus, &global_gpus, 1, MPI_UNSIGNED, MPI_SUM, 0, MPI_COMM_WORLD);
-
-    if (rank == 0 && chunk_size == -1) {
-        unsigned gpu_weight = 15;
-        unsigned virtual_power = global_cpus + (global_gpus * gpu_weight);
-
-        double multiplicity = (global_gpus > 0) ? 8.0 : 4.0;
-        double density_ratio = (double)N / (virtual_power > 0 ? virtual_power : 1);
-
-        if (density_ratio < 1000.0) multiplicity *= 2.0;
-        else if (density_ratio > 100000.0) multiplicity /= 2.0;
-
-        int desired_num_chunks = max(1, (int)((double)virtual_power * multiplicity));
-        chunk_size = max(1, (int)((N + desired_num_chunks - 1) / desired_num_chunks));
-
-        cout << "[AUTO-CONFIG] Arquitetura: " << global_cpus << " CPUs e " << global_gpus << " GPUs globais." << endl;
-        cout << "[AUTO-CONFIG] Poder Virtual: " << virtual_power << " | Multiplicidade: " << multiplicity << "x" << endl;
-        cout << "[AUTO-CONFIG] Chunks: " << desired_num_chunks << " | Chunk Size: " << chunk_size << endl;
-    }
-
-    MPI_Bcast(&chunk_size, 1, MPI_INT, 0, MPI_COMM_WORLD);
+    MPI_Bcast(&num_chunks, 1, MPI_INT, 0, MPI_COMM_WORLD);
 
     bool use_heterogeneous_chunks_val = false;
 
-    KMeans kmeans(K, iters, output_dir, chunk_size, use_heterogeneous_chunks_val, rank, size, dimensions, dynamic_sched, seed);
+    KMeans kmeans(K, iters, output_dir, num_chunks, use_heterogeneous_chunks_val, rank, size, dimensions, dynamic_sched, seed);
     kmeans.run(all_points, N);
 
     auto end = high_resolution_clock::now();
