@@ -118,7 +118,9 @@ private:
     
     // Variavel atualizada de asymmetric_load para dynamic_sched
     bool dynamic_sched; 
-    
+
+    int seed;
+
     int mpi_rank, world_size;
 
     std::vector<double> points_data;
@@ -151,7 +153,7 @@ private:
 public:
     // Assinatura do construtor atualizada para receber dynamic_sched
     KMeans(int K, int iterations, std::string output_dir, int chunk_size,
-           bool use_heterogeneous_chunks, int rank, int size, int dims, bool dynamic_sched);
+           bool use_heterogeneous_chunks, int rank, int size, int dims, bool dynamic_sched, int seed);
 
     void run(std::vector<Point> &all_points, int N);
 };

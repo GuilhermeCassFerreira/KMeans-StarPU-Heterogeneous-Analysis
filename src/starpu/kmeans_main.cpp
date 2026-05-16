@@ -30,9 +30,9 @@ int main(int argc, char **argv) {
         args.push_back(argv[i]);
     }
 
-    if (args.size() < 3 || args.size() > 5) {
+    if (args.size() < 3 || args.size() > 6) {
         if (rank == 0)
-            cout << "Uso: ./kmeans_starpu <INPUT> <K> <OUT-DIR> [CHUNK_SIZE] [DYNAMIC_SCHED]" << endl;
+            cout << "Uso: ./kmeans_starpu <INPUT> <K> <OUT-DIR> [CHUNK_SIZE] [DYNAMIC_SCHED] [SEED]" << endl;
         MPI_Finalize();
         return 1;
     }
@@ -42,6 +42,8 @@ int main(int argc, char **argv) {
     string output_dir = args[2];
     int chunk_size = (args.size() >= 4) ? stoi(args[3]) : -1;
     bool dynamic_sched = (args.size() == 5) ? (stoi(args[4]) == 1) : false;
+    int seed = (args.size() == 6) ? stoi(args[5]) : 42;
+    MPI_Bcast(&seed, 1, MPI_INT, 0, MPI_COMM_WORLD);
 
     if (rank == 0) {
         if (dynamic_sched) cout << "[MODO] Escalonamento DINAMICO (StarPU-MPI decide - Sem EXECUTE_ON_NODE)" << endl;
@@ -117,7 +119,7 @@ int main(int argc, char **argv) {
 
     bool use_heterogeneous_chunks_val = false;
 
-    KMeans kmeans(K, iters, output_dir, chunk_size, use_heterogeneous_chunks_val, rank, size, dimensions, dynamic_sched);
+    KMeans kmeans(K, iters, output_dir, chunk_size, use_heterogeneous_chunks_val, rank, size, dimensions, dynamic_sched, seed);
     kmeans.run(all_points, N);
 
     auto end = high_resolution_clock::now();

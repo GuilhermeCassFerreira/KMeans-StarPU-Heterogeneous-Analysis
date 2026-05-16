@@ -96,12 +96,11 @@ struct starpu_codelet cl_accumulate_nodes = {
 /* ========================================================================== */
 /* Implementação da classe KMeans                                             */
 /* ========================================================================== */
-
 KMeans::KMeans(int K, int iterations, string output_dir, int chunk_size,
-               bool use_heterogeneous_chunks, int rank, int size, int dims, bool dynamic_sched)
+               bool use_heterogeneous_chunks, int rank, int size, int dims, bool dynamic_sched, int seed)
     : K(K), iters(iterations), output_dir(output_dir), chunk_size(chunk_size),
       use_heterogeneous_chunks(use_heterogeneous_chunks), mpi_rank(rank),
-      world_size(size), dimensions(dims), dynamic_sched(dynamic_sched), // <-- Atualizado aqui
+      world_size(size), dimensions(dims), dynamic_sched(dynamic_sched), seed(seed), 
       points_handle(nullptr), output_handle(nullptr),
       num_chunks(0), partial_sums_ptr(nullptr), partial_counts_ptr(nullptr),
       centroids_handle(nullptr), points_ptr(nullptr), labels_ptr(nullptr),
@@ -303,8 +302,7 @@ void KMeans::run(vector<Point> &all_points, int N) {
     centroids_data.resize(K * dimensions);
 
     if (mpi_rank == 0) {
-        srand(42); 
-
+        srand(this->seed);
         std::vector<int> chosen_indices;
         
         while ((int)chosen_indices.size() < K) {
