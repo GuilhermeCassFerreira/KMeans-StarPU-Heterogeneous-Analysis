@@ -30,9 +30,9 @@ int main(int argc, char **argv) {
         args.push_back(argv[i]);
     }
 
-    if (args.size() < 3 || args.size() > 6) {
+    if (args.size() < 3 || args.size() > 8) {
         if (rank == 0)
-            cout << "Uso: ./kmeans_starpu <INPUT> <K> <OUT-DIR> [NUM_CHUNCK] [DYNAMIC_SCHED] [SEED]" << endl;
+            cout << "Uso: ./kmeans_starpu <INPUT> <K> <OUT-DIR> [NUM_CHUNCK] [DYNAMIC_SCHED] [SEED] [INTERS]" << endl;
         MPI_Finalize();
         return 1;
     }
@@ -40,9 +40,10 @@ int main(int argc, char **argv) {
     string filename = args[0];
     int K = stoi(args[1]);
     string output_dir = args[2];
-    int num_chunks = (args.size() >= 4) ? stoi(args[3]) : -1;
-    bool dynamic_sched = (args.size() == 5) ? (stoi(args[4]) == 1) : false;
-    int seed = (args.size() == 6) ? stoi(args[5]) : 42;
+    int num_chunks    = (args.size() >= 4) ? stoi(args[3]) : -1;
+    bool dynamic_sched = (args.size() >= 5) ? (stoi(args[4]) == 1) : false;
+    int seed          = (args.size() >= 6) ? stoi(args[5]) : 42;
+    int iters         = (args.size() >= 7) ? stoi(args[6]) : 100;
     MPI_Bcast(&seed, 1, MPI_INT, 0, MPI_COMM_WORLD);
 
     if (rank == 0) {
@@ -70,7 +71,8 @@ int main(int argc, char **argv) {
         return 1;
     }
 
-    int iters = 100;
+    MPI_Bcast(&iters, 1, MPI_INT, 0, MPI_COMM_WORLD);
+
 
     // ---- Inicialização do StarPU-MPI ----
     int ret = starpu_mpi_init_conf(&argc, &argv, 0, MPI_COMM_WORLD, NULL);

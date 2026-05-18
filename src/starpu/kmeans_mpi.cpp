@@ -294,8 +294,8 @@ void KMeans::run(vector<Point> &all_points, int N) {
         outputs_children[i] = starpu_data_get_child(output_handle, i);
 
         // O dado nasce no Nodo 0
-        starpu_mpi_data_register(points_children[i], 100000 + i, 0); 
-        starpu_mpi_data_register(outputs_children[i], 1000000 + i, 0);
+        starpu_mpi_data_register(points_children[i], 100000 + i, chunk_owners[i]); 
+        starpu_mpi_data_register(outputs_children[i], 1000000 + i, chunk_owners[i]);
     }
 
     // Inicializar centroides
@@ -335,8 +335,6 @@ void KMeans::run(vector<Point> &all_points, int N) {
     for (int it = 0; it < iters; ++it) {
         assignPointsToClusters(N);
         calculateCentroids(N);
-        starpu_mpi_wait_for_all(MPI_COMM_WORLD); 
-        MPI_Barrier(MPI_COMM_WORLD);
     }
 
     starpu_task_wait_for_all();
