@@ -34,7 +34,15 @@ struct starpu_perfmodel update_perf_model = {
 };
 
 /* ========================================================================== */
-/* Codelets StarPU (definições)                                               */
+/* Codelets StarPU                                                            */
+/*                                                                            */
+/* converged_handle: vetor de 2 inteiros [flag, iteração], dono rank 0.      */
+/*                                                                            */
+/* assign:     +1 buffer (R converged)  -> nbuffers=4                        */
+/* calculate:  +1 buffer (R converged)  -> nbuffers=5                        */
+/* clean:      +1 buffer (R converged)  -> nbuffers=3                        */
+/* update:     +1 buffer (RW converged) -> nbuffers=4, centroids agora RW    */
+/* accumulate: +1 buffer (R converged)  -> nbuffers=5                        */
 /* ========================================================================== */
 
 struct starpu_codelet cl_assign_point_handles = {
@@ -43,8 +51,8 @@ struct starpu_codelet cl_assign_point_handles = {
     .cuda_funcs = {assign_point_to_cluster_cuda},
     .cuda_flags = {STARPU_CUDA_ASYNC},
 #endif
-    .nbuffers = 3,
-    .modes = {STARPU_R, STARPU_R, STARPU_W},
+    .nbuffers = 4,
+    .modes = {STARPU_R, STARPU_R, STARPU_W, STARPU_R},
     .model = &assign_perf_model
 };
 
@@ -54,8 +62,8 @@ struct starpu_codelet cl_calculate_partial_sums = {
     .cuda_funcs = {calculate_partial_sums_cuda},
     .cuda_flags = {STARPU_CUDA_ASYNC},
 #endif
-    .nbuffers = 4,
-    .modes = {STARPU_R, STARPU_R, STARPU_RW, STARPU_RW},
+    .nbuffers = 5,
+    .modes = {STARPU_R, STARPU_R, STARPU_RW, STARPU_RW, STARPU_R},
     .model = &calculate_perf_model
 };
 
@@ -65,8 +73,8 @@ struct starpu_codelet cl_clean_buffers = {
     .cuda_funcs = {clean_buffers_cuda}, 
     .cuda_flags = {STARPU_CUDA_ASYNC},
 #endif
-    .nbuffers = 2,
-    .modes = {STARPU_W, STARPU_W},
+    .nbuffers = 3,
+    .modes = {STARPU_W, STARPU_W, STARPU_R},
     .model = &clean_perf_model
 };
 
@@ -76,11 +84,10 @@ struct starpu_codelet cl_update_centroids = {
     .cuda_funcs = {update_centroids_cuda}, 
     .cuda_flags = {STARPU_CUDA_ASYNC},
 #endif
-    .nbuffers = 3,
-    .modes = {STARPU_R, STARPU_R, STARPU_W},
+    .nbuffers = 4,
+    .modes = {STARPU_R, STARPU_R, STARPU_RW, STARPU_RW},
     .model = &update_perf_model
 };
-
 
 struct starpu_codelet cl_accumulate_nodes = {
     .cpu_funcs = {accumulate_nodes_cpu},
@@ -88,14 +95,15 @@ struct starpu_codelet cl_accumulate_nodes = {
     .cuda_funcs = {accumulate_nodes_cuda}, 
     .cuda_flags = {STARPU_CUDA_ASYNC},
 #endif
-    .nbuffers = 4,
-    .modes = {STARPU_RW, STARPU_RW, STARPU_R, STARPU_R},
+    .nbuffers = 5,
+    .modes = {STARPU_RW, STARPU_RW, STARPU_R, STARPU_R, STARPU_R},
     .name = "kmeans_accumulate_mpi"
 };
 
 /* ========================================================================== */
 /* Implementação da classe KMeans                                             */
 /* ========================================================================== */
+
 KMeans::KMeans(int K, int iterations, string output_dir, int num_chunks,
                bool use_heterogeneous_chunks, int rank, int size, int dims, bool dynamic_sched, int seed)
     : K(K), iters(iterations), output_dir(output_dir), num_chunks(num_chunks),
@@ -103,7 +111,9 @@ KMeans::KMeans(int K, int iterations, string output_dir, int num_chunks,
       world_size(size), dimensions(dims), dynamic_sched(dynamic_sched), seed(seed), 
       points_handle(nullptr), output_handle(nullptr),
       partial_sums_ptr(nullptr), partial_counts_ptr(nullptr),
-      centroids_handle(nullptr), points_ptr(nullptr), labels_ptr(nullptr),
+      centroids_handle(nullptr),
+      converged_ptr(nullptr), converged_handle(nullptr),
+      points_ptr(nullptr), labels_ptr(nullptr),
       total_points(0)
 {
 }
@@ -128,6 +138,7 @@ void KMeans::assignPointsToClusters(int N) {
                 STARPU_R, points_children[chunk_id],
                 STARPU_R, centroids_handle,
                 STARPU_W, outputs_children[chunk_id],
+                STARPU_R, converged_handle,
                 STARPU_VALUE, &K, sizeof(int),
                 STARPU_VALUE, &dimensions, sizeof(int),
                 STARPU_VALUE, &this_chunk, sizeof(int),
@@ -137,6 +148,7 @@ void KMeans::assignPointsToClusters(int N) {
                 STARPU_R, points_children[chunk_id],
                 STARPU_R, centroids_handle,
                 STARPU_W, outputs_children[chunk_id],
+                STARPU_R, converged_handle,
                 STARPU_VALUE, &K, sizeof(int),
                 STARPU_VALUE, &dimensions, sizeof(int),
                 STARPU_VALUE, &this_chunk, sizeof(int),
@@ -148,11 +160,14 @@ void KMeans::assignPointsToClusters(int N) {
 
 void KMeans::calculateCentroids(int N) {
     int dummy_chunk = 0;
+    // current_iter é armazenado como membro temporário antes de cada chamada
+    int current_iter = this->total_points; // reutilizamos total_points temporariamente — ver run()
 
     for (int n = 0; n < world_size; n++) {
         starpu_mpi_task_insert(MPI_COMM_WORLD, &cl_clean_buffers,
             STARPU_W, partial_sums_handle[n],
             STARPU_W, partial_counts_handle[n],
+            STARPU_R, converged_handle,
             STARPU_VALUE, &K, sizeof(int),
             STARPU_VALUE, &dimensions, sizeof(int),
             STARPU_VALUE, &dummy_chunk, sizeof(int),
@@ -166,23 +181,23 @@ void KMeans::calculateCentroids(int N) {
         if (this_chunk <= 0) continue;
 
         if (this->dynamic_sched) {
-            // Modo Dinâmico: StarPU decide onde executar
             starpu_mpi_task_insert(MPI_COMM_WORLD, &cl_calculate_partial_sums,
                 STARPU_R, points_children[chunk_id],
                 STARPU_R, outputs_children[chunk_id],
                 STARPU_RW, partial_sums_handle[owners],
                 STARPU_RW, partial_counts_handle[owners],
+                STARPU_R, converged_handle,
                 STARPU_VALUE, &K, sizeof(int),
                 STARPU_VALUE, &dimensions, sizeof(int),
                 STARPU_VALUE, &this_chunk, sizeof(int),
                 0);
         } else {
-            // Modo Estático: Executa forçadamente no dono do chunk
             starpu_mpi_task_insert(MPI_COMM_WORLD, &cl_calculate_partial_sums,
                 STARPU_R, points_children[chunk_id],
                 STARPU_R, outputs_children[chunk_id],
                 STARPU_RW, partial_sums_handle[owners],
                 STARPU_RW, partial_counts_handle[owners],
+                STARPU_R, converged_handle,
                 STARPU_VALUE, &K, sizeof(int),
                 STARPU_VALUE, &dimensions, sizeof(int),
                 STARPU_VALUE, &this_chunk, sizeof(int),
@@ -193,14 +208,16 @@ void KMeans::calculateCentroids(int N) {
 
     reduceCentroidsAcrossNodes();
 
-    // A consolidação final dos centroides ocorre sempre no Nodo 0
+    // update_centroids: recebe current_iter via STARPU_VALUE para gravar
+    // em conv[1] quando convergir. O 3o VALUE é current_iter (não dummy_chunk).
     starpu_mpi_task_insert(MPI_COMM_WORLD, &cl_update_centroids,
         STARPU_R, partial_sums_handle[0],
         STARPU_R, partial_counts_handle[0],
-        STARPU_W, centroids_handle,
+        STARPU_RW, centroids_handle,
+        STARPU_RW, converged_handle,
         STARPU_VALUE, &K, sizeof(int),
         STARPU_VALUE, &dimensions, sizeof(int),
-        STARPU_VALUE, &dummy_chunk, sizeof(int),
+        STARPU_VALUE, &current_iter, sizeof(int),
         STARPU_EXECUTE_ON_NODE, 0,
         0);
 }
@@ -213,7 +230,8 @@ void KMeans::reduceCentroidsAcrossNodes() {
             STARPU_RW, partial_sums_handle[0],   
             STARPU_RW, partial_counts_handle[0], 
             STARPU_R, partial_sums_handle[n],    
-            STARPU_R, partial_counts_handle[n],  
+            STARPU_R, partial_counts_handle[n],
+            STARPU_R, converged_handle,
             STARPU_VALUE, &K, sizeof(int),
             STARPU_VALUE, &dimensions, sizeof(int),
             STARPU_EXECUTE_ON_NODE, 0,    
@@ -227,6 +245,7 @@ void KMeans::run(vector<Point> &all_points, int N) {
     labels_ptr = nullptr;
     partial_sums_ptr = nullptr;
     partial_counts_ptr = nullptr;
+    converged_ptr = nullptr;
 
     size_t points_bytes = (size_t)N * dimensions * sizeof(double);
     size_t labels_bytes = (size_t)N * sizeof(int);
@@ -257,6 +276,21 @@ void KMeans::run(vector<Point> &all_points, int N) {
     starpu_mpi_data_register(points_handle, 10, 0);
     starpu_mpi_data_register(output_handle, 20, 0);
 
+    /* converged_handle: vetor de 2 inteiros [flag, iteração].
+     * Rank 0: memória real, inicializada em [0, 0].
+     * Ranks ≠ 0: registrado como não-residente (-1), o StarPU-MPI
+     * transfere do rank 0 quando uma task local precisa lê-lo. */
+    if (mpi_rank == 0) {
+        if (starpu_malloc((void**)&converged_ptr, 2 * sizeof(int)) != 0) exit(1);
+        converged_ptr[0] = 0;  // flag: não convergiu
+        converged_ptr[1] = 0;  // iteração: 0
+        starpu_vector_data_register(&converged_handle, STARPU_MAIN_RAM, (uintptr_t)converged_ptr, 2, sizeof(int));
+    } else {
+        converged_ptr = nullptr;
+        starpu_vector_data_register(&converged_handle, -1, (uintptr_t)NULL, 2, sizeof(int));
+    }
+    starpu_mpi_data_register(converged_handle, 50, 0);
+
     partial_sums_handle.resize(world_size);
     partial_counts_handle.resize(world_size);
 
@@ -272,8 +306,7 @@ void KMeans::run(vector<Point> &all_points, int N) {
         starpu_mpi_data_register(partial_counts_handle[n], 3000 + n, n);
     }
 
-    // Particionar pontos e labels em chunks
-    if (num_chunks > N) num_chunks = N;   // nao faz sentido mais chunks que pontos
+    if (num_chunks > N) num_chunks = N;
     struct starpu_data_filter filterChunks = {
         .filter_func = starpu_vector_filter_block,
         .nchildren = (unsigned)num_chunks
@@ -282,7 +315,6 @@ void KMeans::run(vector<Point> &all_points, int N) {
     starpu_data_partition(points_handle, &filterChunks);
     starpu_data_partition(output_handle, &filterChunks);
 
-    // Distribuir chunks round-robin entre nodos
     chunk_owners.resize(num_chunks);
     points_children.resize(num_chunks);
     outputs_children.resize(num_chunks);
@@ -293,12 +325,10 @@ void KMeans::run(vector<Point> &all_points, int N) {
         points_children[i] = starpu_data_get_child(points_handle, i);
         outputs_children[i] = starpu_data_get_child(output_handle, i);
 
-        // O dado nasce no Nodo 0
         starpu_mpi_data_register(points_children[i], 100000 + i, chunk_owners[i]); 
         starpu_mpi_data_register(outputs_children[i], 1000000 + i, chunk_owners[i]);
     }
 
-    // Inicializar centroides
     centroids_data.resize(K * dimensions);
 
     if (mpi_rank == 0) {
@@ -322,7 +352,7 @@ void KMeans::run(vector<Point> &all_points, int N) {
             }
         }
         
-        cout << "[INFO] Centroides iniciais escolhidos aleatoriamente (Seed: 42)" << endl;
+        cout << "[INFO] Centroides iniciais escolhidos aleatoriamente (Seed: " << this->seed << ")" << endl;
     }
 
     MPI_Bcast(centroids_data.data(), K * dimensions, MPI_DOUBLE, 0, MPI_COMM_WORLD);
@@ -330,15 +360,36 @@ void KMeans::run(vector<Point> &all_points, int N) {
     starpu_vector_data_register(&centroids_handle, STARPU_MAIN_RAM, (uintptr_t)centroids_data.data(), K * dimensions, sizeof(double));
     starpu_mpi_data_register(centroids_handle, 4, 0);
 
-    if (mpi_rank == 0) cout << "[INFO] Rodando " << iters << " iteracoes..." << endl;
+    if (mpi_rank == 0) cout << "[INFO] Rodando ate " << iters << " iteracoes (ghost tasks via data handle)..." << endl;
 
+    // DAG INTEIRO submetido de uma vez. Sem sync entre iterações.
     for (int it = 0; it < iters; ++it) {
+        // Passa current_iter (1-based) para calculateCentroids via total_points
+        // (reutilizado temporariamente como canal de comunicação para o método).
+        total_points = it + 1;
         assignPointsToClusters(N);
         calculateCentroids(N);
     }
+    total_points = N;  // restaura o valor original
 
     starpu_task_wait_for_all();
     starpu_mpi_wait_for_all(MPI_COMM_WORLD);
+
+    // Lê o resultado de convergência
+    if (mpi_rank == 0) {
+        starpu_data_acquire(converged_handle, STARPU_R);
+        int flag = converged_ptr[0];
+        int conv_iter = converged_ptr[1];
+        starpu_data_release(converged_handle);
+
+        if (flag) {
+            cout << "[INFO] Convergiu na iteracao " << conv_iter
+                 << " — " << (iters - conv_iter)
+                 << " iteracoes ghost executadas (custo ~0)." << endl;
+        } else {
+            cout << "[INFO] Nao convergiu em " << iters << " iteracoes." << endl;
+        }
+    }
 
     for (int i = 0; i < num_chunks; i++) {
         starpu_mpi_get_data_on_node_detached(MPI_COMM_WORLD, outputs_children[i], 0, NULL, NULL);
@@ -358,10 +409,10 @@ void KMeans::run(vector<Point> &all_points, int N) {
         starpu_data_release(output_handle);
     }
 
-    // Limpeza de Memória e Handles
     starpu_data_unregister(points_handle);
     starpu_data_unregister(output_handle);
     starpu_data_unregister(centroids_handle);
+    starpu_data_unregister(converged_handle);
     for (int n = 0; n < world_size; n++) {
         starpu_data_unregister(partial_sums_handle[n]);
         starpu_data_unregister(partial_counts_handle[n]);
@@ -371,4 +422,7 @@ void KMeans::run(vector<Point> &all_points, int N) {
     starpu_free_noflag(labels_ptr, labels_bytes);
     starpu_free_noflag(partial_sums_ptr, sums_bytes);
     starpu_free_noflag(partial_counts_ptr, counts_bytes);
+    if (mpi_rank == 0) {
+        starpu_free_noflag(converged_ptr, 2 * sizeof(int));
+    }
 }
