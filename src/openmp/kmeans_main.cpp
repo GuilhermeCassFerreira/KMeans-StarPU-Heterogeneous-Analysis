@@ -166,6 +166,7 @@ int main(int argc, char **argv) {
 
     double *local_sums = new double[K * dimensions], *global_sums = new double[K * dimensions];
     int *local_counts = new int[K], *global_counts = new int[K];
+    double *old_centroids = new double[K * dimensions];
 
     #ifdef USE_GPU
     if (mode == 1 || mode == 2) {
@@ -180,8 +181,10 @@ int main(int argc, char **argv) {
     int iter_converged = -1;
 
     #ifdef USE_GPU
+    if (mode == 1) {
         #pragma omp target enter data map(to: local_points[0:local_n*dimensions]) \
                                    map(to: local_labels[0:local_n])
+    }
     #endif
 
     for (int iter = 0; iter < nIters; iter++) {
@@ -216,23 +219,36 @@ int main(int argc, char **argv) {
         if (global_changes == 0) {
             iter_converged = iter + 1;
             t_converge = high_resolution_clock::now();
-            if (rank == 0) cout << ">> Convergiu na iteracao " << iter + 1 << endl;
+            if (rank == 0) cout << "[OMP] Convergiu (label changes=0) na iteracao " << iter + 1 << endl;
             break;
         }
-        if (rank == 0) cout << ">> Iteracao " << iter + 1 << " teve " << global_changes << " mudancas." << endl;
 
         MPI_Allreduce(local_sums, global_sums, K * dimensions, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
         MPI_Allreduce(local_counts, global_counts, K, MPI_INT, MPI_SUM, MPI_COMM_WORLD);
+
+        memcpy(old_centroids, global_centroids, K * dimensions * sizeof(double));
         update_cents(global_sums, global_counts, global_centroids, K, dimensions);
 
+        bool centroids_stable = (memcmp(old_centroids, global_centroids, K * dimensions * sizeof(double)) == 0);
+        if (centroids_stable) {
+            iter_converged = iter + 1;
+            t_converge = high_resolution_clock::now();
+            if (rank == 0) cout << "[OMP] Convergiu (centroide estavel) na iteracao " << iter + 1 << endl;
+            break;
+        }
+
+        if (rank == 0) cout << "[OMP] Iteracao " << iter + 1 << " | mudancas: " << global_changes << endl;
+
         if (iter == nIters - 1) {
-            iter_converged = nIters;       // limite atingido sem convergir
+            iter_converged = nIters;
             t_converge = high_resolution_clock::now();
         }
     }
 
     #ifdef USE_GPU
+    if (mode == 1) {
         #pragma omp target exit data map(from: local_labels[0:local_n])
+    }
     #endif
 
     MPI_Barrier(MPI_COMM_WORLD);
@@ -312,7 +328,7 @@ int main(int argc, char **argv) {
     #endif
 
     delete[] local_points; delete[] local_labels; delete[] local_sums; delete[] local_counts;
-    delete[] global_sums; delete[] global_counts; delete[] global_centroids;
+    delete[] global_sums; delete[] global_counts; delete[] global_centroids; delete[] old_centroids;
     if (rank == 0) { delete[] global_points; delete[] global_labels; }
     MPI_Finalize();
     return 0;

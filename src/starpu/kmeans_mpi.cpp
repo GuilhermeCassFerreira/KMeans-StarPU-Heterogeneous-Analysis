@@ -26,15 +26,23 @@ std::atomic<int>  g_iter_converged{-1};       // iteração em que convergiu (-1
 std::atomic<bool> g_converge_captured{false};
 high_resolution_clock::time_point g_t_converge;
 high_resolution_clock::time_point g_t_start;
+static int g_mpi_rank = 0;                    // rank MPI deste processo
 
 extern "C" void update_centroids_callback(void *arg) {
-    int *flag_ptr = (int *)arg;   // aponta pro converged_flag global
+    int *flag_ptr = (int *)arg;
     int call_idx = g_update_calls.fetch_add(1) + 1;  // 1-based: qual iter terminou
 
-    if (*flag_ptr == 1 && !g_converge_captured.exchange(true)) {
-        // Primeira vez que detectamos convergência → capturamos timestamp
+    bool just_converged = (*flag_ptr == 1 && !g_converge_captured.exchange(true));
+    if (just_converged) {
         g_iter_converged.store(call_idx);
         g_t_converge = high_resolution_clock::now();
+    }
+
+    // Imprime apenas no rank 0 e apenas para tasks reais (não ghost)
+    if (g_mpi_rank == 0) {
+        bool is_ghost = (*flag_ptr == 1 && !just_converged);
+        if (!is_ghost)
+            fprintf(stderr, "[StarPU] Iteracao %d\n", call_idx);
     }
 }
 
@@ -120,10 +128,9 @@ struct starpu_codelet cl_accumulate_nodes = {
     .cuda_flags = {STARPU_CUDA_ASYNC},
 #endif
     .nbuffers = 5,
-    /* COMMUTE: StarPU pode reordenar livremente as tasks de acúmulo */
-    .modes = {(starpu_data_access_mode)(STARPU_RW | STARPU_COMMUTE),
-              (starpu_data_access_mode)(STARPU_RW | STARPU_COMMUTE),
-              STARPU_R, STARPU_R, STARPU_R},
+    /* Sem COMMUTE: ordem determinística garante somas FP consistentes entre iterações,
+     * permitindo que update_centroids_cpu detecte convergência por comparação exata. */
+    .modes = {STARPU_RW, STARPU_RW, STARPU_R, STARPU_R, STARPU_R},
     .name = "kmeans_accumulate_mpi"
 };
 
@@ -140,6 +147,7 @@ KMeans::KMeans(int K, int iterations, string output_dir, int chunks, int rank, i
       centroids_handle(nullptr), points_ptr(nullptr), labels_ptr(nullptr),
       total_points(0)
 {
+    g_mpi_rank = rank;
 }
 
 void KMeans::clearClusters() {
@@ -210,8 +218,8 @@ void KMeans::submitTasks(int N, starpu_data_handle_t converged_handle, int *conv
         if (this_chunk <= 0) break;
 
         starpu_mpi_task_insert(MPI_COMM_WORLD, &cl_accumulate_nodes,
-            STARPU_RW | STARPU_COMMUTE, partial_sums_handle[owners],
-            STARPU_RW | STARPU_COMMUTE, partial_counts_handle[owners],
+            STARPU_RW, partial_sums_handle[owners],
+            STARPU_RW, partial_counts_handle[owners],
             STARPU_R, chunk_sums_handle[chunk_id],
             STARPU_R, chunk_counts_handle[chunk_id],
             STARPU_R, converged_handle,
@@ -293,10 +301,10 @@ void KMeans::run(vector<Point> &all_points, int N) {
     if (starpu_malloc((void**)&chunk_counts_ptr, chunk_counts_bytes) != 0) exit(1);
 
     if (mpi_rank == 0) {
+        memset(labels_ptr, 0, labels_bytes);
         for (int i = 0; i < N; i++) {
             for (int d = 0; d < dimensions; d++)
                 points_ptr[i * dimensions + d] = all_points[i].getVal(d);
-            memset(labels_ptr, 0, labels_bytes);
         }
     } else {
         memset(points_ptr, 0, points_bytes);

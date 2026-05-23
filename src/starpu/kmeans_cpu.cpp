@@ -4,6 +4,7 @@
 #include <cfloat>
 #include <limits>
 #include <iostream>
+#include <vector>
 
 /* ========================================================================== */
 /* Contadores globais (definições)                                            */
@@ -127,7 +128,9 @@ void update_centroids_cpu(void *buffers[], void *cl_arg) {
     double *centroids      = (double *)STARPU_VECTOR_GET_PTR(buffers[2]);
 
     int total = K * dimensions;
-    double *old_centroids = new double[total];
+    static thread_local std::vector<double> old_centroids_buf;
+    old_centroids_buf.resize(total);
+    double *old_centroids = old_centroids_buf.data();
     std::memcpy(old_centroids, centroids, total * sizeof(double));
 
     for (int c = 0; c < K; ++c) {
@@ -144,8 +147,6 @@ void update_centroids_cpu(void *buffers[], void *cl_arg) {
         if (centroids[i] != old_centroids[i]) { no_change = false; break; }
     }
     if (no_change) *converged = 1;
-
-    delete[] old_centroids;
 }
 
 void accumulate_nodes_cpu(void *buffers[], void *cl_arg) {

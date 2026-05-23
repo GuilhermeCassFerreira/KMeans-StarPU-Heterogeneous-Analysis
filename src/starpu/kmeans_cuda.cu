@@ -49,7 +49,9 @@ __global__ void assign_point_to_cluster_cuda_kernel(
     const double *points_values, const double *centroids,
     int K, int dimensions, int npoints, int *nearestClusterIds, int *converged)
 {
-    if (*converged == 1) return;
+    // No early-exit check here: assign_cuda pre-sets *converged=1 on the stream
+    // before launching this kernel, so checking it would always return immediately.
+    // The kernel itself resets to 0 via atomicExch if any label changes.
 
     int idx = blockIdx.x * blockDim.x + threadIdx.x;
     if (idx >= npoints) return;
