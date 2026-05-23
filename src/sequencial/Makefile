@@ -2,7 +2,7 @@ CXX = g++
 CXXFLAGS = -std=c++11 -O3 -Wall -I../../include -I../common
 LDFLAGS = -lm
 
-COMMON_OBJ = ../common/io.o ../common/metrics_simple.o
+COMMON_OBJ = ../common/io.o
 SEQ_OBJ = kmeans.o kmeans_seq.o
 SEQ_TARGET = kmeans_seq
 

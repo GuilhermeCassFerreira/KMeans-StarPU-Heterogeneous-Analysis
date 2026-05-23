@@ -1,66 +1,88 @@
 # ==============================================================================
-# CONFIGURAÇÃO DE AMBIENTE - BRIDGE LABS / UFSC
+# CONFIGURAÇÃO DE AMBIENTE - BRIDGE LABS / UFSC (AUTO-DETECÇÃO)
 # ==============================================================================
 
-# Caminhos baseados no seu comando 'find' e ambiente do HPC SDK
+# Caminho base do HPC SDK
 HPC_SDK_PATH := /opt/nvidia/hpc_sdk/Linux_x86_64/26.3
-CUDA_VER     := 13.1
-CUDA_HOME    := $(HPC_SDK_PATH)/cuda/$(CUDA_VER)
+NVC_COMPILER := $(HPC_SDK_PATH)/compilers/bin/nvc++
 
-# Exportações CRÍTICAS para o compilador NVIDIA encontrar o ptxas e as libs
-export NVHPC_CUDA_HOME := $(CUDA_HOME)
-export PATH            := $(CUDA_HOME)/bin:$(HPC_SDK_PATH)/compilers/bin:$(PATH)
-export LD_LIBRARY_PATH := $(CUDA_HOME)/lib64:$(LD_LIBRARY_PATH)
-export OMPI_CXX        := $(HPC_SDK_PATH)/compilers/bin/nvc++
+# 1. AUTO-DETECÇÃO: Verifica se o compilador nvc++ existe na máquina
+HAS_NVHPC := $(shell if [ -f "$(NVC_COMPILER)" ]; then echo 1; else echo 0; fi)
 
-# Compilador (mpicxx usará o nvc++ devido ao OMPI_CXX acima)
 CXX = mpicxx
 GPU ?= 0
 
-# Flags de Performance:
-# -fast: Otimização máxima (vetorização, inlining, etc)
-# -Minfo=mp: Relatório de paralelismo (importante para ver o offload)
-CXXFLAGS = -fast -DNDEBUG -Wall -I../../include -I../common
-LDFLAGS  =
-
-# Objetos do projeto
+# Objetos base (Sempre compilados)
 OBJS = kmeans_main.o kmeans_cpu.o
 IO_OBJ = ../../build/io.o
-METRICS_OBJ = ../common/metrics_simple.o
 
-# Configuração para compilação com suporte a GPU (OpenMP Offload)
-ifeq ($(GPU), 1)
-    $(info >>> COMPILANDO MODO MULTI-GPU (NVC++ / cc86) <<<)
-    # cc86 é a arquitetura da RTX 2050/3060/4000
-    CXXFLAGS += -DUSE_GPU -mp=gpu -gpu=cc86 -Minfo=mp
+# ==============================================================================
+# BLOCO 1: TEM NVIDIA HPC SDK INSTALADO
+# ==============================================================================
+ifeq ($(HAS_NVHPC), 1)
+    $(info ===> [AUTO-CONFIG] NVIDIA HPC SDK detectado. Usando nvc++.)
 
-    # ATENÇÃO: Adicionado -L e -lcudart para encontrar o cudaHostRegister
-    LDFLAGS  += -mp=gpu -gpu=cc86 -L$(CUDA_HOME)/lib64 -lcudart
+    CUDA_VER     := 13.1
+    CUDA_HOME    := $(HPC_SDK_PATH)/cuda/$(CUDA_VER)
 
-    OBJS     += kmeans_gpu.o
+    # Exportações CRÍTICAS para o compilador NVIDIA
+    export NVHPC_CUDA_HOME := $(CUDA_HOME)
+    export PATH            := $(CUDA_HOME)/bin:$(HPC_SDK_PATH)/compilers/bin:$(PATH)
+    export LD_LIBRARY_PATH := $(CUDA_HOME)/lib64:$(LD_LIBRARY_PATH)
+    export OMPI_CXX        := $(NVC_COMPILER)
+
+    # Flags base do NVC++
+    CXXFLAGS = -fast -DNDEBUG -Wall -I../../include -I../common -DUSE_MPI
+    LDFLAGS  =
+
+    ifeq ($(GPU), 1)
+        $(info >>> COMPILANDO MODO MULTI-GPU (NVC++ / cc86) <<<)
+        CXXFLAGS += -DUSE_GPU -mp=gpu -gpu=cc86 -Minfo=mp
+        LDFLAGS  += -mp=gpu -gpu=cc86 -L$(CUDA_HOME)/lib64 -lcudart
+        OBJS     += kmeans_gpu.o
+    else
+        $(info >>> COMPILANDO MODO CPU (NVC++ OpenMP / AVX2) <<<)
+        CXXFLAGS += -mp
+        LDFLAGS  += -mp
+    endif
+
+# ==============================================================================
+# BLOCO 2: NÃO TEM NVIDIA INSTALADO (FALLBACK PARA GCC)
+# ==============================================================================
 else
-    $(info >>> COMPILANDO MODO CPU (OpenMP / AVX2) <<<)
-    CXXFLAGS += -mp
-    LDFLAGS  += -mp
+    $(info ===> [AUTO-CONFIG] NVIDIA HPC SDK NAO detectado. Fazendo fallback para GCC/g++.)
+    
+    # Força o MPI a usar o compilador C++ padrão do sistema
+    export OMPI_CXX := g++
+
+    # Se o usuário tentar forçar GPU=1 sem ter o compilador, nós ignoramos
+    ifeq ($(GPU), 1)
+        $(warning !!! GPU=1 ignorado pois o toolkit da NVIDIA nao esta presente !!!)
+    endif
+
+    $(info >>> COMPILANDO MODO EXCLUSIVO CPU (GCC / OpenMP) <<<)
+    
+    # Flags equivalentes para o G++
+    CXXFLAGS = -O3 -DNDEBUG -Wall -I../../include -I../common -fopenmp -DUSE_MPI
+    LDFLAGS  = -fopenmp
 endif
 
-# Alvo principal
+# ==============================================================================
+# REGRAS DE COMPILAÇÃO
+# ==============================================================================
+
 all: kmeans_openmp
 
 # Regra de compilação dos objetos do diretório local
 %.o: %.cpp kmeans_omp_mpi.h
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-# Regra para o metrics_simple.o em ../common/
-../common/metrics_simple.o: ../common/metrics_simple.cpp ../common/metrics_simple.h
-	$(CXX) $(CXXFLAGS) -c $< -o $@
-
 # Linkagem final
-kmeans_openmp: $(OBJS) $(METRICS_OBJ)
-	$(CXX) $(OBJS) $(IO_OBJ) $(METRICS_OBJ) $(LDFLAGS) -o kmeans_openmp
+kmeans_openmp: $(OBJS)
+	$(CXX) $(OBJS) $(IO_OBJ) $(LDFLAGS) -o kmeans_openmp
 
 # Limpeza
 clean:
-	rm -f *.o kmeans_openmp $(METRICS_OBJ)
+	rm -f *.o kmeans_openmp
 
 .PHONY: all clean

@@ -5,14 +5,14 @@
 #include <chrono>
 #include <cstdlib>
 #include <iomanip>
-#include <fstream>
 
 using namespace std;
 using namespace chrono;
 
 int main(int argc, char **argv) {
-    int rank, size;
+    int rank, size; 
     int mpi_provided;
+    auto start = high_resolution_clock::now();
 
     MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &mpi_provided);
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
@@ -24,14 +24,15 @@ int main(int argc, char **argv) {
         cout << "Isso pode causar gargalos de comunicacao no StarPU." << endl;
     }
 
+    // ---- Parsing de argumentos ----
     vector<string> args;
     for (int i = 1; i < argc; i++) {
         args.push_back(argv[i]);
     }
 
-    if (args.size() < 3 || args.size() > 6) {
+    if (args.size() < 3 || args.size() > 8) {
         if (rank == 0)
-            cout << "Uso: ./kmeans_starpu <INPUT> <K> <OUT-DIR> <INTERS> [NUM_CHUNKS] [SEED]" << endl;
+            cout << "Uso: ./kmeans_starpu <INPUT> <K> <OUT-DIR> [NUM_CHUNCK] [DYNAMIC_SCHED] [SEED] [INTERS]" << endl;
         MPI_Finalize();
         return 1;
     }
@@ -39,10 +40,18 @@ int main(int argc, char **argv) {
     string filename = args[0];
     int K = stoi(args[1]);
     string output_dir = args[2];
-    int iters = (args.size() >= 4) ? stoi(args[3]) : 100;
-    int chunks = (args.size() >= 5) ? stoi(args[4]) : -1;
-    int seed = (args.size() >= 6) ? stoi(args[5]) : 42;
+    int num_chunks    = (args.size() >= 4) ? stoi(args[3]) : -1;
+    bool dynamic_sched = (args.size() >= 5) ? (stoi(args[4]) == 1) : false;
+    int seed          = (args.size() >= 6) ? stoi(args[5]) : 42;
+    int iters         = (args.size() >= 7) ? stoi(args[6]) : 100;
+    MPI_Bcast(&seed, 1, MPI_INT, 0, MPI_COMM_WORLD);
 
+    if (rank == 0) {
+        if (dynamic_sched) cout << "[MODO] Escalonamento DINAMICO (StarPU-MPI decide - Sem EXECUTE_ON_NODE)" << endl;
+        else cout << "[MODO] Escalonamento ESTATICO (Manual via EXECUTE_ON_NODE)" << endl;
+    }
+
+    // ---- Leitura dos pontos (apenas no nodo 0) ----
     vector<Point> all_points;
     int N = 0;
     int dimensions = 0;
@@ -62,6 +71,10 @@ int main(int argc, char **argv) {
         return 1;
     }
 
+    MPI_Bcast(&iters, 1, MPI_INT, 0, MPI_COMM_WORLD);
+
+
+    // ---- Inicialização do StarPU-MPI ----
     int ret = starpu_mpi_init_conf(&argc, &argv, 0, MPI_COMM_WORLD, NULL);
     if (ret != 0) {
         if (rank == 0) cerr << "Error: Failed to initialize StarPU-MPI." << endl;
@@ -69,27 +82,23 @@ int main(int argc, char **argv) {
         return 1;
     }
 
-    KMeans kmeans(K, iters, output_dir, chunks, rank, size, dimensions, seed);
+    MPI_Bcast(&num_chunks, 1, MPI_INT, 0, MPI_COMM_WORLD);
 
-    // Timer começa só agora — depois de toda inicialização (MPI + StarPU),
-    // espelhando o padrão da versão OMP (MPI_Barrier + timer)
-    MPI_Barrier(MPI_COMM_WORLD);
-    auto start = high_resolution_clock::now();
-    g_t_start = start;   // exposto pra callback poder calcular t_useful
+    bool use_heterogeneous_chunks_val = false;
 
+    KMeans kmeans(K, iters, output_dir, num_chunks, rank, size, dimensions, seed);
     kmeans.run(all_points, N);
 
-    MPI_Barrier(MPI_COMM_WORLD);
     auto end = high_resolution_clock::now();
+    auto duration = duration_cast<milliseconds>(end - start);
 
-    if (rank == 0) {
-        compute_and_print_starpu_metrics(kmeans, all_points, N, iters, size, start, end);
-    }
+    if (rank == 0) cout << "\nExecution time: " << duration.count() << " ms" << endl;
 
     print_starpu_worker_usage(rank);
     print_kernel_usage_metrics(rank);
     print_node_usage_metrics(rank, size);
 
+    // ---- Finalização ----
     starpu_mpi_shutdown();
 
     if (rank == 0) {

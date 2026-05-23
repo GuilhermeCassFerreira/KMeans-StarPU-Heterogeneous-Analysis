@@ -3,20 +3,33 @@
 
 /**
  * @brief Definições de Tags para Comunicação StarPU-MPI
- * * O StarPU exige tags únicas para cada handle registrado no MPI.
+ *
+ * O StarPU exige tags únicas para cada handle registrado no MPI.
+ *
+ * Versão de paralelismo máximo: cada chunk tem buffers próprios (labels,
+ * labels-sombra, contador de mudanças, soma parcial e contagem parcial).
+ * Cada família de handles ocupa uma faixa de tags bem separada para nunca
+ * colidir, mesmo com num_chunks grande.
  */
 namespace KMeansTags {
-    // Tags de Dados Globais
-    const int POINTS = 10;   // Registro principal dos pontos
-    const int LABELS = 20;   // Registro principal dos rótulos (outputs)
-    const int CENTROIDS = 40;   // Registro dos centroides compartilhados
+    // ---- dados globais ----
+    const int POINTS        = 10;
+    const int LABELS        = 20;
+    const int LABELS_PREV   = 30;
+    const int CENTROIDS     = 40;
+    const int CONVERGED_TAG = 50;
 
-    const int CHUNK_POINTS_BASE = 100000;
-    const int CHUNK_LABELS_BASE = 1000000;
-
-    const int PARTIAL_SUMS_BASE = 2000;
+    // ---- acumulador parcial por nó MPI ----
+    const int PARTIAL_SUMS_BASE   = 2000;
     const int PARTIAL_COUNTS_BASE = 3000;
-    const int CONVERGED_TAG = 9999; // Tag para a flag de convergência global
+
+    // ---- handles por chunk (faixas bem espaçadas) ----
+    const int CHUNK_POINTS_BASE      = 10000000;
+    const int CHUNK_LABELS_BASE      = 20000000;
+    const int CHUNK_LABELS_PREV_BASE = 30000000;
+    const int CHUNK_CHANGES_BASE     = 40000000;
+    const int CHUNK_SUMS_BASE        = 50000000;
+    const int CHUNK_COUNTS_BASE      = 60000000;
 }
 
 #endif

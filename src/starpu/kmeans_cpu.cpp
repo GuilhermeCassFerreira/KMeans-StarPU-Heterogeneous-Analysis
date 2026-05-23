@@ -62,9 +62,7 @@ void assign_point_to_cluster_handles(void *buffers[], void *cl_arg) {
             changes++;
         }
     }
-    // Mesmo critério que SEQ/OMP: convergiu se nenhum ponto mudou de cluster
-    if (changes == 0) *converged = 1;
-    else              *converged = 0;
+    (void)changes; // convergência detectada pelo update_centroids via comparação de centróides
 }
 
 void calculate_partial_sums(void *buffers[], void *cl_arg) {
@@ -81,6 +79,10 @@ void calculate_partial_sums(void *buffers[], void *cl_arg) {
     int *nearestClusterIds = (int *)STARPU_VECTOR_GET_PTR(buffers[1]);
     double *partial_sums = (double *)STARPU_VECTOR_GET_PTR(buffers[2]);
     int *partial_counts = (int *)STARPU_VECTOR_GET_PTR(buffers[3]);
+
+    /* Zera o buffer exclusivo deste chunk (modo W: não há valor anterior válido) */
+    std::memset(partial_sums, 0, (size_t)K * dimensions * sizeof(double));
+    std::memset(partial_counts, 0, (size_t)K * sizeof(int));
 
     for (int idx = 0; idx < chunk_size; ++idx) {
         int cluster_id = nearestClusterIds[idx] - 1;
@@ -124,6 +126,10 @@ void update_centroids_cpu(void *buffers[], void *cl_arg) {
     int    *partial_counts = (int *)   STARPU_VECTOR_GET_PTR(buffers[1]);
     double *centroids      = (double *)STARPU_VECTOR_GET_PTR(buffers[2]);
 
+    int total = K * dimensions;
+    double *old_centroids = new double[total];
+    std::memcpy(old_centroids, centroids, total * sizeof(double));
+
     for (int c = 0; c < K; ++c) {
         if (partial_counts[c] > 0) {
             for (int d = 0; d < dimensions; ++d) {
@@ -132,6 +138,14 @@ void update_centroids_cpu(void *buffers[], void *cl_arg) {
             }
         }
     }
+
+    bool no_change = true;
+    for (int i = 0; i < total; ++i) {
+        if (centroids[i] != old_centroids[i]) { no_change = false; break; }
+    }
+    if (no_change) *converged = 1;
+
+    delete[] old_centroids;
 }
 
 void accumulate_nodes_cpu(void *buffers[], void *cl_arg) {
@@ -155,4 +169,33 @@ void accumulate_nodes_cpu(void *buffers[], void *cl_arg) {
     for(int i = 0; i < K; i++) {
         counts_dest[i] += counts_src[i];
     }
+}
+/* ========================================================================== */
+/* REDUX CPU — init: zera cópia privada; reduce: merge de duas cópias        */
+/* ========================================================================== */
+
+void redux_double_init_cpu(void *buffers[], void *) {
+    double *arr = (double *)STARPU_VECTOR_GET_PTR(buffers[0]);
+    int n = (int)STARPU_VECTOR_GET_NX(buffers[0]);
+    std::memset(arr, 0, (size_t)n * sizeof(double));
+}
+
+void redux_double_reduce_cpu(void *buffers[], void *) {
+    double *dst = (double *)STARPU_VECTOR_GET_PTR(buffers[0]);
+    const double *src = (const double *)STARPU_VECTOR_GET_PTR(buffers[1]);
+    int n = (int)STARPU_VECTOR_GET_NX(buffers[0]);
+    for (int i = 0; i < n; i++) dst[i] += src[i];
+}
+
+void redux_int_init_cpu(void *buffers[], void *) {
+    int *arr = (int *)STARPU_VECTOR_GET_PTR(buffers[0]);
+    int n = (int)STARPU_VECTOR_GET_NX(buffers[0]);
+    std::memset(arr, 0, (size_t)n * sizeof(int));
+}
+
+void redux_int_reduce_cpu(void *buffers[], void *) {
+    int *dst = (int *)STARPU_VECTOR_GET_PTR(buffers[0]);
+    const int *src = (const int *)STARPU_VECTOR_GET_PTR(buffers[1]);
+    int n = (int)STARPU_VECTOR_GET_NX(buffers[0]);
+    for (int i = 0; i < n; i++) dst[i] += src[i];
 }

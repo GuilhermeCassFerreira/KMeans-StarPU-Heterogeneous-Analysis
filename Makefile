@@ -22,7 +22,7 @@ SRC_COMMON  = src/common
 SRC_STARPU  = src/starpu
 
 # Includes do projeto
-PROJECT_INCLUDES = -I$(INCLUDE_DIR) -I$(SRC_STARPU) -I$(SRC_COMMON) $(INCLUDES)
+PROJECT_INCLUDES = -I$(INCLUDE_DIR) -I$(SRC_STARPU) $(INCLUDES)
 
 # Diretório de saída dos objetos
 BUILD_DIR = build
@@ -30,7 +30,6 @@ BUILD_DIR = build
 # Objetos BASE (Sempre compilados, independente de ter GPU)
 OBJS = $(BUILD_DIR)/io.o \
        $(BUILD_DIR)/metrics.o \
-       $(BUILD_DIR)/metrics_simple.o \
        $(BUILD_DIR)/kmeans_cpu.o \
        $(BUILD_DIR)/kmeans_mpi.o \
        $(BUILD_DIR)/kmeans_main.o
@@ -61,10 +60,7 @@ $(TARGET): $(OBJS)
 $(BUILD_DIR)/io.o: $(SRC_COMMON)/io.cpp $(INCLUDE_DIR)/kmeans_types.h
 	$(CXX) $(CXXFLAGS) $(PROJECT_INCLUDES) -c $< -o $@
 
-$(BUILD_DIR)/metrics.o: $(SRC_COMMON)/metrics.cpp $(SRC_COMMON)/metrics_simple.h
-	$(CXX) $(CXXFLAGS) $(PROJECT_INCLUDES) -c $< -o $@
-
-$(BUILD_DIR)/metrics_simple.o: $(SRC_COMMON)/metrics_simple.cpp $(SRC_COMMON)/metrics_simple.h
+$(BUILD_DIR)/metrics.o: $(SRC_COMMON)/metrics.cpp
 	$(CXX) $(CXXFLAGS) $(PROJECT_INCLUDES) -c $< -o $@
 
 # --- Código StarPU ---

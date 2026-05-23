@@ -10,7 +10,6 @@
 #include <cstring>
 #include <algorithm>
 #include "../../include/kmeans_types.h"
-#include "../common/metrics_simple.h"
 #include "kmeans_omp_mpi.h"
 
 #ifdef USE_GPU
@@ -246,11 +245,28 @@ int main(int argc, char **argv) {
                 0, MPI_COMM_WORLD);
 
     if (rank == 0) {
-        // Métricas padronizadas (SSE + tempos + convergência)
-        compute_and_print_omp_metrics(global_points, global_labels, global_centroids,
-                                      N, K, dimensions,
-                                      iter_converged, nIters, size,
-                                      t_start, t_converge, t_end);
+        double sse = 0.0;
+        for (int i = 0; i < N; i++) {
+            int c = global_labels[i];
+            for (int d = 0; d < dimensions; d++) {
+                double diff = global_points[i * dimensions + d] - global_centroids[c * dimensions + d];
+                sse += diff * diff;
+            }
+        }
+
+        double t_total_ms    = duration<double, milli>(t_end      - t_start).count();
+        double t_converge_ms = duration<double, milli>(t_converge - t_start).count();
+
+        cout << "\n========================================" << endl;
+        cout << "METRICAS FINAIS (OpenMP/MPI)" << endl;
+        cout << "========================================" << endl;
+        cout << fixed << setprecision(4);
+        cout << "SSE (Soma dos Erros Quadraticos):  " << sse << endl;
+        cout << "Iteracoes ate convergir:           " << iter_converged << " / " << nIters << endl;
+        cout << "Tempo ate convergencia:            " << t_converge_ms << " ms" << endl;
+        cout << "Tempo total (com I/O final):       " << t_total_ms    << " ms" << endl;
+        cout << "Nos MPI utilizados:                " << size << endl;
+        cout << "========================================" << endl;
 
 #ifdef USE_GPU
         printf("\n========================================\n");

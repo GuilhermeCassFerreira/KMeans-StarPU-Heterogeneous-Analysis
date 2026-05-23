@@ -7,7 +7,7 @@
 #include <chrono>
 #include "../../include/kmeans_types.h"
 #include "../../include/options.h"
-#include "metrics_simple.h"
+#include "../common/metrics_simple.h"
 
 /* ========================================================================== */
 /* Contadores globais de métricas                                             */
@@ -43,6 +43,10 @@ void calculate_partial_sums(void *buffers[], void *cl_arg);
 void clean_buffers_cpu(void *buffers[], void *cl_arg);
 void update_centroids_cpu(void *buffers[], void *cl_arg);
 void accumulate_nodes_cpu(void *buffers[], void *cl_arg);
+void redux_double_init_cpu(void *buffers[], void *cl_arg);
+void redux_double_reduce_cpu(void *buffers[], void *cl_arg);
+void redux_int_init_cpu(void *buffers[], void *cl_arg);
+void redux_int_reduce_cpu(void *buffers[], void *cl_arg);
 
 /* ========================================================================== */
 /* Declarações das funções CUDA (implementadas em kmeans_cuda.cu)            */
@@ -55,9 +59,13 @@ extern "C" {
 
 void assign_point_to_cluster_cuda(void *buffers[], void *cl_arg);
 void calculate_partial_sums_cuda(void *buffers[], void *cl_arg);
-void clean_buffers_cuda(void *buffers[], void *cl_arg);    
+void clean_buffers_cuda(void *buffers[], void *cl_arg);
 void update_centroids_cuda(void *buffers[], void *cl_arg);
-void accumulate_nodes_cuda(void *buffers[], void *cl_arg); 
+void accumulate_nodes_cuda(void *buffers[], void *cl_arg);
+void redux_double_init_cuda(void *buffers[], void *cl_arg);
+void redux_double_reduce_cuda(void *buffers[], void *cl_arg);
+void redux_int_init_cuda(void *buffers[], void *cl_arg);
+void redux_int_reduce_cuda(void *buffers[], void *cl_arg);
 
 #ifdef __cplusplus
 }
@@ -122,6 +130,13 @@ private:
     std::vector<starpu_data_handle_t> outputs_children;
     int num_chunks;
 
+    /* Buffers parciais por chunk — W exclusivo, calculate paralela */
+    double *chunk_sums_ptr;
+    int    *chunk_counts_ptr;
+    std::vector<starpu_data_handle_t> chunk_sums_handle;
+    std::vector<starpu_data_handle_t> chunk_counts_handle;
+
+    /* Acumulador parcial por nó MPI */
     double *partial_sums_ptr;
     int *partial_counts_ptr;
     std::vector<starpu_data_handle_t> partial_sums_handle;
