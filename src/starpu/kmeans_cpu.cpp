@@ -40,6 +40,7 @@ void assign_point_to_cluster_handles(void *buffers[], void *cl_arg) {
     double *points_values     = (double *)STARPU_VECTOR_GET_PTR(buffers[0]);
     double *centroids         = (double *)STARPU_VECTOR_GET_PTR(buffers[1]);
     int    *nearestClusterIds = (int *)   STARPU_VECTOR_GET_PTR(buffers[2]);
+    int    *local_changes     = (int *)   STARPU_VARIABLE_GET_PTR(buffers[4]);
 
     int changes = 0;
     for (int idx = 0; idx < chunk_size; idx++) {
@@ -63,7 +64,7 @@ void assign_point_to_cluster_handles(void *buffers[], void *cl_arg) {
             changes++;
         }
     }
-    (void)changes; // convergência detectada pelo update_centroids via comparação de centróides
+    *local_changes = changes; // REDUX: StarPU soma todas as cópias privadas
 }
 
 void calculate_partial_sums(void *buffers[], void *cl_arg) {
@@ -101,7 +102,7 @@ void clean_buffers_cpu(void *buffers[], void *cl_arg) {
     cpu_clean_calls++;
 
     int *converged = (int *)STARPU_VARIABLE_GET_PTR(buffers[2]);
-    if (*converged == 1) return; 
+    if (*converged == 1) return;
 
     int K, dimensions, dummy_chunk;
     starpu_codelet_unpack_args(cl_arg, &K, &dimensions, &dummy_chunk);
@@ -117,7 +118,7 @@ void update_centroids_cpu(void *buffers[], void *cl_arg) {
     cpu_kernel_calls++;
     cpu_update_calls++;
 
-    int *converged = (int *)STARPU_VARIABLE_GET_PTR(buffers[3]);
+    int *converged     = (int *)STARPU_VARIABLE_GET_PTR(buffers[3]);
     if (*converged == 1) return;
 
     int K, dimensions, dummy_chunk;
@@ -126,12 +127,7 @@ void update_centroids_cpu(void *buffers[], void *cl_arg) {
     double *partial_sums   = (double *)STARPU_VECTOR_GET_PTR(buffers[0]);
     int    *partial_counts = (int *)   STARPU_VECTOR_GET_PTR(buffers[1]);
     double *centroids      = (double *)STARPU_VECTOR_GET_PTR(buffers[2]);
-
-    int total = K * dimensions;
-    static thread_local std::vector<double> old_centroids_buf;
-    old_centroids_buf.resize(total);
-    double *old_centroids = old_centroids_buf.data();
-    std::memcpy(old_centroids, centroids, total * sizeof(double));
+    int    *total_changes  = (int *)   STARPU_VARIABLE_GET_PTR(buffers[4]);
 
     for (int c = 0; c < K; ++c) {
         if (partial_counts[c] > 0) {
@@ -142,11 +138,9 @@ void update_centroids_cpu(void *buffers[], void *cl_arg) {
         }
     }
 
-    bool no_change = true;
-    for (int i = 0; i < total; ++i) {
-        if (centroids[i] != old_centroids[i]) { no_change = false; break; }
-    }
-    if (no_change) *converged = 1;
+    // Mesmo critério do OMP: convergência quando zero mudanças de label em todos os chunks
+    if (*total_changes == 0) *converged = 1;
+    *total_changes = 0; // reseta para a próxima iteração (REDUX parte de 0)
 }
 
 void accumulate_nodes_cpu(void *buffers[], void *cl_arg) {
@@ -199,4 +193,16 @@ void redux_int_reduce_cpu(void *buffers[], void *) {
     const int *src = (const int *)STARPU_VECTOR_GET_PTR(buffers[1]);
     int n = (int)STARPU_VECTOR_GET_NX(buffers[0]);
     for (int i = 0; i < n; i++) dst[i] += src[i];
+}
+
+/* REDUX para h_changes (VARIABLE = scalar int) */
+void changes_var_init_cpu(void *buffers[], void *) {
+    int *val = (int *)STARPU_VARIABLE_GET_PTR(buffers[0]);
+    *val = 0;
+}
+
+void changes_var_reduce_cpu(void *buffers[], void *) {
+    int *dst       = (int *)STARPU_VARIABLE_GET_PTR(buffers[0]);
+    const int *src = (const int *)STARPU_VARIABLE_GET_PTR(buffers[1]);
+    *dst += *src;
 }

@@ -18,6 +18,7 @@ namespace KMeansTags {
     const int LABELS_PREV   = 30;
     const int CENTROIDS     = 40;
     const int CONVERGED_TAG = 50;
+    const int CHANGES_TAG   = 60;
 
     // ---- acumulador parcial por nó MPI ----
     const int PARTIAL_SUMS_BASE   = 2000;

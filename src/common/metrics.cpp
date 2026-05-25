@@ -11,12 +11,12 @@ extern int opencl_calculate_calls;
 
 #ifdef STARPU_USE_CUDA
 extern "C" int get_cuda_kernel_calls();
-extern "C" int cuda_assign_calls;
-extern "C" int cuda_calculate_calls;
+extern "C" volatile int cuda_assign_calls;
+extern "C" volatile int cuda_calculate_calls;
 #else
 static int get_cuda_kernel_calls() { return 0; }
-static int cuda_assign_calls = 0;
-static int cuda_calculate_calls = 0;
+static volatile int cuda_assign_calls = 0;
+static volatile int cuda_calculate_calls = 0;
 #endif
 
 using namespace std;

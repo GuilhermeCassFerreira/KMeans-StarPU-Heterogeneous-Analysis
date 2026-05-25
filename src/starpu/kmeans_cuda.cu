@@ -33,13 +33,23 @@ __device__ double atomicAdd(double* address, double val)
 }
 #endif
 
+/* Ponteiro para o flag de convergência na CPU (pinned memory).
+ * Definido via starpu_set_converged_cpu_ptr() antes da submissão das tarefas.
+ * Usado em update_centroids_cuda para copiar *converged GPU→CPU na mesma stream,
+ * garantindo que o callback do StarPU veja o valor correto ao disparar. */
+static int *g_converged_cpu_ptr = nullptr;
+
+extern "C" void starpu_set_converged_cpu_ptr(int *ptr) {
+    g_converged_cpu_ptr = ptr;
+}
+
 extern "C" {
-int cuda_assign_calls = 0;
-int cuda_calculate_calls = 0;
-int cuda_clean_calls = 0;
-int cuda_update_calls = 0;
-int cuda_accumulate_calls = 0;
-static int cuda_kernel_calls = 0;
+volatile int cuda_assign_calls = 0;
+volatile int cuda_calculate_calls = 0;
+volatile int cuda_clean_calls = 0;
+volatile int cuda_update_calls = 0;
+volatile int cuda_accumulate_calls = 0;
+static volatile int cuda_kernel_calls = 0;
 
 /* ========================================================================== */
 /* KERNELS DE NEGÓCIO (Assign)                                                */
@@ -47,11 +57,10 @@ static int cuda_kernel_calls = 0;
 
 __global__ void assign_point_to_cluster_cuda_kernel(
     const double *points_values, const double *centroids,
-    int K, int dimensions, int npoints, int *nearestClusterIds, int *converged)
+    int K, int dimensions, int npoints, int *nearestClusterIds,
+    int *converged, int *local_changes)
 {
-    // No early-exit check here: assign_cuda pre-sets *converged=1 on the stream
-    // before launching this kernel, so checking it would always return immediately.
-    // The kernel itself resets to 0 via atomicExch if any label changes.
+    if (*converged == 1) return; // ghost task: iteração já convergiu
 
     int idx = blockIdx.x * blockDim.x + threadIdx.x;
     if (idx >= npoints) return;
@@ -73,9 +82,7 @@ __global__ void assign_point_to_cluster_cuda_kernel(
     int new_label = best + 1;
     if (nearestClusterIds[idx] != new_label) {
         nearestClusterIds[idx] = new_label;
-        // Há mudança: garante que converged fique 0
-        // (uso de atomicCAS para não sobrescrever 1→0 se outro bloco já setou 0)
-        atomicExch(converged, 0);
+        atomicAdd(local_changes, 1); // REDUX: acumula na cópia privada deste chunk
     }
 }
 
@@ -87,31 +94,19 @@ void assign_point_to_cluster_cuda(void *buffers[], void *cl_arg) {
     double *centroids         = (double *)STARPU_VECTOR_GET_PTR(buffers[1]);
     int    *nearestClusterIds = (int *)   STARPU_VECTOR_GET_PTR(buffers[2]);
     int    *converged         = (int *)   STARPU_VARIABLE_GET_PTR(buffers[3]);
+    int    *local_changes     = (int *)   STARPU_VARIABLE_GET_PTR(buffers[4]); // REDUX
 
     cuda_assign_calls++;
     cuda_kernel_calls++;
 
     cudaStream_t stream = starpu_cuda_get_local_stream();
 
-    // Assume convergido; o kernel reseta para 0 se qualquer label mudar.
-    // IMPORTANTE: cudaMemcpyAsync com source na STACK é UB porque o codelet
-    // retorna imediatamente (STARPU_CUDA_ASYNC) e a memcpy real acontece
-    // depois — a stack address já foi destruída. Usar cudaMemsetAsync
-    // que não precisa de buffer host. Para escrever int=1 via memset
-    // precisamos de 0x01010101 (não é exatamente 1, mas o kernel só testa
-    // por *converged != 0, então qualquer não-zero serve como "assume
-    // convergido"). Para ser semanticamente correto e pôr o valor 1 exato,
-    // usamos um buffer host estático (lifetime do programa).
-    static const int kOne = 1;
-    CUDA_CHECK(cudaMemcpyAsync(converged, &kOne, sizeof(int),
-                               cudaMemcpyHostToDevice, stream));
-
     int threads = 256;
     int blocks  = (chunk_size + threads - 1) / threads;
 
     assign_point_to_cluster_cuda_kernel<<<blocks, threads, 0, stream>>>(
         points_values, centroids, K, dimensions, chunk_size,
-        nearestClusterIds, converged);
+        nearestClusterIds, converged, local_changes);
 
     CUDA_CHECK(cudaGetLastError());
 }
@@ -175,12 +170,19 @@ void calculate_partial_sums_cuda(void *buffers[], void *cl_arg) {
     int *nearestClusterIds = (int *)STARPU_VECTOR_GET_PTR(buffers[1]);
     double *partial_sums = (double *)STARPU_VECTOR_GET_PTR(buffers[2]);
     int *partial_counts = (int *)STARPU_VECTOR_GET_PTR(buffers[3]);
-    int *converged = (int *)STARPU_VARIABLE_GET_PTR(buffers[4]); 
+    int *converged = (int *)STARPU_VARIABLE_GET_PTR(buffers[4]);
 
     int npoints = chunk_size;
 
     cuda_calculate_calls++;
     cuda_kernel_calls++;
+
+    cudaStream_t stream = starpu_cuda_get_local_stream();
+
+    /* STARPU_W não zera o buffer automaticamente; zeramos antes da acumulação
+     * assim como calculate_partial_sums_cpu faz com memset. */
+    CUDA_CHECK(cudaMemsetAsync(partial_sums,   0, (size_t)K * dimensions * sizeof(double), stream));
+    CUDA_CHECK(cudaMemsetAsync(partial_counts, 0, (size_t)K * sizeof(int), stream));
 
     int threads = 256;
     int blocks = (npoints + threads - 1) / threads;
@@ -199,8 +201,6 @@ void calculate_partial_sums_cuda(void *buffers[], void *cl_arg) {
     if (shared_mem_size > cached_shared_mem_limit) {
         fprintf(stderr, "[KMeans CUDA] WARN: Shared memory insuficiente. K muito grande? Falha provavel.\n");
     }
-
-    cudaStream_t stream = starpu_cuda_get_local_stream();
 
     calculate_partial_sums_cuda_kernel<<<blocks, threads, shared_mem_size, stream>>>(
         points_values, nearestClusterIds, K, dimensions, npoints, partial_sums, partial_counts, converged);
@@ -225,15 +225,15 @@ __global__ void clean_buffers_cuda_kernel(double *partial_sums, int *partial_cou
 }
 
 void clean_buffers_cuda(void *buffers[], void *cl_arg) {
-    cuda_clean_calls++;     
+    cuda_clean_calls++;
     cuda_kernel_calls++;
 
     int K, dimensions, dummy_chunk;
     starpu_codelet_unpack_args(cl_arg, &K, &dimensions, &dummy_chunk);
 
-    double *partial_sums = (double *)STARPU_VECTOR_GET_PTR(buffers[0]);
-    int *partial_counts = (int *)STARPU_VECTOR_GET_PTR(buffers[1]);
-    int *converged = (int *)STARPU_VARIABLE_GET_PTR(buffers[2]); 
+    double *partial_sums   = (double *)STARPU_VECTOR_GET_PTR(buffers[0]);
+    int    *partial_counts = (int *)   STARPU_VECTOR_GET_PTR(buffers[1]);
+    int    *converged      = (int *)   STARPU_VARIABLE_GET_PTR(buffers[2]);
 
     int total_doubles = K * dimensions;
     int threads = 256;
@@ -244,7 +244,9 @@ void clean_buffers_cuda(void *buffers[], void *cl_arg) {
 }
 
 
-__global__ void update_centroids_cuda_kernel(double *partial_sums, int *partial_counts, double *centroids, int K, int dimensions, int *converged) {
+__global__ void update_centroids_cuda_kernel(double *partial_sums, int *partial_counts,
+                                             double *centroids, int K, int dimensions,
+                                             int *converged, int *total_changes) {
     if (*converged == 1) return;
 
     int c = blockIdx.x * blockDim.x + threadIdx.x;
@@ -253,6 +255,13 @@ __global__ void update_centroids_cuda_kernel(double *partial_sums, int *partial_
             centroids[c * dimensions + d] =
                 partial_sums[c * dimensions + d] / partial_counts[c];
         }
+    }
+    // Mesmo critério do OMP/CPU: zero mudanças de label → convergência
+    if (c == 0 && *total_changes == 0) {
+        *converged = 1;
+    }
+    if (c == 0) {
+        *total_changes = 0; // reseta para a próxima iteração (REDUX parte de 0)
     }
 }
 
@@ -267,13 +276,20 @@ void update_centroids_cuda(void *buffers[], void *cl_arg) {
     int    *partial_counts = (int *)   STARPU_VECTOR_GET_PTR(buffers[1]);
     double *centroids      = (double *)STARPU_VECTOR_GET_PTR(buffers[2]);
     int    *converged      = (int *)   STARPU_VARIABLE_GET_PTR(buffers[3]);
+    int    *total_changes  = (int *)   STARPU_VARIABLE_GET_PTR(buffers[4]); // REDUX result
 
     int threads = 256;
     int blocks  = (K + threads - 1) / threads;
 
     cudaStream_t stream = starpu_cuda_get_local_stream();
     update_centroids_cuda_kernel<<<blocks, threads, 0, stream>>>(
-        partial_sums, partial_counts, centroids, K, dimensions, converged);
+        partial_sums, partial_counts, centroids, K, dimensions, converged, total_changes);
+
+    /* Copia o flag de convergência GPU→CPU na mesma stream, ANTES do evento de
+     * conclusão do StarPU. Assim o callback vê o valor correto em CPU memory. */
+    if (g_converged_cpu_ptr)
+        CUDA_CHECK(cudaMemcpyAsync(g_converged_cpu_ptr, converged, sizeof(int),
+                                   cudaMemcpyDeviceToHost, stream));
 }
 
 __global__ void accumulate_nodes_cuda_kernel(double *master_sums, int *master_counts, 
@@ -314,5 +330,23 @@ extern "C" void accumulate_nodes_cuda(void *buffers[], void *cl_arg) {
 
 
 int get_cuda_kernel_calls() { return cuda_kernel_calls; }
+
+/* REDUX para h_changes: init zera a cópia privada na GPU. */
+extern "C" void changes_var_init_cuda(void *buffers[], void *) {
+    int *val = (int *)STARPU_VARIABLE_GET_PTR(buffers[0]);
+    CUDA_CHECK(cudaMemsetAsync(val, 0, sizeof(int), starpu_cuda_get_local_stream()));
+}
+
+/* REDUX reduce na GPU: dst += src (para o caso NCPU=0 onde só há workers CUDA). */
+__global__ void reduce_int_var_kernel(int *dst, const int *src) {
+    *dst += *src;
+}
+
+extern "C" void changes_var_reduce_cuda(void *buffers[], void *) {
+    int *dst = (int *)STARPU_VARIABLE_GET_PTR(buffers[0]);
+    const int *src = (const int *)STARPU_VARIABLE_GET_PTR(buffers[1]);
+    reduce_int_var_kernel<<<1, 1, 0, starpu_cuda_get_local_stream()>>>(dst, src);
+    CUDA_CHECK(cudaGetLastError());
+}
 
 } // extern "C"
