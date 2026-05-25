@@ -14,7 +14,8 @@ GPU ?= 0
 
 # Objetos base (Sempre compilados)
 OBJS = kmeans_main.o kmeans_cpu.o
-IO_OBJ = ../../build/io.o
+IO_OBJ    = ../../build/io.o
+METRICS_OBJ = ../../build/metrics.o
 
 # ==============================================================================
 # BLOCO 1: TEM NVIDIA HPC SDK INSTALADO
@@ -32,7 +33,7 @@ ifeq ($(HAS_NVHPC), 1)
     export OMPI_CXX        := $(NVC_COMPILER)
 
     # Flags base do NVC++
-    CXXFLAGS = -fast -DNDEBUG -Wall -I../../include -I../common -DUSE_MPI
+    CXXFLAGS = -O3 -march=native -DNDEBUG -Wall -I../../include -I../common -DUSE_MPI
     LDFLAGS  =
 
     ifeq ($(GPU), 1)
@@ -79,7 +80,7 @@ all: kmeans_openmp
 
 # Linkagem final
 kmeans_openmp: $(OBJS)
-	$(CXX) $(OBJS) $(IO_OBJ) $(LDFLAGS) -o kmeans_openmp
+	$(CXX) $(OBJS) $(IO_OBJ) $(METRICS_OBJ) $(LDFLAGS) -o kmeans_openmp
 
 # Limpeza
 clean:

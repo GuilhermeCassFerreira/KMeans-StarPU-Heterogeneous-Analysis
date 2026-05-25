@@ -433,6 +433,8 @@ void KMeans::run(vector<Point> &all_points, int N) {
 
     if (mpi_rank == 0) cout << "[INFO] Injetando max " << iters << " iteracoes no DAG (Assíncrono)..." << endl;
 
+    auto t_loop_start = high_resolution_clock::now();
+
     // IMPORTANTE: o flag de convergência precisa estar em memória heap pinada
     // (acessível pelo driver CUDA). Antes estava na stack (`int converged_flag_local`),
     // o que provocava `munmap_chunk(): invalid pointer` no shutdown e potencial
@@ -466,6 +468,7 @@ void KMeans::run(vector<Point> &all_points, int N) {
 
     starpu_task_wait_for_all();
     starpu_mpi_wait_for_all(MPI_COMM_WORLD);
+    t_loop_ms_ = duration<double, milli>(high_resolution_clock::now() - t_loop_start).count();
 
 #ifdef STARPU_USE_CUDA
     starpu_set_converged_cpu_ptr(nullptr); // evita acesso a ponteiro inválido pós-run

@@ -10,6 +10,7 @@
 #include <cstring>
 #include <algorithm>
 #include "../../include/kmeans_types.h"
+#include "../../include/metrics.h"
 #include "kmeans_omp_mpi.h"
 
 #ifdef USE_GPU
@@ -22,6 +23,7 @@ using namespace chrono;
 extern bool read_points_from_file(const string& filename, vector<Point>& points, int& N, int& dimensions);
 
 int main(int argc, char **argv) {
+    auto t_prog_start = high_resolution_clock::now();
     int mpi_provided;
     MPI_Init_thread(&argc, &argv, MPI_THREAD_FUNNELED, &mpi_provided);
 
@@ -166,7 +168,6 @@ int main(int argc, char **argv) {
 
     double *local_sums = new double[K * dimensions], *global_sums = new double[K * dimensions];
     int *local_counts = new int[K], *global_counts = new int[K];
-    double *old_centroids = new double[K * dimensions];
 
     #ifdef USE_GPU
     if (mode == 1 || mode == 2) {
@@ -177,7 +178,6 @@ int main(int argc, char **argv) {
 
     MPI_Barrier(MPI_COMM_WORLD);
     auto t_start = high_resolution_clock::now();
-    auto t_converge = t_start;
     int iter_converged = -1;
 
     #ifdef USE_GPU
@@ -218,7 +218,6 @@ int main(int argc, char **argv) {
         MPI_Allreduce(&local_changes, &global_changes, 1, MPI_INT, MPI_SUM, MPI_COMM_WORLD);
         if (global_changes == 0) {
             iter_converged = iter + 1;
-            t_converge = high_resolution_clock::now();
             if (rank == 0) cout << "[OMP] Convergiu (label changes=0) na iteracao " << iter + 1 << endl;
             break;
         }
@@ -226,22 +225,12 @@ int main(int argc, char **argv) {
         MPI_Allreduce(local_sums, global_sums, K * dimensions, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
         MPI_Allreduce(local_counts, global_counts, K, MPI_INT, MPI_SUM, MPI_COMM_WORLD);
 
-        memcpy(old_centroids, global_centroids, K * dimensions * sizeof(double));
         update_cents(global_sums, global_counts, global_centroids, K, dimensions);
-
-        bool centroids_stable = (memcmp(old_centroids, global_centroids, K * dimensions * sizeof(double)) == 0);
-        if (centroids_stable) {
-            iter_converged = iter + 1;
-            t_converge = high_resolution_clock::now();
-            if (rank == 0) cout << "[OMP] Convergiu (centroide estavel) na iteracao " << iter + 1 << endl;
-            break;
-        }
 
         if (rank == 0) cout << "[OMP] Iteracao " << iter + 1 << " | mudancas: " << global_changes << endl;
 
         if (iter == nIters - 1) {
             iter_converged = nIters;
-            t_converge = high_resolution_clock::now();
         }
     }
 
@@ -260,38 +249,16 @@ int main(int argc, char **argv) {
                 global_labels, sendCountsLbls, displsLbls, MPI_INT,
                 0, MPI_COMM_WORLD);
 
+    double sse = 0.0;
     if (rank == 0) {
-        double sse = 0.0;
         for (int i = 0; i < N; i++) {
-            int c = global_labels[i];
+            int c = global_labels[i] - 1;  // labels sao 1-indexed
+            if (c < 0 || c >= K) continue;
             for (int d = 0; d < dimensions; d++) {
                 double diff = global_points[i * dimensions + d] - global_centroids[c * dimensions + d];
                 sse += diff * diff;
             }
         }
-
-        double t_total_ms    = duration<double, milli>(t_end      - t_start).count();
-        double t_converge_ms = duration<double, milli>(t_converge - t_start).count();
-
-        cout << "\n========================================" << endl;
-        cout << "METRICAS FINAIS (OpenMP/MPI)" << endl;
-        cout << "========================================" << endl;
-        cout << fixed << setprecision(4);
-        cout << "SSE (Soma dos Erros Quadraticos):  " << sse << endl;
-        cout << "Iteracoes ate convergir:           " << iter_converged << " / " << nIters << endl;
-        cout << "Tempo ate convergencia:            " << t_converge_ms << " ms" << endl;
-        cout << "Tempo total (com I/O final):       " << t_total_ms    << " ms" << endl;
-        cout << "Nos MPI utilizados:                " << size << endl;
-        cout << "========================================" << endl;
-
-#ifdef USE_GPU
-        printf("\n========================================\n");
-        printf("[VERIFICACAO DE OFFLOAD - OPENMP]\n");
-        printf("Chamadas na GPU (Assign): %d\n", cuda_assign_calls);
-        printf("Chamadas na GPU (Calculate): %d\n", cuda_calculate_calls);
-        printf("Chamadas na GPU (Update): %d\n", cuda_update_calls);
-        printf("========================================\n");
-#endif
 
         string cmd = "mkdir -p " + output_dir;
         if (system(cmd.c_str()) != 0) {
@@ -317,6 +284,31 @@ int main(int argc, char **argv) {
         cout << "[INFO] Arquivos salvos em: " << output_dir << endl;
     }
 
+    // Todos os ranks preenchem métricas e chamam print (que faz MPI_Gather internamente)
+    auto t_prog_end = high_resolution_clock::now();
+    double t_loop_ms  = duration<double, milli>(t_end - t_start).count();
+    double t_total_ms = duration<double, milli>(t_prog_end - t_prog_start).count();
+
+    OmpMetrics m{};
+    m.t_loop_ms       = t_loop_ms;
+    m.t_total_ms      = t_total_ms;
+    m.iter_converged  = iter_converged;
+    m.iter_max        = nIters;
+    m.sse             = sse;  // 0.0 nos ranks != 0
+    m.mpi_ranks       = size;
+    m.omp_threads     = omp_get_max_threads();
+    m.mode            = mode;
+    m.num_chunks      = num_chunks;
+    m.total_assign    = (long)iter_converged * num_chunks;
+    m.total_calculate = (long)iter_converged * num_chunks;
+    m.total_update    = (long)iter_converged;
+#ifdef USE_GPU
+    m.gpu_assign    = cuda_assign_calls;
+    m.gpu_calculate = cuda_calculate_calls;
+    m.gpu_update    = cuda_update_calls;
+#endif
+    print_omp_metrics(rank, size, m);
+
     #ifdef USE_GPU
     if (mode == 1 || mode == 2) {
         cudaHostUnregister(local_sums);
@@ -328,7 +320,7 @@ int main(int argc, char **argv) {
     #endif
 
     delete[] local_points; delete[] local_labels; delete[] local_sums; delete[] local_counts;
-    delete[] global_sums; delete[] global_counts; delete[] global_centroids; delete[] old_centroids;
+    delete[] global_sums; delete[] global_counts; delete[] global_centroids;
     if (rank == 0) { delete[] global_points; delete[] global_labels; }
     MPI_Finalize();
     return 0;

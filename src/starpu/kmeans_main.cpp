@@ -90,13 +90,50 @@ int main(int argc, char **argv) {
     kmeans.run(all_points, N);
 
     auto end = high_resolution_clock::now();
-    auto duration = duration_cast<milliseconds>(end - start);
+    double t_total_ms = duration_cast<duration<double, milli>>(end - start).count();
 
-    if (rank == 0) cout << "\nExecution time: " << duration.count() << " ms" << endl;
+    // ---- Metricas ----
+    StarPUMetrics m{};
+    m.t_loop_ms    = kmeans.getLoopMs();
+    m.t_total_ms   = t_total_ms;
+    m.iter_max     = iters;
+    m.iter_converged = (g_iter_converged.load() > 0)
+                       ? g_iter_converged.load() : iters;
+    m.mpi_ranks    = size;
 
-    print_starpu_worker_usage(rank);
-    print_kernel_usage_metrics(rank);
-    print_node_usage_metrics(rank, size);
+    m.ncpu_workers   = starpu_worker_get_count_by_type(STARPU_CPU_WORKER);
+    m.ncuda_workers  = starpu_worker_get_count_by_type(STARPU_CUDA_WORKER);
+    m.cpu_assign     = cpu_assign_calls;
+    m.cpu_calculate  = cpu_calculate_calls;
+    m.cpu_clean      = cpu_clean_calls;
+    m.cpu_update     = cpu_update_calls;
+    m.cpu_accumulate = cpu_accumulate_calls;
+#ifdef STARPU_USE_CUDA
+    m.cuda_assign     = cuda_assign_calls;
+    m.cuda_calculate  = cuda_calculate_calls;
+    m.cuda_clean      = cuda_clean_calls;
+    m.cuda_update     = cuda_update_calls;
+    m.cuda_accumulate = cuda_accumulate_calls;
+#endif
+
+    // SSE (so no rank 0 que tem todos os pontos)
+    if (rank == 0) {
+        const auto& cents = kmeans.getCentroids();
+        int dims = kmeans.getDimensions();
+        int K_   = kmeans.getK();
+        double sse = 0.0;
+        for (int i = 0; i < N; i++) {
+            int c = all_points[i].getCluster() - 1;
+            if (c < 0 || c >= K_) continue;
+            for (int d = 0; d < dims; d++) {
+                double diff = all_points[i].getVal(d) - cents[c * dims + d];
+                sse += diff * diff;
+            }
+        }
+        m.sse = sse;
+    }
+
+    print_starpu_metrics(rank, size, m);
 
     // ---- Finalização ----
     starpu_mpi_shutdown();

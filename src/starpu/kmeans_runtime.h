@@ -7,7 +7,7 @@
 #include <chrono>
 #include "../../include/kmeans_types.h"
 #include "../../include/options.h"
-#include "../common/metrics_simple.h"
+#include "../../include/metrics.h"
 
 /* ========================================================================== */
 /* Contadores globais de métricas                                             */
@@ -16,22 +16,19 @@
 extern int cpu_kernel_calls;
 extern int cpu_assign_calls;
 extern int cpu_calculate_calls;
-extern int opencl_assign_calls;
-extern int opencl_calculate_calls;
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-extern int cuda_assign_calls;
-extern int cuda_calculate_calls;
+extern int cpu_clean_calls;
+extern int cpu_update_calls;
+extern int cpu_accumulate_calls;
 
 #ifdef STARPU_USE_CUDA
-int get_cuda_kernel_calls();
-void starpu_set_converged_cpu_ptr(int *ptr);
-#endif
-
-#ifdef __cplusplus
+extern "C" {
+    extern volatile int cuda_assign_calls;
+    extern volatile int cuda_calculate_calls;
+    extern volatile int cuda_clean_calls;
+    extern volatile int cuda_update_calls;
+    extern volatile int cuda_accumulate_calls;
+    int get_cuda_kernel_calls();
+    void starpu_set_converged_cpu_ptr(int *ptr);
 }
 #endif
 
@@ -101,18 +98,6 @@ extern struct starpu_perfmodel update_perf_model;
 /* ========================================================================== */
 
 bool read_points_from_file(const std::string &filename, std::vector<Point> &all_points, int &N, int &dimensions);
-void print_kernel_usage_metrics(int rank);
-void print_starpu_worker_usage(int rank);
-void print_node_usage_metrics(int rank, int world_size);
-
-class KMeans;   // forward declaration (definição abaixo no mesmo header)
-
-void compute_and_print_starpu_metrics(
-        const KMeans& kmeans,
-        const std::vector<Point>& all_points,
-        int N, int iters, int mpi_ranks,
-        std::chrono::high_resolution_clock::time_point t_start,
-        std::chrono::high_resolution_clock::time_point t_end);
 
 /* ========================================================================== */
 /* Classe KMeans (implementada em kmeans_mpi.cpp)                            */
@@ -153,11 +138,11 @@ private:
     double *points_ptr;
     int *labels_ptr;
     std::vector<int> chunk_owners;
+    double t_loop_ms_ = 0.0;
 
     void clearClusters();
     int getChunkOwner(int chunk_id);
-    
-    // Função unificada
+
     void submitTasks(int N, starpu_data_handle_t converged_handle, int *converged_flag_ptr, starpu_data_handle_t h_changes_handle);
 
 public:
@@ -165,10 +150,11 @@ public:
 
     void run(std::vector<Point> &all_points, int N);
 
-    // Getter para o main calcular SSE após a execução
+    // Getters para o main calcular metricas apos a execucao
     const std::vector<double>& getCentroids() const { return centroids_data; }
-    int getDimensions() const { return dimensions; }
-    int getK() const { return K; }
+    int    getDimensions() const { return dimensions; }
+    int    getK()          const { return K; }
+    double getLoopMs()     const { return t_loop_ms_; }
 };
 
 /* ========================================================================== */
