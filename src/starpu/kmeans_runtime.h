@@ -28,6 +28,7 @@ extern int cuda_calculate_calls;
 
 #ifdef STARPU_USE_CUDA
 int get_cuda_kernel_calls();
+void starpu_set_converged_cpu_ptr(int *ptr);
 #endif
 
 #ifdef __cplusplus
@@ -47,6 +48,8 @@ void redux_double_init_cpu(void *buffers[], void *cl_arg);
 void redux_double_reduce_cpu(void *buffers[], void *cl_arg);
 void redux_int_init_cpu(void *buffers[], void *cl_arg);
 void redux_int_reduce_cpu(void *buffers[], void *cl_arg);
+void changes_var_init_cpu(void *buffers[], void *cl_arg);
+void changes_var_reduce_cpu(void *buffers[], void *cl_arg);
 
 /* ========================================================================== */
 /* Declarações das funções CUDA (implementadas em kmeans_cuda.cu)            */
@@ -66,6 +69,8 @@ void redux_double_init_cuda(void *buffers[], void *cl_arg);
 void redux_double_reduce_cuda(void *buffers[], void *cl_arg);
 void redux_int_init_cuda(void *buffers[], void *cl_arg);
 void redux_int_reduce_cuda(void *buffers[], void *cl_arg);
+void changes_var_init_cuda(void *buffers[], void *cl_arg);
+void changes_var_reduce_cuda(void *buffers[], void *cl_arg);
 
 #ifdef __cplusplus
 }
@@ -153,7 +158,7 @@ private:
     int getChunkOwner(int chunk_id);
     
     // Função unificada
-    void submitTasks(int N, starpu_data_handle_t converged_handle, int *converged_flag_ptr);
+    void submitTasks(int N, starpu_data_handle_t converged_handle, int *converged_flag_ptr, starpu_data_handle_t h_changes_handle);
 
 public:
     KMeans(int K, int iterations, std::string output_dir, int chunk_size, int rank, int size, int dims, int seed);
