@@ -101,9 +101,11 @@ void print_omp_metrics(int rank, int world_size, const OmpMetrics& m) {
         cout << endl << "Tempos por rank:" << endl;
         cout << fixed << setprecision(2);
         for (int i = 0; i < world_size; i++) {
+            double rank_avg = (m.iter_converged > 0) ? all_loop[i] / m.iter_converged : 0.0;
             cout << "  Rank " << i
                  << ": loop=" << setw(10) << all_loop[i]  << " ms"
-                 << "  total=" << setw(10) << all_total[i] << " ms" << endl;
+                 << "  avg/iter=" << setw(8) << rank_avg   << " ms"
+                 << "  total="    << setw(10) << all_total[i] << " ms" << endl;
         }
     }
 
@@ -203,9 +205,11 @@ void print_starpu_metrics(int rank, int world_size, const StarPUMetrics& m) {
         cout << endl << "Tempos por rank:" << endl;
         cout << fixed << setprecision(2);
         for (int i = 0; i < world_size; i++) {
+            double rank_avg = (m.iter_converged > 0) ? all_loop[i] / m.iter_converged : 0.0;
             cout << "  Rank " << i
                  << ": loop=" << setw(10) << all_loop[i]  << " ms"
-                 << "  total=" << setw(10) << all_total[i] << " ms" << endl;
+                 << "  avg/iter=" << setw(8) << rank_avg   << " ms"
+                 << "  total="    << setw(10) << all_total[i] << " ms" << endl;
         }
     }
 
