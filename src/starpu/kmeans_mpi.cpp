@@ -179,7 +179,10 @@ void KMeans::clearClusters() {
 }
 
 int KMeans::getChunkOwner(int chunk_id) {
-    return chunk_id % world_size;
+    // Blocos contíguos: rank r possui chunks [r*cpr, (r+1)*cpr)
+    // Alinha com o scatter contíguo dos pontos em run()
+    int cpr = num_chunks / std::max(world_size, 1);
+    return std::min(chunk_id / std::max(cpr, 1), world_size - 1);
 }
 
 void KMeans::submitTasks(int N, starpu_data_handle_t converged_handle, int *converged_flag_ptr, starpu_data_handle_t h_changes_handle) {
@@ -325,15 +328,30 @@ void KMeans::run(vector<Point> &all_points, int N) {
     if (starpu_malloc((void**)&chunk_sums_ptr,  chunk_sums_bytes)  != 0) exit(1);
     if (starpu_malloc((void**)&chunk_counts_ptr, chunk_counts_bytes) != 0) exit(1);
 
+    memset(labels_ptr, 0, labels_bytes);
     if (mpi_rank == 0) {
-        memset(labels_ptr, 0, labels_bytes);
         for (int i = 0; i < N; i++) {
             for (int d = 0; d < dimensions; d++)
                 points_ptr[i * dimensions + d] = all_points[i].getVal(d);
         }
     } else {
         memset(points_ptr, 0, points_bytes);
-        memset(labels_ptr, 0, labels_bytes);
+    }
+
+    // Distribui pontos: cada rank recebe sua fatia contígua (alinhada com getChunkOwner)
+    // Rank r recebe points[r*local_n .. (r+1)*local_n - 1] e armazena no offset correto
+    if (world_size > 1) {
+        int local_n = N / world_size;
+        int count   = local_n * dimensions;
+        if (mpi_rank == 0) {
+            MPI_Scatter(points_ptr, count, MPI_DOUBLE,
+                        MPI_IN_PLACE, count, MPI_DOUBLE,
+                        0, MPI_COMM_WORLD);
+        } else {
+            MPI_Scatter(nullptr, count, MPI_DOUBLE,
+                        points_ptr + (long)mpi_rank * count, count, MPI_DOUBLE,
+                        0, MPI_COMM_WORLD);
+        }
     }
     memset(partial_sums_ptr,  0, sums_bytes);
     memset(partial_counts_ptr,0, counts_bytes);
