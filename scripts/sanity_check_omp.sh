@@ -60,23 +60,23 @@ fi
 # =============================================================================
 
 echo ""
-echo "--- OpenMP CPU (modo=0, chunks=1) ---"
-OMP_NUM_THREADS=8 mpirun -np 1 --bind-to none \
+echo "--- OpenMP CPU (modo=0, chunks=1, OMP_NUM_THREADS=7) ---"
+OMP_NUM_THREADS=7 mpirun -np 1 --bind-to none \
 ./src/openmp/kmeans_openmp "$SANITY_INPUT" $K "output_sanity/omp_cpu" 0 1 0.0 $SEED $ITERS \
 2>&1 | tee "$LOG_DIR/sanity_omp_cpu.log"
 echo "OpenMP CPU: OK"
 
 if [ $HAS_OMP_GPU -eq 1 ]; then
     echo ""
-    echo "--- OpenMP GPU (modo=1, chunks=2) ---"
-    OMP_NUM_THREADS=8 mpirun -np 1 --bind-to none \
+    echo "--- OpenMP GPU (modo=1, chunks=2, OMP_NUM_THREADS=1) ---"
+    OMP_NUM_THREADS=1 mpirun -np 1 --bind-to none \
     ./src/openmp/kmeans_openmp "$SANITY_INPUT" $K "output_sanity/omp_gpu" 1 2 1.0 $SEED $ITERS \
     2>&1 | tee "$LOG_DIR/sanity_omp_gpu.log"
     echo "OpenMP GPU: OK"
 
     echo ""
-    echo "--- OpenMP Hybrid (modo=2, chunks=4, gpu_ratio=0.75) ---"
-    OMP_NUM_THREADS=8 mpirun -np 1 --bind-to none \
+    echo "--- OpenMP Hybrid (modo=2, chunks=4, gpu_ratio=0.75, OMP_NUM_THREADS=6) ---"
+    OMP_NUM_THREADS=6 mpirun -np 1 --bind-to none \
     ./src/openmp/kmeans_openmp "$SANITY_INPUT" $K "output_sanity/omp_hybrid" 2 4 0.75 $SEED $ITERS \
     2>&1 | tee "$LOG_DIR/sanity_omp_hybrid.log"
     echo "OpenMP Hybrid: OK"

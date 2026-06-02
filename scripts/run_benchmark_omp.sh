@@ -58,7 +58,7 @@ run_omp_cpu() {
     local run_id=$1
     local log="$LOG_DIR/omp_cpu/${run_id}_metricas.log"
     echo "" && echo "[$(date +%H:%M:%S)] >>> OpenMP CPU — Run $run_id"
-    OMP_NUM_THREADS=8 mpirun -np 1 --bind-to none \
+    OMP_NUM_THREADS=7 mpirun -np 1 --bind-to none \
     ./src/openmp/kmeans_openmp "$INPUT_FILE" $K "output_bench/omp_cpu_${run_id}" 0 1 0.0 $SEED $ITERS \
     2>&1 | tee "$log"
 }
@@ -68,7 +68,7 @@ run_omp_gpu() {
     local log="$LOG_DIR/omp_gpu/${run_id}_metricas.log"
     echo "" && echo "[$(date +%H:%M:%S)] >>> OpenMP GPU — Run $run_id"
     if [ $HAS_OMP_GPU -eq 0 ]; then echo "IGNORADO: nvc++ nao disponivel"; return; fi
-    OMP_NUM_THREADS=8 mpirun -np 1 --bind-to none \
+    OMP_NUM_THREADS=1 mpirun -np 1 --bind-to none \
     ./src/openmp/kmeans_openmp "$INPUT_FILE" $K "output_bench/omp_gpu_${run_id}" 1 2 1.0 $SEED $ITERS \
     2>&1 | tee "$log"
 }
@@ -78,7 +78,7 @@ run_omp_hybrid() {
     local log="$LOG_DIR/omp_hybrid/${run_id}_metricas.log"
     echo "" && echo "[$(date +%H:%M:%S)] >>> OpenMP Hybrid — Run $run_id"
     if [ $HAS_OMP_GPU -eq 0 ]; then echo "IGNORADO: nvc++ nao disponivel"; return; fi
-    OMP_NUM_THREADS=8 mpirun -np 1 --bind-to none \
+    OMP_NUM_THREADS=6 mpirun -np 1 --bind-to none \
     ./src/openmp/kmeans_openmp "$INPUT_FILE" $K "output_bench/omp_hybrid_${run_id}" 2 4 0.75 $SEED $ITERS \
     2>&1 | tee "$log"
 }
