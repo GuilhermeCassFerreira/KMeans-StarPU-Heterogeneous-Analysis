@@ -19,7 +19,7 @@ SEED=42
 ITERS=30
 LOG_DIR="logs/benchmark_omp_$(date +%Y%m%d_%H%M%S)"
 
-mkdir -p "$LOG_DIR"/{omp_cpu,omp_gpu,omp_hybrid}
+mkdir -p "$LOG_DIR"/{omp_cpu,omp_hybrid}
 
 echo "======================================"
 echo " BENCHMARK OpenMP — KMeans N=300M, np=1"
@@ -90,17 +90,14 @@ run_omp_hybrid() {
 
 echo "" && echo "=== RODADA 1 ==="
 run_omp_cpu    1
-run_omp_gpu    1
 run_omp_hybrid 1
 
 echo "" && echo "=== RODADA 2 ==="
 run_omp_cpu    2
-run_omp_gpu    2
 run_omp_hybrid 2
 
 echo "" && echo "=== RODADA 3 ==="
 run_omp_cpu    3
-run_omp_gpu    3
 run_omp_hybrid 3
 
 echo ""

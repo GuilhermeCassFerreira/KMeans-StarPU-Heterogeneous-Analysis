@@ -136,13 +136,13 @@ starpu_env_for_mode() {
   local mode="$1"
   case "$mode" in
     starpu_cpu)
-      echo "STARPU_NCPUS=7 STARPU_NCUDA=0 STARPU_WORKERS_CPUID=0,1,2,3,4,5,6,7"
+      echo "STARPU_NCPUS=8 STARPU_NCUDA=0 STARPU_WORKERS_CPUID=0,1,2,3,4,5,6,7"
       ;;
     starpu_gpu)
       echo "STARPU_NCPUS=0 STARPU_NCUDA=1"
       ;;
     starpu_hybrid)
-      echo "STARPU_NCPUS=6 STARPU_NCUDA=1 STARPU_WORKERS_CPUID=0,1,2,3,4,5,6,7"
+      echo "STARPU_NCPUS=7 STARPU_NCUDA=1 STARPU_WORKERS_CPUID=0,1,2,3,4,5,6,7"
       ;;
   esac
 }

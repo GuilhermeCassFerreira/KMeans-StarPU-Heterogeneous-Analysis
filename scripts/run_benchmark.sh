@@ -49,7 +49,7 @@ run_starpu_cpu() {
     local log="$LOG_DIR/starpu_cpu/${run_id}_${label}.log"
     echo "" && echo "[$(date +%H:%M:%S)] >>> StarPU CPU — Run $run_id ($label)"
     STARPU_SCHED=dmda STARPU_NOPENCL=1 STARPU_RESERVE_NCPU=1 \
-    STARPU_NCPUS=7 STARPU_NCUDA=0 \
+    STARPU_NCPUS=8 STARPU_NCUDA=0 \
     STARPU_WORKERS_CPUID=0,1,2,3,4,5,6,7 \
     mpirun -np 1 --bind-to none \
     ./kmeans_starpu "$INPUT_FILE" $K "output_bench/starpu_cpu_${run_id}" 28 0 $SEED $ITERS \
@@ -72,7 +72,7 @@ run_starpu_hybrid() {
     local log="$LOG_DIR/starpu_hybrid/${run_id}_${label}.log"
     echo "" && echo "[$(date +%H:%M:%S)] >>> StarPU Hybrid — Run $run_id ($label)"
     STARPU_SCHED=dmda STARPU_NOPENCL=1 STARPU_RESERVE_NCPU=1 \
-    STARPU_NCPUS=6 STARPU_NCUDA=1 \
+    STARPU_NCPUS=7 STARPU_NCUDA=1 \
     STARPU_WORKERS_CPUID=0,1,2,3,4,5,6,7 \
     mpirun -np 1 --bind-to none \
     ./kmeans_starpu "$INPUT_FILE" $K "output_bench/starpu_hybrid_${run_id}" 32 0 $SEED $ITERS \
