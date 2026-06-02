@@ -5,6 +5,7 @@
 #include <chrono>
 #include <cstdlib>
 #include <iomanip>
+#include <unistd.h>
 
 using namespace std;
 using namespace chrono;
@@ -17,6 +18,11 @@ int main(int argc, char **argv) {
     MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &mpi_provided);
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &size);
+
+    char hostname[256];
+    gethostname(hostname, sizeof(hostname));
+    printf("[RANK %d/%d] Host: %s\n", rank, size, hostname);
+    fflush(stdout);
 
     if (rank == 0 && mpi_provided < MPI_THREAD_MULTIPLE) {
         cout << "[AVISO] O OpenMPI nao forneceu MPI_THREAD_MULTIPLE." << endl;
