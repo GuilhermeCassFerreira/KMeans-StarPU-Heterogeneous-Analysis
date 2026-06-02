@@ -33,13 +33,13 @@ ifeq ($(HAS_NVHPC), 1)
     export OMPI_CXX        := $(NVC_COMPILER)
 
     # Flags base do NVC++
-    CXXFLAGS = -O3 -march=native -DNDEBUG -Wall -I../../include -I../common -DUSE_MPI
+    CXXFLAGS = -O3 -DNDEBUG -Wall -I../../include -I../common -DUSE_MPI
     LDFLAGS  =
 
     ifeq ($(GPU), 1)
-        $(info >>> COMPILANDO MODO MULTI-GPU (NVC++ / cc86) <<<)
-        CXXFLAGS += -DUSE_GPU -mp=gpu -gpu=cc86 -Minfo=mp
-        LDFLAGS  += -mp=gpu -gpu=cc86 -L$(CUDA_HOME)/lib64 -lcudart
+        $(info >>> COMPILANDO MODO MULTI-GPU (NVC++ / cc89) <<<)
+        CXXFLAGS += -DUSE_GPU -mp=gpu -gpu=cc89 -Minfo=mp
+        LDFLAGS  += -mp=gpu -gpu=cc89 -L$(CUDA_HOME)/lib64 -lcudart
         OBJS     += kmeans_gpu.o
     else
         $(info >>> COMPILANDO MODO CPU (NVC++ OpenMP / AVX2) <<<)
