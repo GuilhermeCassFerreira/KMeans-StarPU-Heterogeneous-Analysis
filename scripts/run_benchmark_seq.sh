@@ -14,7 +14,7 @@ INPUT_FILE="${1:-input.txt}"
 K=50
 SEED=42
 ITERS=30
-REPS=2
+REPS=1
 LOG_DIR="logs/benchmark_seq_$(date +%Y%m%d_%H%M%S)"
 mkdir -p "$LOG_DIR"
 
