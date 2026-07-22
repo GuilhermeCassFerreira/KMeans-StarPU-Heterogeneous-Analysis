@@ -1,0 +1,21 @@
+# Arquivos de entrada grandes
+input.txt
+input_*.txt
+
+# Binários compilados
+kmeans_starpu
+src/openmp/kmeans_openmp
+src/sequencial/kmeans_seq
+src/sequencial/kmeans_cuda
+
+# Objetos compilados
+build/
+*.o
+src/**/*.o
+src/common/*.o
+
+# Saídas
+out/
+
+# Arquivos temporários
+*.tmp

@@ -1,0 +1,583 @@
+#include "kmeans_runtime.h"
+#include <algorithm>
+#include <cmath>
+#include <iostream>
+#include <vector>
+#include <cstring>
+#include <cstdlib>
+#include <iomanip> 
+#include <fstream> 
+#include <atomic>
+#include <chrono>
+#include "kmeans_mpi_tags.h"
+
+using namespace std;
+using namespace std::chrono;
+
+/* ========================================================================== */
+/* Tracking de convergência via callback (rank 0)                             */
+/* ========================================================================== */
+/* O callback dispara quando uma task update_centroids termina no host.        */
+/* Capturamos o instante da primeira convergência detectada, o índice da      */
+/* iteração correspondente, e contamos quantas tasks update viraram ghost.    */
+
+static std::atomic<int>  g_update_calls{0};   // quantas tasks update já completaram
+std::atomic<int>  g_iter_converged{-1};       // iteração em que convergiu (-1 = não)
+std::atomic<bool> g_converge_captured{false};
+high_resolution_clock::time_point g_t_converge;
+high_resolution_clock::time_point g_t_start;
+static int g_mpi_rank = 0;                    // rank MPI deste processo
+
+extern "C" void update_centroids_callback(void *arg) {
+    int *flag_ptr = (int *)arg;
+    int call_idx = g_update_calls.fetch_add(1) + 1;  // 1-based: qual iter terminou
+
+    bool just_converged = (*flag_ptr == 1 && !g_converge_captured.exchange(true));
+    if (just_converged) {
+        g_iter_converged.store(call_idx);
+        g_t_converge = high_resolution_clock::now();
+    }
+
+    // Imprime apenas no rank 0 e apenas para tasks reais (não ghost)
+    if (g_mpi_rank == 0) {
+        bool is_ghost = (*flag_ptr == 1 && !just_converged);
+        if (!is_ghost)
+            fprintf(stderr, "[StarPU] Iteracao %d\n", call_idx);
+    }
+}
+
+/* ========================================================================== */
+/* Performance Models (definições)                                            */
+/* ========================================================================== */
+
+struct starpu_perfmodel assign_perf_model = {
+    .type = STARPU_HISTORY_BASED,
+    .symbol = "kmeans_assign_model_mpi"
+};
+
+struct starpu_perfmodel calculate_perf_model = {
+    .type = STARPU_HISTORY_BASED,
+    .symbol = "kmeans_calculate_model_mpi"
+};
+
+struct starpu_perfmodel clean_perf_model = {
+    .type = STARPU_HISTORY_BASED,
+    .symbol = "kmeans_clean_model_mpi"
+};
+
+struct starpu_perfmodel update_perf_model = {
+    .type = STARPU_HISTORY_BASED,
+    .symbol = "kmeans_update_model_mpi"
+};
+
+/* ========================================================================== */
+/* Codelets StarPU (definições atualizadas para Ghost Tasks)                  */
+/* ========================================================================== */
+
+/* REDUX codelets para h_changes (label-change counter) */
+static struct starpu_codelet cl_changes_init = {
+    .cpu_funcs = {changes_var_init_cpu},
+#ifdef STARPU_USE_CUDA
+    .cuda_funcs = {changes_var_init_cuda},
+    .cuda_flags = {STARPU_CUDA_ASYNC},
+#endif
+    .nbuffers = 1,
+    .modes = {STARPU_W}
+};
+
+static struct starpu_codelet cl_changes_reduce = {
+    .cpu_funcs = {changes_var_reduce_cpu},
+#ifdef STARPU_USE_CUDA
+    .cuda_funcs = {changes_var_reduce_cuda},
+    .cuda_flags = {STARPU_CUDA_ASYNC},
+#endif
+    .nbuffers = 2,
+    .modes = {STARPU_RW, STARPU_R}
+};
+
+struct starpu_codelet cl_assign_point_handles = {
+    .cpu_funcs = {assign_point_to_cluster_handles},
+#ifdef STARPU_USE_CUDA
+    .cuda_funcs = {assign_point_to_cluster_cuda},
+    .cuda_flags = {STARPU_CUDA_ASYNC},
+#endif
+    .nbuffers = 5,
+    /* points R, centroids R, labels RW, converged R, h_changes REDUX */
+    .modes = {STARPU_R, STARPU_R, STARPU_RW, STARPU_R, STARPU_REDUX},
+    .model = &assign_perf_model
+};
+
+struct starpu_codelet cl_calculate_partial_sums = {
+    .cpu_funcs = {calculate_partial_sums},
+#ifdef STARPU_USE_CUDA
+    .cuda_funcs = {calculate_partial_sums_cuda},
+    .cuda_flags = {STARPU_CUDA_ASYNC},
+#endif
+    .nbuffers = 5,
+    /* points R, labels R, chunk_sums W, chunk_counts W, converged R
+     * W exclusivo por chunk → todas as 100 tasks rodam em paralelo sem contenção */
+    .modes = {STARPU_R, STARPU_R, STARPU_W, STARPU_W, STARPU_R},
+    .model = &calculate_perf_model
+};
+
+struct starpu_codelet cl_clean_buffers = {
+    .cpu_funcs = {clean_buffers_cpu},
+#ifdef STARPU_USE_CUDA
+    .cuda_funcs = {clean_buffers_cuda}, 
+    .cuda_flags = {STARPU_CUDA_ASYNC},
+#endif
+    .nbuffers = 3, 
+    .modes = {STARPU_W, STARPU_W, STARPU_R},
+    .model = &clean_perf_model
+};
+
+struct starpu_codelet cl_update_centroids = {
+    .cpu_funcs = {update_centroids_cpu},
+#ifdef STARPU_USE_CUDA
+    .cuda_funcs = {update_centroids_cuda},
+    .cuda_flags = {STARPU_CUDA_ASYNC},
+#endif
+    .nbuffers = 5,
+    /* sums R, counts R, centroids RW, converged RW, h_changes RW (read+reset) */
+    .modes = {STARPU_R, STARPU_R, STARPU_RW, STARPU_RW, STARPU_RW},
+    .model = &update_perf_model
+};
+
+struct starpu_codelet cl_accumulate_nodes = {
+    .cpu_funcs = {accumulate_nodes_cpu},
+#ifdef STARPU_USE_CUDA
+    .cuda_funcs = {accumulate_nodes_cuda},
+    .cuda_flags = {STARPU_CUDA_ASYNC},
+#endif
+    .nbuffers = 5,
+    /* Sem COMMUTE: ordem determinística garante somas FP consistentes entre iterações,
+     * permitindo que update_centroids_cpu detecte convergência por comparação exata. */
+    .modes = {STARPU_RW, STARPU_RW, STARPU_R, STARPU_R, STARPU_R},
+    .name = "kmeans_accumulate_mpi"
+};
+
+/* ========================================================================== */
+/* Implementação da classe KMeans                                             */
+/* ========================================================================== */
+
+KMeans::KMeans(int K, int iterations, string output_dir, int chunks, int rank, int size, int dims, int seed)
+    : K(K), iters(iterations), output_dir(output_dir), num_chunks(chunks), mpi_rank(rank),
+      world_size(size), dimensions(dims), seed(seed),
+      points_handle(nullptr), output_handle(nullptr),
+      chunk_sums_ptr(nullptr), chunk_counts_ptr(nullptr),
+      partial_sums_ptr(nullptr), partial_counts_ptr(nullptr),
+      centroids_handle(nullptr), points_ptr(nullptr), labels_ptr(nullptr),
+      total_points(0)
+{
+    g_mpi_rank = rank;
+}
+
+void KMeans::clearClusters() {
+    for (int i = 0; i < K; i++) {
+        clusters[i].removeAllPoints();
+    }
+}
+
+int KMeans::getChunkOwner(int chunk_id) {
+    // Blocos contíguos: rank r possui chunks [r*cpr, (r+1)*cpr)
+    // Alinha com o scatter contíguo dos pontos em run()
+    int cpr = num_chunks / std::max(world_size, 1);
+    return std::min(chunk_id / std::max(cpr, 1), world_size - 1);
+}
+
+void KMeans::submitTasks(int N, starpu_data_handle_t converged_handle, int *converged_flag_ptr, starpu_data_handle_t h_changes_handle) {
+    int zero = 0;
+
+    for (int chunk_id = 0; chunk_id < num_chunks; chunk_id++) {
+        int this_chunk = starpu_vector_get_nx(points_children[chunk_id]);
+        if (this_chunk <= 0) break;
+
+        starpu_mpi_task_insert(MPI_COMM_WORLD, &cl_assign_point_handles,
+            STARPU_R,    points_children[chunk_id],
+            STARPU_R,    centroids_handle,
+            STARPU_RW,   outputs_children[chunk_id],
+            STARPU_R,    converged_handle,
+            STARPU_REDUX, h_changes_handle,
+            STARPU_VALUE, &K, sizeof(int),
+            STARPU_VALUE, &dimensions, sizeof(int),
+            STARPU_VALUE, &this_chunk, sizeof(int),
+            0);
+    }
+
+    /* CLEAN: zera acumulador de cada nó antes das somas parciais */
+    for (int n = 0; n < world_size; n++) {
+        starpu_mpi_task_insert(MPI_COMM_WORLD, &cl_clean_buffers,
+            STARPU_W, partial_sums_handle[n],
+            STARPU_W, partial_counts_handle[n],
+            STARPU_R, converged_handle,
+            STARPU_VALUE, &K, sizeof(int),
+            STARPU_VALUE, &dimensions, sizeof(int),
+            STARPU_VALUE, &zero, sizeof(int),
+            STARPU_EXECUTE_ON_NODE, n,
+            0);
+    }
+
+    /* CALCULATE: cada chunk escreve em buffer PRÓPRIO (W, sem contenção).
+     * Todas as 100 tasks rodam em paralelo. */
+    for (int chunk_id = 0; chunk_id < num_chunks; ++chunk_id) {
+        int owners = chunk_owners[chunk_id];
+        int this_chunk = starpu_vector_get_nx(points_children[chunk_id]);
+        if (this_chunk <= 0) break;
+
+        starpu_mpi_task_insert(MPI_COMM_WORLD, &cl_calculate_partial_sums,
+            STARPU_R, points_children[chunk_id],
+            STARPU_R, outputs_children[chunk_id],
+            STARPU_W, chunk_sums_handle[chunk_id],
+            STARPU_W, chunk_counts_handle[chunk_id],
+            STARPU_R, converged_handle,
+            STARPU_VALUE, &K, sizeof(int),
+            STARPU_VALUE, &dimensions, sizeof(int),
+            STARPU_VALUE, &this_chunk, sizeof(int),
+            STARPU_EXECUTE_ON_NODE, owners,
+            0);
+    }
+
+    /* ACCUMULATE local: chunk_sums[i] → partial_sums[owner] (COMMUTE) */
+    for (int chunk_id = 0; chunk_id < num_chunks; ++chunk_id) {
+        int owners = chunk_owners[chunk_id];
+        int this_chunk = starpu_vector_get_nx(points_children[chunk_id]);
+        if (this_chunk <= 0) break;
+
+        starpu_mpi_task_insert(MPI_COMM_WORLD, &cl_accumulate_nodes,
+            STARPU_RW, partial_sums_handle[owners],
+            STARPU_RW, partial_counts_handle[owners],
+            STARPU_R, chunk_sums_handle[chunk_id],
+            STARPU_R, chunk_counts_handle[chunk_id],
+            STARPU_R, converged_handle,
+            STARPU_VALUE, &K, sizeof(int),
+            STARPU_VALUE, &dimensions, sizeof(int),
+            STARPU_EXECUTE_ON_NODE, owners,
+            0);
+    }
+
+    if (world_size > 1) {
+            for (int n = 1; n < world_size; n++) {
+                starpu_mpi_task_insert(MPI_COMM_WORLD, &cl_accumulate_nodes,
+                    STARPU_RW, partial_sums_handle[0],   
+                    STARPU_RW, partial_counts_handle[0], 
+                    STARPU_R, partial_sums_handle[n],    
+                    STARPU_R, partial_counts_handle[n],  
+                    STARPU_R, converged_handle, 
+                    STARPU_VALUE, &K, sizeof(int),
+                    STARPU_VALUE, &dimensions, sizeof(int),
+                    STARPU_EXECUTE_ON_NODE, 0,    
+                    0);
+            }
+        }
+
+        // A ATUALIZAÇÃO DOS CENTRÓIDES RODA SEMPRE, seja com 1 ou 100 nodos!
+        // Callback no rank 0 captura o instante exato em que o flag vira 1
+        // (primeira iteração que detectou convergência) — usado pra separar
+        // tempo útil de tempo de ghost tasks.
+        if (mpi_rank == 0) {
+            starpu_mpi_task_insert(MPI_COMM_WORLD, &cl_update_centroids,
+                STARPU_R,  partial_sums_handle[0],
+                STARPU_R,  partial_counts_handle[0],
+                STARPU_RW, centroids_handle,
+                STARPU_RW, converged_handle,
+                STARPU_RW, h_changes_handle,
+                STARPU_VALUE, &K, sizeof(int),
+                STARPU_VALUE, &dimensions, sizeof(int),
+                STARPU_VALUE, &zero, sizeof(int),
+                STARPU_EXECUTE_ON_NODE, 0,
+                // _NFREE: não deixe o StarPU dar free no callback_arg ao destruir
+                // a task. Sem isso, _starpu_task_destroy() libera converged_flag_ptr
+                // que ainda é usado por iterações futuras + pelo cleanup do run().
+                STARPU_CALLBACK_WITH_ARG_NFREE, update_centroids_callback, (void*)converged_flag_ptr,
+                0);
+        } else {
+            starpu_mpi_task_insert(MPI_COMM_WORLD, &cl_update_centroids,
+                STARPU_R,  partial_sums_handle[0],
+                STARPU_R,  partial_counts_handle[0],
+                STARPU_RW, centroids_handle,
+                STARPU_RW, converged_handle,
+                STARPU_RW, h_changes_handle,
+                STARPU_VALUE, &K, sizeof(int),
+                STARPU_VALUE, &dimensions, sizeof(int),
+                STARPU_VALUE, &zero, sizeof(int),
+                STARPU_EXECUTE_ON_NODE, 0,
+                0);
+        }
+    }
+
+void KMeans::run(vector<Point> &all_points, int N) {
+    total_points = N;
+    points_ptr = nullptr;
+    labels_ptr = nullptr;
+    partial_sums_ptr = nullptr;
+    partial_counts_ptr = nullptr;
+    chunk_sums_ptr = nullptr;
+    chunk_counts_ptr = nullptr;
+
+    size_t points_bytes      = (size_t)N * dimensions * sizeof(double);
+    size_t labels_bytes      = (size_t)N * sizeof(int);
+    size_t sums_bytes        = (size_t)K * dimensions * sizeof(double);
+    size_t counts_bytes      = (size_t)K * sizeof(int);
+    size_t chunk_sums_bytes  = (size_t)num_chunks * K * dimensions * sizeof(double);
+    size_t chunk_counts_bytes= (size_t)num_chunks * K * sizeof(int);
+
+    if (starpu_malloc((void**)&points_ptr, points_bytes) != 0) exit(1);
+    if (starpu_malloc((void**)&labels_ptr, labels_bytes) != 0) exit(1);
+    if (starpu_malloc((void**)&partial_sums_ptr, sums_bytes) != 0) exit(1);
+    if (starpu_malloc((void**)&partial_counts_ptr, counts_bytes) != 0) exit(1);
+    if (starpu_malloc((void**)&chunk_sums_ptr,  chunk_sums_bytes)  != 0) exit(1);
+    if (starpu_malloc((void**)&chunk_counts_ptr, chunk_counts_bytes) != 0) exit(1);
+
+    memset(labels_ptr, 0, labels_bytes);
+    if (mpi_rank == 0) {
+        for (int i = 0; i < N; i++) {
+            for (int d = 0; d < dimensions; d++)
+                points_ptr[i * dimensions + d] = all_points[i].getVal(d);
+        }
+    } else {
+        memset(points_ptr, 0, points_bytes);
+    }
+
+    // Distribui pontos: cada rank recebe sua fatia contígua (alinhada com getChunkOwner)
+    // Rank r recebe points[r*local_n .. (r+1)*local_n - 1] e armazena no offset correto
+    if (world_size > 1) {
+        int local_n = N / world_size;
+        int count   = local_n * dimensions;
+        if (mpi_rank == 0) {
+            MPI_Scatter(points_ptr, count, MPI_DOUBLE,
+                        MPI_IN_PLACE, count, MPI_DOUBLE,
+                        0, MPI_COMM_WORLD);
+        } else {
+            MPI_Scatter(nullptr, count, MPI_DOUBLE,
+                        points_ptr + (long)mpi_rank * count, count, MPI_DOUBLE,
+                        0, MPI_COMM_WORLD);
+        }
+    }
+    memset(partial_sums_ptr,  0, sums_bytes);
+    memset(partial_counts_ptr,0, counts_bytes);
+    memset(chunk_sums_ptr,    0, chunk_sums_bytes);
+    memset(chunk_counts_ptr,  0, chunk_counts_bytes);
+
+    starpu_vector_data_register(&points_handle, STARPU_MAIN_RAM, (uintptr_t)points_ptr, N, dimensions * sizeof(double));
+    starpu_vector_data_register(&output_handle, STARPU_MAIN_RAM, (uintptr_t)labels_ptr, N, sizeof(int));
+
+    starpu_mpi_data_register(points_handle, KMeansTags::POINTS, 0);
+    starpu_mpi_data_register(output_handle, KMeansTags::LABELS, 0);
+
+    partial_sums_handle.resize(world_size);
+    partial_counts_handle.resize(world_size);
+
+    for (int n = 0; n < world_size; n++) {
+        if (n == mpi_rank) {
+            starpu_vector_data_register(&partial_sums_handle[n], STARPU_MAIN_RAM, (uintptr_t)partial_sums_ptr, K * dimensions, sizeof(double));
+            starpu_vector_data_register(&partial_counts_handle[n], STARPU_MAIN_RAM, (uintptr_t)partial_counts_ptr, K, sizeof(int));
+        } else {
+            starpu_vector_data_register(&partial_sums_handle[n], -1, (uintptr_t)NULL, K * dimensions, sizeof(double));
+            starpu_vector_data_register(&partial_counts_handle[n], -1, (uintptr_t)NULL, K, sizeof(int));
+        }
+        starpu_mpi_data_register(partial_sums_handle[n], KMeansTags::PARTIAL_SUMS_BASE + n, n);
+        starpu_mpi_data_register(partial_counts_handle[n], KMeansTags::PARTIAL_COUNTS_BASE + n, n);
+    }
+
+    struct starpu_data_filter filterChunks = {
+            .filter_func = starpu_vector_filter_block,
+            .nchildren = (unsigned)this->num_chunks 
+        };
+
+    starpu_data_partition(points_handle, &filterChunks);
+    starpu_data_partition(output_handle, &filterChunks);
+
+    chunk_owners.resize(num_chunks);
+    points_children.resize(num_chunks);
+    outputs_children.resize(num_chunks);
+    chunk_sums_handle.resize(num_chunks);
+    chunk_counts_handle.resize(num_chunks);
+
+    for (int i = 0; i < num_chunks; ++i) {
+        chunk_owners[i] = getChunkOwner(i);
+
+        points_children[i]  = starpu_data_get_child(points_handle, i);
+        outputs_children[i] = starpu_data_get_child(output_handle, i);
+
+        starpu_mpi_data_register(points_children[i],  KMeansTags::CHUNK_POINTS_BASE + i, chunk_owners[i]);
+        starpu_mpi_data_register(outputs_children[i], KMeansTags::CHUNK_LABELS_BASE + i, chunk_owners[i]);
+
+        starpu_vector_data_register(&chunk_sums_handle[i], STARPU_MAIN_RAM,
+            (uintptr_t)(chunk_sums_ptr + (size_t)i * K * dimensions),
+            K * dimensions, sizeof(double));
+        starpu_vector_data_register(&chunk_counts_handle[i], STARPU_MAIN_RAM,
+            (uintptr_t)(chunk_counts_ptr + (size_t)i * K),
+            K, sizeof(int));
+        starpu_mpi_data_register(chunk_sums_handle[i],   KMeansTags::CHUNK_SUMS_BASE   + i, chunk_owners[i]);
+        starpu_mpi_data_register(chunk_counts_handle[i], KMeansTags::CHUNK_COUNTS_BASE + i, chunk_owners[i]);
+    }
+
+    centroids_data.resize(K * dimensions);
+
+    if (mpi_rank == 0) {
+        srand(this->seed);
+
+        std::vector<int> chosen_indices;
+        
+        while ((int)chosen_indices.size() < K) {
+            int r = rand() % N; 
+            if (std::find(chosen_indices.begin(), chosen_indices.end(), r) == chosen_indices.end()) {
+                chosen_indices.push_back(r);
+            }
+        }
+
+        for (int i = 0; i < K; ++i) {
+            int point_idx = chosen_indices[i];
+            
+            clusters.emplace_back(i + 1, all_points[point_idx]);
+            
+            for (int j = 0; j < dimensions; j++) {
+                centroids_data[i * dimensions + j] = all_points[point_idx].getVal(j);
+            }
+        }
+        
+        cout << "[INFO] Centroides iniciais escolhidos aleatoriamente (Seed: " << this->seed << ")" << endl;
+    }
+
+    MPI_Bcast(centroids_data.data(), K * dimensions, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+
+    double *centroids_ptr_starpu = nullptr;
+    size_t centroids_bytes = (size_t)K * dimensions * sizeof(double);
+    if (starpu_malloc((void**)&centroids_ptr_starpu, centroids_bytes) != 0) exit(1);
+    memcpy(centroids_ptr_starpu, centroids_data.data(), centroids_bytes);
+
+    starpu_vector_data_register(&centroids_handle, STARPU_MAIN_RAM, (uintptr_t)centroids_ptr_starpu, K * dimensions, sizeof(double));
+    starpu_mpi_data_register(centroids_handle, KMeansTags::CENTROIDS, 0);
+
+    if (mpi_rank == 0) cout << "[INFO] Injetando max " << iters << " iteracoes no DAG (Assíncrono)..." << endl;
+
+    auto t_loop_start = high_resolution_clock::now();
+
+    // IMPORTANTE: o flag de convergência precisa estar em memória heap pinada
+    // (acessível pelo driver CUDA). Antes estava na stack (`int converged_flag_local`),
+    // o que provocava `munmap_chunk(): invalid pointer` no shutdown e potencial
+    // segfault no driver CUDA quando ele tentava transferir/liberar o handle.
+    int *converged_flag_ptr_local = nullptr;
+    if (starpu_malloc((void**)&converged_flag_ptr_local, sizeof(int)) != 0) exit(1);
+    *converged_flag_ptr_local = 0;
+    starpu_data_handle_t converged_handle;
+    starpu_variable_data_register(&converged_handle, STARPU_MAIN_RAM, (uintptr_t)converged_flag_ptr_local, sizeof(int));
+    starpu_mpi_data_register(converged_handle, KMeansTags::CONVERGED_TAG, 0);
+
+    // h_changes: contador REDUX de mudanças de label por iteração
+    // update_centroids lê o total acumulado e reseta para a próxima iteração.
+    int *h_changes_ptr_local = nullptr;
+    if (starpu_malloc((void**)&h_changes_ptr_local, sizeof(int)) != 0) exit(1);
+    *h_changes_ptr_local = 0;
+    starpu_data_handle_t h_changes_handle;
+    starpu_variable_data_register(&h_changes_handle, STARPU_MAIN_RAM, (uintptr_t)h_changes_ptr_local, sizeof(int));
+    starpu_mpi_data_register(h_changes_handle, KMeansTags::CHANGES_TAG, 0);
+    starpu_data_set_reduction_methods(h_changes_handle, &cl_changes_reduce, &cl_changes_init);
+
+#ifdef STARPU_USE_CUDA
+    /* Permite que update_centroids_cuda copie o flag GPU→CPU na mesma stream,
+     * garantindo que o callback de convergência leia o valor correto. */
+    starpu_set_converged_cpu_ptr(converged_flag_ptr_local);
+#endif
+
+    for (int it = 0; it < iters; ++it) {
+        submitTasks(N, converged_handle, converged_flag_ptr_local, h_changes_handle);
+    }
+
+    starpu_task_wait_for_all();
+    starpu_mpi_wait_for_all(MPI_COMM_WORLD);
+    t_loop_ms_ = duration<double, milli>(high_resolution_clock::now() - t_loop_start).count();
+
+#ifdef STARPU_USE_CUDA
+    starpu_set_converged_cpu_ptr(nullptr); // evita acesso a ponteiro inválido pós-run
+#endif
+
+    if (mpi_rank == 0) {
+        if (*converged_flag_ptr_local) {
+            cout << "[INFO] Early Exit concluído com sucesso." << endl;
+        } else {
+            cout << "[INFO] Limite de iterações atingido sem convergência completa." << endl;
+        }
+    }
+
+    starpu_data_unregister(converged_handle);
+    starpu_data_unregister(h_changes_handle);
+
+    // Antes do unpartition, em modo MPI distribuído precisamos trazer os
+    // outputs (labels) dos chunks que pertencem a OUTROS ranks de volta para
+    // o rank 0, que é quem vai consolidar tudo. Em world_size==1 isso é
+    // desnecessário (e causa estado interno inconsistente que segfaulta o
+    // unpartition), por isso protegemos com world_size>1.
+    if (world_size > 1) {
+        for (int i = 0; i < num_chunks; i++) {
+            if (chunk_owners[i] != 0) {
+                starpu_mpi_get_data_on_node_detached(MPI_COMM_WORLD,
+                    outputs_children[i], 0, NULL, NULL);
+            }
+        }
+        starpu_mpi_wait_for_all(MPI_COMM_WORLD);
+    }
+
+    starpu_data_unpartition(points_handle, STARPU_MAIN_RAM);
+    starpu_data_unpartition(output_handle, STARPU_MAIN_RAM);
+
+    if (mpi_rank == 0) {
+        starpu_data_acquire(output_handle, STARPU_R);
+        for (int i = 0; i < N; i++) {
+            all_points[i].setCluster(labels_ptr[i]);
+        }
+        starpu_data_release(output_handle);
+        
+        cout << "[INFO] Salvando centróides finais..." << endl;
+
+        starpu_data_acquire(centroids_handle, STARPU_R);
+
+        string cmd = "mkdir -p " + output_dir;
+        if (system(cmd.c_str()) != 0) {
+            cerr << "[AVISO] Falha ao tentar criar o diretório: " << output_dir << endl;
+        }
+
+        string clusters_filename = output_dir + "/" + to_string(K) + "-clusters.txt";
+        ofstream outfile(clusters_filename);
+
+        if (!outfile.is_open()) {
+            cerr << "[ERRO] Não foi possível criar o arquivo: " << clusters_filename << endl;
+        } else {
+            outfile << fixed << setprecision(6);
+            for (int i = 0; i < K; i++) {
+                for (int j = 0; j < dimensions; j++) {
+                    double val = centroids_ptr_starpu[i * dimensions + j];
+                    outfile << val << " ";
+                }
+                outfile << endl;
+            }
+            outfile.close();
+            cout << "[INFO] Arquivo de centróides salvo com sucesso em: " << clusters_filename << endl;
+        }
+
+        starpu_data_release(centroids_handle);
+    }
+
+    starpu_data_unregister(points_handle);
+    starpu_data_unregister(output_handle);
+    starpu_data_unregister(centroids_handle);
+    memcpy(centroids_data.data(), centroids_ptr_starpu, centroids_bytes);
+    for (int i = 0; i < num_chunks; i++) {
+        starpu_data_unregister(chunk_sums_handle[i]);
+        starpu_data_unregister(chunk_counts_handle[i]);
+    }
+    for (int n = 0; n < world_size; n++) {
+        starpu_data_unregister(partial_sums_handle[n]);
+        starpu_data_unregister(partial_counts_handle[n]);
+    }
+
+    starpu_free_noflag(points_ptr, points_bytes);
+    starpu_free_noflag(labels_ptr, labels_bytes);
+    starpu_free_noflag(chunk_sums_ptr,   chunk_sums_bytes);
+    starpu_free_noflag(chunk_counts_ptr, chunk_counts_bytes);
+    starpu_free_noflag(partial_sums_ptr, sums_bytes);
+    starpu_free_noflag(partial_counts_ptr, counts_bytes);
+    starpu_free_noflag(centroids_ptr_starpu, centroids_bytes);
+    starpu_free_noflag(converged_flag_ptr_local, sizeof(int));
+    starpu_free_noflag(h_changes_ptr_local, sizeof(int));
+}
