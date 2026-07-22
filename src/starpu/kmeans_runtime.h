@@ -7,7 +7,7 @@
 #include <chrono>
 #include "../../include/kmeans_types.h"
 #include "../../include/options.h"
-#include "metrics_simple.h"
+#include "../../include/metrics.h"
 
 /* ========================================================================== */
 /* Contadores globais de métricas                                             */
@@ -16,21 +16,19 @@
 extern int cpu_kernel_calls;
 extern int cpu_assign_calls;
 extern int cpu_calculate_calls;
-extern int opencl_assign_calls;
-extern int opencl_calculate_calls;
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-extern int cuda_assign_calls;
-extern int cuda_calculate_calls;
+extern int cpu_clean_calls;
+extern int cpu_update_calls;
+extern int cpu_accumulate_calls;
 
 #ifdef STARPU_USE_CUDA
-int get_cuda_kernel_calls();
-#endif
-
-#ifdef __cplusplus
+extern "C" {
+    extern volatile int cuda_assign_calls;
+    extern volatile int cuda_calculate_calls;
+    extern volatile int cuda_clean_calls;
+    extern volatile int cuda_update_calls;
+    extern volatile int cuda_accumulate_calls;
+    int get_cuda_kernel_calls();
+    void starpu_set_converged_cpu_ptr(int *ptr);
 }
 #endif
 
@@ -43,6 +41,12 @@ void calculate_partial_sums(void *buffers[], void *cl_arg);
 void clean_buffers_cpu(void *buffers[], void *cl_arg);
 void update_centroids_cpu(void *buffers[], void *cl_arg);
 void accumulate_nodes_cpu(void *buffers[], void *cl_arg);
+void redux_double_init_cpu(void *buffers[], void *cl_arg);
+void redux_double_reduce_cpu(void *buffers[], void *cl_arg);
+void redux_int_init_cpu(void *buffers[], void *cl_arg);
+void redux_int_reduce_cpu(void *buffers[], void *cl_arg);
+void changes_var_init_cpu(void *buffers[], void *cl_arg);
+void changes_var_reduce_cpu(void *buffers[], void *cl_arg);
 
 /* ========================================================================== */
 /* Declarações das funções CUDA (implementadas em kmeans_cuda.cu)            */
@@ -55,9 +59,15 @@ extern "C" {
 
 void assign_point_to_cluster_cuda(void *buffers[], void *cl_arg);
 void calculate_partial_sums_cuda(void *buffers[], void *cl_arg);
-void clean_buffers_cuda(void *buffers[], void *cl_arg);    
+void clean_buffers_cuda(void *buffers[], void *cl_arg);
 void update_centroids_cuda(void *buffers[], void *cl_arg);
-void accumulate_nodes_cuda(void *buffers[], void *cl_arg); 
+void accumulate_nodes_cuda(void *buffers[], void *cl_arg);
+void redux_double_init_cuda(void *buffers[], void *cl_arg);
+void redux_double_reduce_cuda(void *buffers[], void *cl_arg);
+void redux_int_init_cuda(void *buffers[], void *cl_arg);
+void redux_int_reduce_cuda(void *buffers[], void *cl_arg);
+void changes_var_init_cuda(void *buffers[], void *cl_arg);
+void changes_var_reduce_cuda(void *buffers[], void *cl_arg);
 
 #ifdef __cplusplus
 }
@@ -88,18 +98,6 @@ extern struct starpu_perfmodel update_perf_model;
 /* ========================================================================== */
 
 bool read_points_from_file(const std::string &filename, std::vector<Point> &all_points, int &N, int &dimensions);
-void print_kernel_usage_metrics(int rank);
-void print_starpu_worker_usage(int rank);
-void print_node_usage_metrics(int rank, int world_size);
-
-class KMeans;   // forward declaration (definição abaixo no mesmo header)
-
-void compute_and_print_starpu_metrics(
-        const KMeans& kmeans,
-        const std::vector<Point>& all_points,
-        int N, int iters, int mpi_ranks,
-        std::chrono::high_resolution_clock::time_point t_start,
-        std::chrono::high_resolution_clock::time_point t_end);
 
 /* ========================================================================== */
 /* Classe KMeans (implementada em kmeans_mpi.cpp)                            */
@@ -122,6 +120,13 @@ private:
     std::vector<starpu_data_handle_t> outputs_children;
     int num_chunks;
 
+    /* Buffers parciais por chunk — W exclusivo, calculate paralela */
+    double *chunk_sums_ptr;
+    int    *chunk_counts_ptr;
+    std::vector<starpu_data_handle_t> chunk_sums_handle;
+    std::vector<starpu_data_handle_t> chunk_counts_handle;
+
+    /* Acumulador parcial por nó MPI */
     double *partial_sums_ptr;
     int *partial_counts_ptr;
     std::vector<starpu_data_handle_t> partial_sums_handle;
@@ -133,22 +138,23 @@ private:
     double *points_ptr;
     int *labels_ptr;
     std::vector<int> chunk_owners;
+    double t_loop_ms_ = 0.0;
 
     void clearClusters();
     int getChunkOwner(int chunk_id);
-    
-    // Função unificada
-    void submitTasks(int N, starpu_data_handle_t converged_handle, int *converged_flag_ptr);
+
+    void submitTasks(int N, starpu_data_handle_t converged_handle, int *converged_flag_ptr, starpu_data_handle_t h_changes_handle);
 
 public:
     KMeans(int K, int iterations, std::string output_dir, int chunk_size, int rank, int size, int dims, int seed);
 
     void run(std::vector<Point> &all_points, int N);
 
-    // Getter para o main calcular SSE após a execução
+    // Getters para o main calcular metricas apos a execucao
     const std::vector<double>& getCentroids() const { return centroids_data; }
-    int getDimensions() const { return dimensions; }
-    int getK() const { return K; }
+    int    getDimensions() const { return dimensions; }
+    int    getK()          const { return K; }
+    double getLoopMs()     const { return t_loop_ms_; }
 };
 
 /* ========================================================================== */

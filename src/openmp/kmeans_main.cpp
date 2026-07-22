@@ -10,7 +10,7 @@
 #include <cstring>
 #include <algorithm>
 #include "../../include/kmeans_types.h"
-#include "../common/metrics_simple.h"
+#include "../../include/metrics.h"
 #include "kmeans_omp_mpi.h"
 
 #ifdef USE_GPU
@@ -23,6 +23,7 @@ using namespace chrono;
 extern bool read_points_from_file(const string& filename, vector<Point>& points, int& N, int& dimensions);
 
 int main(int argc, char **argv) {
+    auto t_prog_start = high_resolution_clock::now();
     int mpi_provided;
     MPI_Init_thread(&argc, &argv, MPI_THREAD_FUNNELED, &mpi_provided);
 
@@ -177,12 +178,13 @@ int main(int argc, char **argv) {
 
     MPI_Barrier(MPI_COMM_WORLD);
     auto t_start = high_resolution_clock::now();
-    auto t_converge = t_start;
     int iter_converged = -1;
 
     #ifdef USE_GPU
+    if (mode == 1) {
         #pragma omp target enter data map(to: local_points[0:local_n*dimensions]) \
                                    map(to: local_labels[0:local_n])
+    }
     #endif
 
     for (int iter = 0; iter < nIters; iter++) {
@@ -216,24 +218,26 @@ int main(int argc, char **argv) {
         MPI_Allreduce(&local_changes, &global_changes, 1, MPI_INT, MPI_SUM, MPI_COMM_WORLD);
         if (global_changes == 0) {
             iter_converged = iter + 1;
-            t_converge = high_resolution_clock::now();
-            if (rank == 0) cout << ">> Convergiu na iteracao " << iter + 1 << endl;
+            if (rank == 0) cout << "[OMP] Convergiu (label changes=0) na iteracao " << iter + 1 << endl;
             break;
         }
-        if (rank == 0) cout << ">> Iteracao " << iter + 1 << " teve " << global_changes << " mudancas." << endl;
 
         MPI_Allreduce(local_sums, global_sums, K * dimensions, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
         MPI_Allreduce(local_counts, global_counts, K, MPI_INT, MPI_SUM, MPI_COMM_WORLD);
+
         update_cents(global_sums, global_counts, global_centroids, K, dimensions);
 
+        if (rank == 0) cout << "[OMP] Iteracao " << iter + 1 << " | mudancas: " << global_changes << endl;
+
         if (iter == nIters - 1) {
-            iter_converged = nIters;       // limite atingido sem convergir
-            t_converge = high_resolution_clock::now();
+            iter_converged = nIters;
         }
     }
 
     #ifdef USE_GPU
+    if (mode == 1) {
         #pragma omp target exit data map(from: local_labels[0:local_n])
+    }
     #endif
 
     MPI_Barrier(MPI_COMM_WORLD);
@@ -245,21 +249,16 @@ int main(int argc, char **argv) {
                 global_labels, sendCountsLbls, displsLbls, MPI_INT,
                 0, MPI_COMM_WORLD);
 
+    double sse = 0.0;
     if (rank == 0) {
-        // Métricas padronizadas (SSE + tempos + convergência)
-        compute_and_print_omp_metrics(global_points, global_labels, global_centroids,
-                                      N, K, dimensions,
-                                      iter_converged, nIters, size,
-                                      t_start, t_converge, t_end);
-
-#ifdef USE_GPU
-        printf("\n========================================\n");
-        printf("[VERIFICACAO DE OFFLOAD - OPENMP]\n");
-        printf("Chamadas na GPU (Assign): %d\n", cuda_assign_calls);
-        printf("Chamadas na GPU (Calculate): %d\n", cuda_calculate_calls);
-        printf("Chamadas na GPU (Update): %d\n", cuda_update_calls);
-        printf("========================================\n");
-#endif
+        for (int i = 0; i < N; i++) {
+            int c = global_labels[i] - 1;  // labels sao 1-indexed
+            if (c < 0 || c >= K) continue;
+            for (int d = 0; d < dimensions; d++) {
+                double diff = global_points[i * dimensions + d] - global_centroids[c * dimensions + d];
+                sse += diff * diff;
+            }
+        }
 
         string cmd = "mkdir -p " + output_dir;
         if (system(cmd.c_str()) != 0) {
@@ -284,6 +283,31 @@ int main(int argc, char **argv) {
 
         cout << "[INFO] Arquivos salvos em: " << output_dir << endl;
     }
+
+    // Todos os ranks preenchem métricas e chamam print (que faz MPI_Gather internamente)
+    auto t_prog_end = high_resolution_clock::now();
+    double t_loop_ms  = duration<double, milli>(t_end - t_start).count();
+    double t_total_ms = duration<double, milli>(t_prog_end - t_prog_start).count();
+
+    OmpMetrics m{};
+    m.t_loop_ms       = t_loop_ms;
+    m.t_total_ms      = t_total_ms;
+    m.iter_converged  = iter_converged;
+    m.iter_max        = nIters;
+    m.sse             = sse;  // 0.0 nos ranks != 0
+    m.mpi_ranks       = size;
+    m.omp_threads     = omp_get_max_threads();
+    m.mode            = mode;
+    m.num_chunks      = num_chunks;
+    m.total_assign    = (long)iter_converged * num_chunks;
+    m.total_calculate = (long)iter_converged * num_chunks;
+    m.total_update    = (long)iter_converged;
+#ifdef USE_GPU
+    m.gpu_assign    = cuda_assign_calls;
+    m.gpu_calculate = cuda_calculate_calls;
+    m.gpu_update    = cuda_update_calls;
+#endif
+    print_omp_metrics(rank, size, m);
 
     #ifdef USE_GPU
     if (mode == 1 || mode == 2) {

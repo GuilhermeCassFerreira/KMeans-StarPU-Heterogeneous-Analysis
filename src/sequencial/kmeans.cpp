@@ -8,6 +8,7 @@
 #include <iomanip>
 #include <fstream>
 #include "../../include/kmeans_types.h"
+#include "../../include/metrics.h"
 #include "kmeans_seq.h"
 
 bool read_points_from_file(const std::string &filename, std::vector<Point> &all_points, int &N, int &dimensions);
@@ -15,16 +16,35 @@ bool read_points_from_file(const std::string &filename, std::vector<Point> &all_
 using namespace std;
 using namespace chrono;
 
+static void print_seq_metrics(const SeqMetrics& m) {
+    double avg = (m.iter_converged > 0) ? m.t_loop_ms / m.iter_converged : 0.0;
+    cout << string(60, '=') << endl;
+    cout << "METRICAS FINAIS — Sequencial" << endl;
+    cout << string(60, '=') << endl;
+    cout << fixed << setprecision(2) << left;
+    cout << setw(26) << "Tempo do loop"        << ": " << setw(10) << m.t_loop_ms  << " ms" << endl;
+    cout << setw(26) << "Tempo total (c/init)"  << ": " << setw(10) << m.t_total_ms << " ms" << endl;
+    cout << setw(26) << "T. medio/iter"         << ": " << setw(10) << avg          << " ms" << endl;
+    cout << setw(26) << "Iteracoes"             << ": " << m.iter_converged << " / max " << m.iter_max << endl;
+    cout << setprecision(4);
+    cout << setw(26) << "SSE"                   << ": " << scientific << m.sse << endl;
+    cout << string(60, '=') << endl;
+    cout << defaultfloat;
+}
+
 int main(int argc, char **argv) {
-    if (argc < 4 || argc > 5) {
-        cout << "Uso: ./kmeans_seq <INPUT> <K> <OUT-DIR> [SEED]" << endl;
+    auto t_prog_start = high_resolution_clock::now();
+
+    if (argc < 4 || argc > 6) {
+        cout << "Uso: ./kmeans_seq <INPUT> <K> <OUT-DIR> [SEED] [NITERS]" << endl;
         return 1;
     }
 
-    string filename = argv[1];
-    int K = stoi(argv[2]);
+    string filename  = argv[1];
+    int K            = stoi(argv[2]);
     string output_dir = argv[3];
-    int seed = (argc >= 5) ? stoi(argv[4]) : 42;
+    int seed         = (argc >= 5) ? stoi(argv[4]) : 42;
+    int nIters       = (argc >= 6) ? stoi(argv[5]) : 100;
 
     vector<Point> all_points;
     int N = 0, dimensions = 0;
@@ -38,91 +58,90 @@ int main(int argc, char **argv) {
         return 1;
     }
 
-    // Alocação de arrays 1D para otimização de cache
-    double *points = new double[N * dimensions];
-    int *labels = new int[N];
+    double *points    = new double[N * dimensions];
+    int    *labels    = new int[N];
     double *centroids = new double[K * dimensions];
-    double *sums = new double[K * dimensions];
-    int *counts = new int[K];
+    double *sums      = new double[K * dimensions];
+    int    *counts    = new int[K];
 
-    for (int i = 0; i < N; i++) {
-        for (int d = 0; d < dimensions; d++) {
+    for (int i = 0; i < N; i++)
+        for (int d = 0; d < dimensions; d++)
             points[i * dimensions + d] = all_points[i].getVal(d);
-        }
-        labels[i] = 0;
-    }
 
-    // Inicialização determinística de centroides
     srand(seed);
-    vector<int> chosen_indices;
-    while ((int)chosen_indices.size() < K) {
+    cout << ">> Inicializando centroides com SEED: " << seed << endl;
+    vector<int> chosen;
+    while ((int)chosen.size() < K) {
         int r = rand() % N;
-        if (find(chosen_indices.begin(), chosen_indices.end(), r) == chosen_indices.end()) {
-            chosen_indices.push_back(r);
-        }
+        if (find(chosen.begin(), chosen.end(), r) == chosen.end())
+            chosen.push_back(r);
     }
+    for (int i = 0; i < K; ++i)
+        for (int d = 0; d < dimensions; d++)
+            centroids[i * dimensions + d] = points[chosen[i] * dimensions + d];
 
-    for (int i = 0; i < K; ++i) {
-        int point_idx = chosen_indices[i];
-        for (int d = 0; d < dimensions; d++) {
-            centroids[i * dimensions + d] = points[point_idx * dimensions + d];
-        }
-    }
+    auto t_loop_start = high_resolution_clock::now();
+    int iter_converged = nIters;
 
-    cout << "Clusters inicializados = " << K << "\n\n";
-    cout << "Executando K-Means Clustering (Sequencial Otimizado)...\n";
-
-    int iters = 100;
-    auto start = high_resolution_clock::now();
-
-    for (int iter = 1; iter <= iters; ++iter) {
-        memset(sums, 0, K * dimensions * sizeof(double));
+    for (int iter = 1; iter <= nIters; ++iter) {
+        memset(sums,   0, K * dimensions * sizeof(double));
         memset(counts, 0, K * sizeof(int));
 
-        // Chamada aos kernels
         int changes = assign_point_to_cluster_seq(points, centroids, labels, N, K, dimensions);
         calculate_partial_sums_seq(points, labels, sums, counts, N, K, dimensions);
         update_centroids_seq(sums, counts, centroids, K, dimensions);
 
-        if (changes == 0 || iter >= iters) {
-            cout << "Clustering concluído na iteração: " << iter << "\n\n";
+        cout << "[SEQ] Iteracao " << iter << " | mudancas: " << changes << endl;
+
+        if (changes == 0) {
+            iter_converged = iter;
+            cout << "[SEQ] Convergiu na iteracao " << iter << endl;
             break;
         }
     }
 
-    auto end = high_resolution_clock::now();
-    auto duration = duration_cast<milliseconds>(end - start);
-    cout << "Tempo de execução: " << duration.count() << " ms\n";
+    auto t_loop_end = high_resolution_clock::now();
 
-    // Salvamento de resultados
+    // SSE
+    double sse = 0.0;
+    for (int i = 0; i < N; i++) {
+        int c = labels[i] - 1;
+        if (c < 0 || c >= K) continue;
+        for (int d = 0; d < dimensions; d++) {
+            double diff = points[i * dimensions + d] - centroids[c * dimensions + d];
+            sse += diff * diff;
+        }
+    }
+
+    // Salvar resultados
     string cmd = "mkdir -p " + output_dir;
     system(cmd.c_str());
 
     ofstream pointsFile(output_dir + "/" + to_string(K) + "-points.txt");
-    for (int i = 0; i < N; i++) {
-        pointsFile << labels[i] << "\n";
-    }
+    for (int i = 0; i < N; i++) pointsFile << labels[i] << "\n";
     pointsFile.close();
 
-    ofstream outfile(output_dir + "/" + to_string(K) + "-clusters.txt");
-    outfile << fixed << setprecision(6);
+    ofstream clustersFile(output_dir + "/" + to_string(K) + "-clusters.txt");
+    clustersFile << fixed << setprecision(6);
     for (int k = 0; k < K; k++) {
-        cout << "Cluster " << k+1 << " centroid: ";
-        for (int d = 0; d < dimensions; d++) {
-            cout << centroids[k * dimensions + d] << " ";
-            outfile << centroids[k * dimensions + d] << " ";
-        }
-        cout << "\n";
-        outfile << "\n";
+        for (int d = 0; d < dimensions; d++)
+            clustersFile << centroids[k * dimensions + d] << " ";
+        clustersFile << "\n";
     }
-    outfile.close();
+    clustersFile.close();
+    cout << "[INFO] Arquivos salvos em: " << output_dir << endl;
 
-    // Limpeza
-    delete[] points;
-    delete[] labels;
-    delete[] centroids;
-    delete[] sums;
-    delete[] counts;
+    auto t_prog_end = high_resolution_clock::now();
 
+    SeqMetrics m{};
+    m.t_loop_ms      = duration<double, milli>(t_loop_end  - t_loop_start).count();
+    m.t_total_ms     = duration<double, milli>(t_prog_end  - t_prog_start).count();
+    m.iter_converged = iter_converged;
+    m.iter_max       = nIters;
+    m.sse            = sse;
+    print_seq_metrics(m);
+
+    delete[] points; delete[] labels; delete[] centroids;
+    delete[] sums;   delete[] counts;
     return 0;
 }
