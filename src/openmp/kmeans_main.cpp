@@ -22,6 +22,66 @@ using namespace chrono;
 
 extern bool read_points_from_file(const string& filename, vector<Point>& points, int& N, int& dimensions);
 
+#ifdef USE_GPU
+// Divide [begin, end) entre nworkers; devolve a faixa [b, e) do worker w
+static void split_range(int begin, int end, int w, int nworkers, int &b, int &e) {
+    int len = end - begin, base = len / nworkers, rem = len % nworkers;
+    b = begin + w * base + min(w, rem);
+    e = b + base + (w < rem ? 1 : 0);
+}
+
+// Modo 2 (híbrido concorrente): a GPU processa os pontos [0, gpu_n) enquanto as
+// threads de CPU processam [gpu_n, n). A thread 0 só controla a GPU; as demais
+// dividem a parte da CPU. Dentro desta região, o "parallel for" dos kernels de
+// CPU roda com 1 thread (paralelismo aninhado desativado).
+static int hybrid_assign_and_sums(double *points, double *centroids, int *labels, int n, int gpu_n,
+                                  int K, int dimensions, int cpu_threads,
+                                  double *gpu_sums, int *gpu_counts,
+                                  double *cpu_sums, int *cpu_counts) {
+    int changes = 0;
+    #pragma omp parallel num_threads(1 + cpu_threads) reduction(+:changes)
+    {
+        int tid = omp_get_thread_num();
+        int workers = omp_get_num_threads() - 1;
+
+        if (tid == 0 && gpu_n > 0) {
+            changes += assign_point_to_cluster_gpu(points, centroids, labels, gpu_n, K, dimensions);
+            calculate_partial_sums_gpu(points, labels, gpu_sums, gpu_counts, gpu_n, K, dimensions);
+        }
+
+        // Sem threads extras, a thread 0 também faz a parte da CPU
+        int w = (workers == 0) ? 0 : tid - 1;
+        if (workers == 0 || tid > 0) {
+            int b, e;
+            split_range(gpu_n, n, w, max(workers, 1), b, e);
+            if (e > b) {
+                changes += assign_point_to_cluster_cpu(&points[(size_t)b * dimensions], centroids,
+                                                       &labels[b], e - b, K, dimensions);
+                calculate_partial_sums_cpu(&points[(size_t)b * dimensions], &labels[b],
+                                           &cpu_sums[(size_t)w * K * dimensions], &cpu_counts[(size_t)w * K],
+                                           e - b, K, dimensions);
+            }
+        }
+    }
+    return changes;
+}
+
+// Modo 2: a GPU atualiza os centroides [0, gpu_k) e a CPU atualiza [gpu_k, K) ao mesmo tempo
+static void hybrid_update_centroids(double *global_sums, int *global_counts, double *centroids,
+                                    int K, int gpu_k, int dimensions) {
+    #pragma omp parallel num_threads(2)
+    {
+        int tid = omp_get_thread_num();
+        int nth = omp_get_num_threads();
+        if (tid == 0 && gpu_k > 0)
+            update_centroids_gpu(global_sums, global_counts, centroids, gpu_k, dimensions);
+        if ((tid == 1 || nth == 1) && gpu_k < K)
+            update_centroids_cpu(&global_sums[(size_t)gpu_k * dimensions], &global_counts[gpu_k],
+                                 &centroids[(size_t)gpu_k * dimensions], K - gpu_k, dimensions);
+    }
+}
+#endif
+
 int main(int argc, char **argv) {
     auto t_prog_start = high_resolution_clock::now();
     int mpi_provided;
@@ -155,19 +215,32 @@ int main(int argc, char **argv) {
 
     int num_chunks = requested_chunks;
     int chunk_size = (local_n + num_chunks - 1) / num_chunks;
-    int gpu_chunks_target = (int)(num_chunks * gpu_ratio);
+
+    // Modo 2: divisão por pontos e por centroides segundo o gpu_ratio (os chunks não se aplicam)
+    gpu_ratio = min(max(gpu_ratio, 0.0), 1.0);
+    int gpu_n = (int)(local_n * gpu_ratio);
+    int gpu_k = (int)(K * gpu_ratio);
+    int cpu_threads = max(omp_get_max_threads() - 1, 1);
 
     if (rank == 0) {
         cout << ">> Processando " << N << " pontos totais em " << size << " Rank(s)." << endl;
-        cout << ">> Cada Rank processa aproximadamente " << local_n << " pontos em " << num_chunks << " chunk(s)." << endl;
         if (mode == 2) {
-            cout << ">> Divisão hibrida por Rank: " << gpu_chunks_target << " chunks na GPU e " 
-                 << (num_chunks - gpu_chunks_target) << " na CPU." << endl;
+            cout << ">> Divisão hibrida por Rank (concorrente): " << gpu_n << " pontos na GPU e "
+                 << (local_n - gpu_n) << " na CPU | centroides: " << gpu_k << " na GPU e " << (K - gpu_k)
+                 << " na CPU | threads: 1 (GPU) + " << cpu_threads << " (CPU)" << endl;
+        } else {
+            cout << ">> Cada Rank processa aproximadamente " << local_n << " pontos em " << num_chunks << " chunk(s)." << endl;
         }
     }
 
     double *local_sums = new double[K * dimensions], *global_sums = new double[K * dimensions];
     int *local_counts = new int[K], *global_counts = new int[K];
+
+    // Acumuladores separados por dispositivo (modo 2): GPU e cada thread de CPU somam em buffers próprios
+    double *gpu_sums = new double[K * dimensions];
+    int *gpu_counts = new int[K];
+    vector<double> cpu_sums((size_t)cpu_threads * K * dimensions);
+    vector<int> cpu_counts((size_t)cpu_threads * K);
 
     #ifdef USE_GPU
     if (mode == 1 || mode == 2) {
@@ -185,6 +258,13 @@ int main(int argc, char **argv) {
         #pragma omp target enter data map(to: local_points[0:local_n*dimensions]) \
                                    map(to: local_labels[0:local_n])
     }
+    if (mode == 2) {
+        // Só a parte da GPU fica residente; a parte da CPU continua no host
+        #pragma omp target enter data map(to: local_points[0:gpu_n*dimensions]) \
+                                   map(to: local_labels[0:gpu_n])
+        // Garante que o "parallel for" dos kernels de CPU rode com 1 thread dentro da região híbrida
+        omp_set_max_active_levels(1);
+    }
     #endif
 
     for (int iter = 0; iter < nIters; iter++) {
@@ -192,23 +272,32 @@ int main(int argc, char **argv) {
         memset(local_counts, 0, K * sizeof(int));
         int local_changes = 0;
 
-        for (int chunk_id = 0; chunk_id < num_chunks; chunk_id++) {
-            int offset = chunk_id * chunk_size;
-            int this_chunk = min(chunk_size, local_n - offset);
-            if (this_chunk <= 0) break; 
+        if (mode == 2) {
+            #ifdef USE_GPU
+            memset(gpu_sums, 0, K * dimensions * sizeof(double));
+            memset(gpu_counts, 0, K * sizeof(int));
+            fill(cpu_sums.begin(), cpu_sums.end(), 0.0);
+            fill(cpu_counts.begin(), cpu_counts.end(), 0);
 
-            if (mode == 2) {
-                #ifdef USE_GPU
-                if (chunk_id < gpu_chunks_target) {
-                    local_changes += assign_point_to_cluster_gpu(&local_points[offset * dimensions], global_centroids, &local_labels[offset], this_chunk, K, dimensions);
-                    calculate_partial_sums_gpu(&local_points[offset * dimensions], &local_labels[offset], local_sums, local_counts, this_chunk, K, dimensions);
-                } else 
-                #endif
-                {
-                    local_changes += assign_point_to_cluster_cpu(&local_points[offset * dimensions], global_centroids, &local_labels[offset], this_chunk, K, dimensions);
-                    calculate_partial_sums_cpu(&local_points[offset * dimensions], &local_labels[offset], local_sums, local_counts, this_chunk, K, dimensions);
-                }
-            } else {
+            local_changes = hybrid_assign_and_sums(local_points, global_centroids, local_labels, local_n, gpu_n,
+                                                   K, dimensions, cpu_threads, gpu_sums, gpu_counts,
+                                                   cpu_sums.data(), cpu_counts.data());
+
+            for (int i = 0; i < K * dimensions; i++) {
+                local_sums[i] = gpu_sums[i];
+                for (int t = 0; t < cpu_threads; t++) local_sums[i] += cpu_sums[(size_t)t * K * dimensions + i];
+            }
+            for (int k = 0; k < K; k++) {
+                local_counts[k] = gpu_counts[k];
+                for (int t = 0; t < cpu_threads; t++) local_counts[k] += cpu_counts[(size_t)t * K + k];
+            }
+            #endif
+        } else {
+            for (int chunk_id = 0; chunk_id < num_chunks; chunk_id++) {
+                int offset = chunk_id * chunk_size;
+                int this_chunk = min(chunk_size, local_n - offset);
+                if (this_chunk <= 0) break;
+
                 local_changes += assign_points(&local_points[offset * dimensions], global_centroids, &local_labels[offset], this_chunk, K, dimensions);
                 calc_sums(&local_points[offset * dimensions], &local_labels[offset], local_sums, local_counts, this_chunk, K, dimensions);
             }
@@ -225,7 +314,13 @@ int main(int argc, char **argv) {
         MPI_Allreduce(local_sums, global_sums, K * dimensions, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
         MPI_Allreduce(local_counts, global_counts, K, MPI_INT, MPI_SUM, MPI_COMM_WORLD);
 
-        update_cents(global_sums, global_counts, global_centroids, K, dimensions);
+        if (mode == 2) {
+            #ifdef USE_GPU
+            hybrid_update_centroids(global_sums, global_counts, global_centroids, K, gpu_k, dimensions);
+            #endif
+        } else {
+            update_cents(global_sums, global_counts, global_centroids, K, dimensions);
+        }
 
         if (rank == 0) cout << "[OMP] Iteracao " << iter + 1 << " | mudancas: " << global_changes << endl;
 
@@ -237,6 +332,10 @@ int main(int argc, char **argv) {
     #ifdef USE_GPU
     if (mode == 1) {
         #pragma omp target exit data map(from: local_labels[0:local_n])
+    }
+    if (mode == 2) {
+        #pragma omp target exit data map(from: local_labels[0:gpu_n]) \
+                                  map(delete: local_points[0:gpu_n*dimensions])
     }
     #endif
 
@@ -306,6 +405,17 @@ int main(int argc, char **argv) {
     m.gpu_assign    = cuda_assign_calls;
     m.gpu_calculate = cuda_calculate_calls;
     m.gpu_update    = cuda_update_calls;
+    if (mode == 2) {
+        // Híbrido: contagens em pontos (Assign/Calculate) e centroides (Update);
+        // a parte da GPU só conta se o kernel de fato rodou no dispositivo
+        m.total_assign    = (long)iter_converged * local_n;
+        m.total_calculate = (long)iter_converged * local_n;
+        m.total_update    = (long)iter_converged * K;
+        m.gpu_assign      = (cuda_assign_calls > 0)    ? (long)iter_converged * gpu_n : 0;
+        m.gpu_calculate   = (cuda_calculate_calls > 0) ? (long)iter_converged * gpu_n : 0;
+        m.gpu_update      = (cuda_update_calls > 0)    ? (long)iter_converged * gpu_k : 0;
+        m.omp_threads     = 1 + cpu_threads;
+    }
 #endif
     print_omp_metrics(rank, size, m);
 
@@ -321,6 +431,7 @@ int main(int argc, char **argv) {
 
     delete[] local_points; delete[] local_labels; delete[] local_sums; delete[] local_counts;
     delete[] global_sums; delete[] global_counts; delete[] global_centroids;
+    delete[] gpu_sums; delete[] gpu_counts;
     if (rank == 0) { delete[] global_points; delete[] global_labels; }
     MPI_Finalize();
     return 0;

@@ -116,6 +116,8 @@ void print_omp_metrics(int rank, int world_size, const OmpMetrics& m) {
          << setw(24) << "CPU (N / %)"
          << setw(24) << "GPU (N / %)" << endl;
     cout << "  " << string(60, '-') << endl;
+    if (m.mode == 2)
+        cout << "  (Hibrido: N = pontos em Assign/Calculate e centroides em Update)" << endl;
 
     auto row = [&](const string& name, long cpu, long gpu) {
         long tot = cpu + gpu;
