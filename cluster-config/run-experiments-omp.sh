@@ -21,6 +21,7 @@ N=300000000
 K=50
 SEED=42
 ITERS=30
+INPUT_FILE="input.txt"   # use input.bin para leitura binária
 TIMED_REPS=3
 DO_SYNC=1
 DO_BUILD=1
@@ -119,7 +120,7 @@ run_single() {
   [[ "$mode" == "omp_hybrid" ]] && gpu_ratio="$GPU_RATIO_HYBRID" || gpu_ratio="0.0"
 
   local out_dir="output_bench/exp_${mode}_np${nodes}_metricas${rep_idx}"
-  local run_args="input.txt ${K} ${out_dir} ${omp_mode} ${chunks} ${gpu_ratio} ${SEED} ${ITERS}"
+  local run_args="${INPUT_FILE} ${K} ${out_dir} ${omp_mode} ${chunks} ${gpu_ratio} ${SEED} ${ITERS}"
   local mpirun_args="${GLOBAL_MPIRUN_ARGS} -x OMP_NUM_THREADS=${omp_threads}"
 
   log "Run mode=${mode} nodes=${nodes} chunks=${chunks} metricas:${rep_idx} OMP_NUM_THREADS=${omp_threads}"
@@ -164,7 +165,7 @@ main() {
   "${CLUSTER_TOOL}" disable-ht
 
   log "Gerando dataset no no mestre..."
-  "${CLUSTER_TOOL}" generate-input "$N" 2 "$SEED" input.txt 8
+  "${CLUSTER_TOOL}" generate-input "$N" 2 "$SEED" "$INPUT_FILE" 8
 
   log "Sessao: ${RESULTS_DIR}"
 

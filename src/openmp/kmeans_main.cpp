@@ -20,7 +20,7 @@
 using namespace std;
 using namespace chrono;
 
-extern bool read_points_from_file(const string& filename, vector<Point>& points, int& N, int& dimensions);
+extern bool read_points_flat(const string& filename, vector<double>& values, int& N, int& dimensions);
 
 #ifdef USE_GPU
 // Divide [begin, end) entre nworkers; devolve a faixa [b, e) do worker w
@@ -148,18 +148,13 @@ int main(int argc, char **argv) {
     int N = 0, dimensions = 0;
     double *global_points = nullptr, *global_centroids = nullptr;
     int *global_labels = nullptr;
+    vector<double> all_values;   // pontos lidos pelo rank 0 (texto ou binário)
 
     if (rank == 0) {
-        vector<Point> all_points;
-        if (!read_points_from_file(filename, all_points, N, dimensions)) MPI_Abort(MPI_COMM_WORLD, 1);
-        global_points = new double[N * dimensions];
-        global_labels = new int[N];
+        if (!read_points_flat(filename, all_values, N, dimensions)) MPI_Abort(MPI_COMM_WORLD, 1);
+        global_points = all_values.data();
+        global_labels = new int[N]();
         global_centroids = new double[K * dimensions];
-
-        for (int i = 0; i < N; i++) {
-            for (int d = 0; d < dimensions; d++) global_points[i * dimensions + d] = all_points[i].getVal(d);
-            global_labels[i] = 0;
-        }
         srand(seed);
         cout << ">> Rank 0 inicializando centroides com SEED: " << seed << endl;
 
@@ -432,7 +427,7 @@ int main(int argc, char **argv) {
     delete[] local_points; delete[] local_labels; delete[] local_sums; delete[] local_counts;
     delete[] global_sums; delete[] global_counts; delete[] global_centroids;
     delete[] gpu_sums; delete[] gpu_counts;
-    if (rank == 0) { delete[] global_points; delete[] global_labels; }
+    if (rank == 0) { delete[] global_labels; }
     MPI_Finalize();
     return 0;
 }

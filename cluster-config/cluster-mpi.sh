@@ -636,6 +636,7 @@ cmd_sync() {
       --exclude 'cluster-config/.cluster/' \
       --exclude 'results/' \
       --exclude 'input.txt' \
+      --exclude 'input*.bin' \
       --exclude 'input_sanity_10k.txt' \
       --exclude 'logs/' \
       --exclude 'output_bench/' \

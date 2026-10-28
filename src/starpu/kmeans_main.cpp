@@ -57,13 +57,13 @@ int main(int argc, char **argv) {
         else cout << "[MODO] Escalonamento ESTATICO (Manual via EXECUTE_ON_NODE)" << endl;
     }
 
-    // ---- Leitura dos pontos (apenas no nodo 0) ----
-    vector<Point> all_points;
+    // ---- Leitura dos pontos (apenas no nodo 0; texto ou binário) ----
+    vector<double> all_values;
     int N = 0;
     int dimensions = 0;
 
     if (rank == 0) {
-        if (!read_points_from_file(filename, all_points, N, dimensions)) {
+        if (!read_points_flat(filename, all_values, N, dimensions)) {
             MPI_Abort(MPI_COMM_WORLD, 1);
         }
     }
@@ -93,7 +93,7 @@ int main(int argc, char **argv) {
     bool use_heterogeneous_chunks_val = false;
 
     KMeans kmeans(K, iters, output_dir, num_chunks, rank, size, dimensions, seed);
-    kmeans.run(all_points, N);
+    kmeans.run(all_values, N);
 
     auto end = high_resolution_clock::now();
     double t_total_ms = duration_cast<duration<double, milli>>(end - start).count();
@@ -125,14 +125,15 @@ int main(int argc, char **argv) {
     // SSE (so no rank 0 que tem todos os pontos)
     if (rank == 0) {
         const auto& cents = kmeans.getCentroids();
+        const auto& labels = kmeans.getLabels();
         int dims = kmeans.getDimensions();
         int K_   = kmeans.getK();
         double sse = 0.0;
         for (int i = 0; i < N; i++) {
-            int c = all_points[i].getCluster() - 1;
+            int c = labels[i] - 1;
             if (c < 0 || c >= K_) continue;
             for (int d = 0; d < dims; d++) {
-                double diff = all_points[i].getVal(d) - cents[c * dims + d];
+                double diff = all_values[(size_t)i * dims + d] - cents[c * dims + d];
                 sse += diff * diff;
             }
         }

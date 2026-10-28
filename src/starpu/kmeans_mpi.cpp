@@ -305,7 +305,7 @@ void KMeans::submitTasks(int N, starpu_data_handle_t converged_handle, int *conv
         }
     }
 
-void KMeans::run(vector<Point> &all_points, int N) {
+void KMeans::run(const vector<double> &all_values, int N) {
     total_points = N;
     points_ptr = nullptr;
     labels_ptr = nullptr;
@@ -330,10 +330,7 @@ void KMeans::run(vector<Point> &all_points, int N) {
 
     memset(labels_ptr, 0, labels_bytes);
     if (mpi_rank == 0) {
-        for (int i = 0; i < N; i++) {
-            for (int d = 0; d < dimensions; d++)
-                points_ptr[i * dimensions + d] = all_points[i].getVal(d);
-        }
+        memcpy(points_ptr, all_values.data(), points_bytes);
     } else {
         memset(points_ptr, 0, points_bytes);
     }
@@ -428,11 +425,9 @@ void KMeans::run(vector<Point> &all_points, int N) {
 
         for (int i = 0; i < K; ++i) {
             int point_idx = chosen_indices[i];
-            
-            clusters.emplace_back(i + 1, all_points[point_idx]);
-            
+
             for (int j = 0; j < dimensions; j++) {
-                centroids_data[i * dimensions + j] = all_points[point_idx].getVal(j);
+                centroids_data[i * dimensions + j] = all_values[(size_t)point_idx * dimensions + j];
             }
         }
         
@@ -523,9 +518,7 @@ void KMeans::run(vector<Point> &all_points, int N) {
 
     if (mpi_rank == 0) {
         starpu_data_acquire(output_handle, STARPU_R);
-        for (int i = 0; i < N; i++) {
-            all_points[i].setCluster(labels_ptr[i]);
-        }
+        final_labels.assign(labels_ptr, labels_ptr + N);
         starpu_data_release(output_handle);
         
         cout << "[INFO] Salvando centróides finais..." << endl;

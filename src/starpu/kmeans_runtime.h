@@ -98,6 +98,7 @@ extern struct starpu_perfmodel update_perf_model;
 /* ========================================================================== */
 
 bool read_points_from_file(const std::string &filename, std::vector<Point> &all_points, int &N, int &dimensions);
+bool read_points_flat(const std::string &filename, std::vector<double> &values, int &N, int &dimensions);
 
 /* ========================================================================== */
 /* Classe KMeans (implementada em kmeans_mpi.cpp)                            */
@@ -134,6 +135,7 @@ private:
 
     std::vector<double> centroids_data;
     starpu_data_handle_t centroids_handle;
+    std::vector<int> final_labels;   // rótulos finais (rank 0), para o SSE
 
     double *points_ptr;
     int *labels_ptr;
@@ -148,10 +150,12 @@ private:
 public:
     KMeans(int K, int iterations, std::string output_dir, int chunk_size, int rank, int size, int dims, int seed);
 
-    void run(std::vector<Point> &all_points, int N);
+    // all_values: N*D doubles, preenchido só no rank 0
+    void run(const std::vector<double> &all_values, int N);
 
     // Getters para o main calcular metricas apos a execucao
     const std::vector<double>& getCentroids() const { return centroids_data; }
+    const std::vector<int>& getLabels() const { return final_labels; }
     int    getDimensions() const { return dimensions; }
     int    getK()          const { return K; }
     double getLoopMs()     const { return t_loop_ms_; }

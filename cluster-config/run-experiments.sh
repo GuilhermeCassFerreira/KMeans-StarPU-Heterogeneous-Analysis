@@ -24,6 +24,7 @@ N=300000000
 K=50
 SEED=42
 ITERS=30
+INPUT_FILE="input.txt"   # use input.bin para leitura binária
 CHUNKS_CPU_PER_NODE=28
 CHUNKS_GPU_PER_NODE=1
 CHUNKS_HYBRID_PER_NODE=32
@@ -178,7 +179,7 @@ run_single() {
   starpu_env="$(starpu_env_for_mode "$mode")"
 
   local out_dir="output_bench/exp_${mode}_np${nodes}_${rep_kind}${rep_idx}"
-  local run_args="input.txt ${K} ${out_dir} ${chunks} 0 ${SEED} ${ITERS}"
+  local run_args="${INPUT_FILE} ${K} ${out_dir} ${chunks} 0 ${SEED} ${ITERS}"
 
   local mpirun_args="${GLOBAL_MPIRUN_ARGS} -x STARPU_SCHED=dmda -x STARPU_NOPENCL=1 -x STARPU_RESERVE_NCPU=1"
   for var in $starpu_env; do
@@ -222,6 +223,8 @@ run_single() {
 }
 
 main() {
+  # Lê os argumentos antes para respeitar --env; depois de novo para a linha de comando prevalecer
+  parse_args "$@"
   load_env_file
   parse_args "$@"
   validate_config
@@ -236,9 +239,9 @@ main() {
   log "Desabilitando hyperthreading em todos os nos..."
   "${CLUSTER_TOOL}" disable-ht
 
-  # Gerar input.txt apenas no no mestre (rank 0)
+  # Gerar a entrada apenas no no mestre (rank 0)
   log "Gerando dataset no no mestre..."
-  "${CLUSTER_TOOL}" generate-input "$N" 2 "$SEED" input.txt 8
+  "${CLUSTER_TOOL}" generate-input "$N" 2 "$SEED" "$INPUT_FILE" 8
 
   log "Sessao: ${RESULTS_DIR}"
 

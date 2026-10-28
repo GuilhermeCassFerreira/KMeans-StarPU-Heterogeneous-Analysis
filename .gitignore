@@ -1,6 +1,7 @@
 # Arquivos de entrada grandes
 input.txt
 input_*.txt
+input*.bin
 
 # Binários compilados
 kmeans_starpu
