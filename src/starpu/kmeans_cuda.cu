@@ -162,6 +162,29 @@ __global__ void calculate_partial_sums_cuda_kernel(
     }
 }
 
+/* Versão sem memória compartilhada: usada quando as K*D somas não cabem no
+ * bloco (ex.: K=256, D=128). Cada thread soma direto na memória global. */
+__global__ void calculate_partial_sums_global_kernel(
+    const double *points_values, const int *nearestClusterIds,
+    int K, int dimensions, int npoints,
+    double *partial_sums, int *partial_counts, int *converged)
+{
+    if (*converged == 1) return;
+
+    int idx = blockIdx.x * blockDim.x + threadIdx.x;
+    if (idx >= npoints) return;
+
+    int cluster_id = nearestClusterIds[idx] - 1;
+    if (cluster_id >= 0 && cluster_id < K) {
+        atomicAdd(&partial_counts[cluster_id], 1);
+        const double *pv = points_values + (size_t)idx * dimensions;
+        double *ps = partial_sums + (size_t)cluster_id * dimensions;
+        for (int d = 0; d < dimensions; ++d) {
+            atomicAdd(&ps[d], pv[d]);
+        }
+    }
+}
+
 void calculate_partial_sums_cuda(void *buffers[], void *cl_arg) {
     int K, dimensions, chunk_size;
     starpu_codelet_unpack_args(cl_arg, &K, &dimensions, &chunk_size);
@@ -198,12 +221,14 @@ void calculate_partial_sums_cuda(void *buffers[], void *cl_arg) {
         cached_shared_mem_limit = prop.sharedMemPerBlock;
     }
 
+    // K*D somas não cabem na memória compartilhada do bloco: usa a versão em memória global
     if (shared_mem_size > cached_shared_mem_limit) {
-        fprintf(stderr, "[KMeans CUDA] WARN: Shared memory insuficiente. K muito grande? Falha provavel.\n");
+        calculate_partial_sums_global_kernel<<<blocks, threads, 0, stream>>>(
+            points_values, nearestClusterIds, K, dimensions, npoints, partial_sums, partial_counts, converged);
+    } else {
+        calculate_partial_sums_cuda_kernel<<<blocks, threads, shared_mem_size, stream>>>(
+            points_values, nearestClusterIds, K, dimensions, npoints, partial_sums, partial_counts, converged);
     }
-
-    calculate_partial_sums_cuda_kernel<<<blocks, threads, shared_mem_size, stream>>>(
-        points_values, nearestClusterIds, K, dimensions, npoints, partial_sums, partial_counts, converged);
 
     CUDA_CHECK(cudaGetLastError());
 }
