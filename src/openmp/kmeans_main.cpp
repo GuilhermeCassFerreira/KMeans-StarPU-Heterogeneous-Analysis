@@ -11,6 +11,7 @@
 #include <algorithm>
 #include "../../include/kmeans_types.h"
 #include "../../include/metrics.h"
+#include "../../include/compiler_info.h"
 #include "kmeans_omp_mpi.h"
 
 #ifdef USE_GPU
@@ -117,6 +118,8 @@ int main(int argc, char **argv) {
     double gpu_ratio = (argc >= 7) ? stod(argv[6]) : 0.5;
     unsigned int seed = (argc >= 8) ? (unsigned int)stoul(argv[7]) : 42;
     int nIters = (argc >= 9) ? stoi(argv[8]) : 100;
+
+    if (rank == 0) cout << "[COMPILADOR] " << KMEANS_COMPILER << endl;
 
     assign_fn assign_points = assign_point_to_cluster_cpu;
     calculate_fn calc_sums = calculate_partial_sums_cpu;

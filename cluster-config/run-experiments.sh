@@ -22,12 +22,16 @@ MODES_RAW="starpu_cpu starpu_gpu starpu_hybrid"
 NODE_COUNTS_RAW="2 4"
 N=300000000
 K=50
+DIM=2                    # dimensões dos pontos gerados (D)
 SEED=42
 ITERS=30
 INPUT_FILE="input.txt"   # use input.bin para leitura binária
 CHUNKS_CPU_PER_NODE=28
 CHUNKS_GPU_PER_NODE=1
 CHUNKS_HYBRID_PER_NODE=32
+# Total fixo de chunks do híbrido (> 0 substitui o "por nó"): mesmo tamanho de chunk
+# com qualquer número de nós, então a calibração do StarPU vale para todos
+CHUNKS_HYBRID_TOTAL=0
 WARMUP_REPS=2
 TIMED_REPS=3
 DO_SYNC=1
@@ -36,6 +40,13 @@ BUILD_CLEAN=1
 BUILD_ARGS_STARPU=""
 GLOBAL_MPIRUN_ARGS="--bind-to none"
 SAVE_LOGS=1
+# Compilador que os binários devem ter (StarPU e OpenMP iguais); vazio = não confere
+EXPECTED_COMPILER="nvc++"
+
+# Calibração do StarPU reaproveitada entre clusters: nome de máquina fixo para os
+# arquivos de sampling e pasta do repositório com a calibração feita na AWS
+STARPU_HOSTNAME_FIXED="g6.4xlarge"
+CALIB_DIR="calibracao_aws/sampling"
 
 POOL_CONTROL_IPS=()
 POOL_MPI_IPS=()
@@ -129,7 +140,9 @@ chunks_for_mode() {
   case "$mode" in
     starpu_cpu)    echo $((CHUNKS_CPU_PER_NODE    * nodes)) ;;
     starpu_gpu)    echo $((CHUNKS_GPU_PER_NODE    * nodes)) ;;
-    starpu_hybrid) echo $((CHUNKS_HYBRID_PER_NODE * nodes)) ;;
+    starpu_hybrid)
+      if ((CHUNKS_HYBRID_TOTAL > 0)); then echo "$CHUNKS_HYBRID_TOTAL"
+      else echo $((CHUNKS_HYBRID_PER_NODE * nodes)); fi ;;
   esac
 }
 
@@ -161,6 +174,22 @@ build_for_nodes() {
   "${CLUSTER_TOOL}" build starpu $clean_flag $BUILD_ARGS_STARPU
 }
 
+# Confere em cada nó do subconjunto que o binário foi gerado pelo compilador esperado
+# (marca KMEANS_COMPILER gravada no binário por include/compiler_info.h)
+check_compiler() {
+  local bin="$1" nodes="$2"
+  [[ -z "$EXPECTED_COMPILER" ]] && return
+  local out found ok
+  out="$("${CLUSTER_TOOL}" exec-all "grep -a -o -m1 'KMEANS_COMPILER=[[:print:]]*' ${bin} | head -n1")"
+  found="$(grep -c '^KMEANS_COMPILER=' <<< "$out" || true)"
+  ok="$(grep -c "^KMEANS_COMPILER=${EXPECTED_COMPILER}" <<< "$out" || true)"
+  log "Compilador de ${bin}: $(grep -m1 '^KMEANS_COMPILER=' <<< "$out" | cut -d= -f2-) (${ok}/${nodes} nos com ${EXPECTED_COMPILER})"
+  if [[ "$found" -ne "$nodes" || "$ok" -ne "$nodes" ]]; then
+    printf '%s\n' "$out" >&2
+    die "${bin} nao foi compilado com ${EXPECTED_COMPILER} em todos os nos"
+  fi
+}
+
 extract_loop_time_ms() {
   local output="$1"
   awk '/Tempo do loop/ {gsub(/[^0-9.]/, "", $NF); print $NF; exit}' <<< "$output"
@@ -181,7 +210,7 @@ run_single() {
   local out_dir="output_bench/exp_${mode}_np${nodes}_${rep_kind}${rep_idx}"
   local run_args="${INPUT_FILE} ${K} ${out_dir} ${chunks} 0 ${SEED} ${ITERS}"
 
-  local mpirun_args="${GLOBAL_MPIRUN_ARGS} -x STARPU_SCHED=dmda -x STARPU_NOPENCL=1 -x STARPU_RESERVE_NCPU=1"
+  local mpirun_args="${GLOBAL_MPIRUN_ARGS} -x STARPU_SCHED=dmda -x STARPU_NOPENCL=1 -x STARPU_RESERVE_NCPU=1 -x STARPU_HOSTNAME=${STARPU_HOSTNAME_FIXED}"
   for var in $starpu_env; do
     mpirun_args+=" -x ${var}"
   done
@@ -222,6 +251,22 @@ run_single() {
     >> "$csv_file"
 }
 
+# Copia a calibração salva (calibracao_aws/sampling, vinda com o código) para ~/.starpu/sampling de cada nó
+install_calibration() {
+  if [[ -d "${REPO_ROOT}/${CALIB_DIR}" ]]; then
+    log "Instalando calibração salva (${CALIB_DIR}) em todos os nós"
+    "${CLUSTER_TOOL}" exec-all "mkdir -p ~/.starpu/sampling && cp -r ${CALIB_DIR}/. ~/.starpu/sampling/"
+  else
+    log "Sem calibração salva em ${CALIB_DIR}; o StarPU vai calibrar do zero"
+  fi
+}
+
+# Copia a calibração atualizada do nó 0 de volta para calibracao_aws/sampling
+save_calibration() {
+  log "Salvando calibração do nó 0 em ${CALIB_DIR}"
+  "${CLUSTER_TOOL}" exec-launch "mkdir -p ${CALIB_DIR} && cp -r ~/.starpu/sampling/. ${CALIB_DIR}/"
+}
+
 main() {
   # Lê os argumentos antes para respeitar --env; depois de novo para a linha de comando prevalecer
   parse_args "$@"
@@ -241,7 +286,7 @@ main() {
 
   # Gerar a entrada apenas no no mestre (rank 0)
   log "Gerando dataset no no mestre..."
-  "${CLUSTER_TOOL}" generate-input "$N" 2 "$SEED" "$INPUT_FILE" 8
+  "${CLUSTER_TOOL}" generate-input "$N" "$DIM" "$SEED" "$INPUT_FILE" 8
 
   log "Sessao: ${RESULTS_DIR}"
 
@@ -251,6 +296,8 @@ main() {
     set_cluster_subset "$nodes"
     [[ "$DO_SYNC" -eq 1 ]] && "${CLUSTER_TOOL}" sync
     build_for_nodes "$nodes"
+    check_compiler kmeans_starpu "$nodes"
+    install_calibration
 
     total_reps=$((WARMUP_REPS + TIMED_REPS))
     for mode in "${MODES[@]}"; do
@@ -266,6 +313,7 @@ main() {
     done
   done
 
+  save_calibration
   log "Concluido. Resultados em: ${RESULTS_CSV}"
 }
 

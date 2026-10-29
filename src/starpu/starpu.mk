@@ -12,7 +12,7 @@ ifeq ($(shell if [ -f "$(NVC_COMPILER)" ]; then echo 1; else echo 0; fi), 1)
 endif
 
 # 1. Flags e caminhos BASE (Apenas CPU e StarPU)
-CXXFLAGS = -O3 -std=c++11 -fPIC -DUSE_MPI
+CXXFLAGS = -O3 -DNDEBUG -std=c++11 -fPIC -DUSE_MPI
 NVCCFLAGS = -ccbin /usr/bin/g++ -std=c++11 -Xcompiler "-fPIC" -O3 -DSTARPU_USE_CUDA -gencode arch=compute_89,code=sm_89
 
 STARPU_PATH = /usr/local

@@ -19,6 +19,7 @@ MODES_RAW="omp_cpu omp_gpu omp_hybrid"
 NODE_COUNTS_RAW="2"
 N=300000000
 K=50
+DIM=2                    # dimensões dos pontos gerados (D)
 SEED=42
 ITERS=30
 INPUT_FILE="input.txt"   # use input.bin para leitura binária
@@ -30,6 +31,8 @@ BUILD_CLEAN=1
 # em vez da árvore que o OpenMPI escolhe por padrão
 GLOBAL_MPIRUN_ARGS="--bind-to none --mca coll_tuned_use_dynamic_rules 1 --mca coll_tuned_reduce_algorithm 1"
 SAVE_LOGS=1
+# Compilador que os binários devem ter (StarPU e OpenMP iguais); vazio = não confere
+EXPECTED_COMPILER="nvc++"
 
 # Chunks por nó (aplicados por rank)
 CHUNKS_CPU_PER_NODE=1
@@ -94,6 +97,22 @@ chunks_for_mode() {
     omp_gpu)    echo "$CHUNKS_GPU_PER_NODE" ;;
     omp_hybrid) echo "$CHUNKS_HYBRID_PER_NODE" ;;
   esac
+}
+
+# Confere em cada nó do subconjunto que o binário foi gerado pelo compilador esperado
+# (marca KMEANS_COMPILER gravada no binário por include/compiler_info.h)
+check_compiler() {
+  local bin="$1" nodes="$2"
+  [[ -z "$EXPECTED_COMPILER" ]] && return
+  local out found ok
+  out="$("${CLUSTER_TOOL}" exec-all "grep -a -o -m1 'KMEANS_COMPILER=[[:print:]]*' ${bin} | head -n1")"
+  found="$(grep -c '^KMEANS_COMPILER=' <<< "$out" || true)"
+  ok="$(grep -c "^KMEANS_COMPILER=${EXPECTED_COMPILER}" <<< "$out" || true)"
+  log "Compilador de ${bin}: $(grep -m1 '^KMEANS_COMPILER=' <<< "$out" | cut -d= -f2-) (${ok}/${nodes} nos com ${EXPECTED_COMPILER})"
+  if [[ "$found" -ne "$nodes" || "$ok" -ne "$nodes" ]]; then
+    printf '%s\n' "$out" >&2
+    die "${bin} nao foi compilado com ${EXPECTED_COMPILER} em todos os nos"
+  fi
 }
 
 extract_loop_time_ms() {
@@ -167,7 +186,7 @@ main() {
   "${CLUSTER_TOOL}" disable-ht
 
   log "Gerando dataset no no mestre..."
-  "${CLUSTER_TOOL}" generate-input "$N" 2 "$SEED" "$INPUT_FILE" 8
+  "${CLUSTER_TOOL}" generate-input "$N" "$DIM" "$SEED" "$INPUT_FILE" 8
 
   log "Sessao: ${RESULTS_DIR}"
 
@@ -181,6 +200,7 @@ main() {
       [[ "$BUILD_CLEAN" -eq 1 ]] && clean_flag="--clean"
       "${CLUSTER_TOOL}" build openmp $clean_flag "GPU=1"
     fi
+    check_compiler src/openmp/kmeans_openmp "$nodes"
 
     for mode in "${MODES[@]}"; do
       chunks="$(chunks_for_mode "$mode")"

@@ -1,4 +1,5 @@
 #include "kmeans_runtime.h"
+#include "compiler_info.h"
 #include <iostream>
 #include <vector>
 #include <string>
@@ -53,6 +54,7 @@ int main(int argc, char **argv) {
     MPI_Bcast(&seed, 1, MPI_INT, 0, MPI_COMM_WORLD);
 
     if (rank == 0) {
+        cout << "[COMPILADOR] " << KMEANS_COMPILER << endl;
         if (dynamic_sched) cout << "[MODO] Escalonamento DINAMICO (StarPU-MPI decide - Sem EXECUTE_ON_NODE)" << endl;
         else cout << "[MODO] Escalonamento ESTATICO (Manual via EXECUTE_ON_NODE)" << endl;
     }
