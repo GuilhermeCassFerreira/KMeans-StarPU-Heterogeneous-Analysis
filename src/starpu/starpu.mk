@@ -3,6 +3,14 @@
 NVCC = nvcc
 CXX = mpic++
 
+# Mesmo compilador de host do OpenMP (src/openmp/Makefile): nvc++ quando o
+# NVIDIA HPC SDK está instalado, senão o g++ padrão do mpic++
+HPC_SDK_PATH := /opt/nvidia/hpc_sdk/Linux_x86_64/26.3
+NVC_COMPILER := $(HPC_SDK_PATH)/compilers/bin/nvc++
+ifeq ($(shell if [ -f "$(NVC_COMPILER)" ]; then echo 1; else echo 0; fi), 1)
+    export OMPI_CXX := $(NVC_COMPILER)
+endif
+
 # 1. Flags e caminhos BASE (Apenas CPU e StarPU)
 CXXFLAGS = -O3 -std=c++11 -fPIC -DUSE_MPI
 NVCCFLAGS = -ccbin /usr/bin/g++ -std=c++11 -Xcompiler "-fPIC" -O3 -DSTARPU_USE_CUDA -gencode arch=compute_89,code=sm_89
