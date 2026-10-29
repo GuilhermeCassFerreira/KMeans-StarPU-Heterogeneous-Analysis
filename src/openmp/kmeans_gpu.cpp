@@ -1,5 +1,6 @@
 #include <omp.h>
 #include <stdio.h>
+#include <cuda_runtime.h>
 #include "kmeans_omp_mpi.h"
 
 int cuda_assign_calls = 0;
@@ -9,22 +10,53 @@ int cuda_update_calls = 0;
 int assign_point_to_cluster_gpu(double *points, double *centroids, int *labels, int n_points, int K, int dimensions) {
     int changes = 0;
     int on_device = 0;
-    
+
+    // Mesmo lançamento do kernel CUDA do StarPU: 2 times de 128 threads por SM
+    // (256 threads ativas/SM), para os pontos relidos caberem no cache
+    static int sm_count = 0;
+    if (sm_count == 0) {
+        int dev;
+        cudaGetDevice(&dev);
+        cudaDeviceGetAttribute(&sm_count, cudaDevAttrMultiProcessorCount, dev);
+    }
+    int teams = sm_count * 2;
+
     #pragma omp target teams distribute parallel for \
         map(to: centroids[0:K*dimensions]) \
         map(present: points[0:n_points*dimensions], labels[0:n_points]) \
         map(tofrom: changes) map(from: on_device) \
-        reduction(+:changes) thread_limit(256)
+        reduction(+:changes) num_teams(teams) thread_limit(128)
     for (int i = 0; i < n_points; i++) {
         if (i == 0) on_device = !omp_is_initial_device();
         double min_dist = 1e300;
         int best_cluster = -1;
         int old_label = labels[i];
-        
-        for (int k = 0; k < K; k++) {
+        const double *pv = points + (size_t)i * dimensions;
+
+        // 4 centroides por vez (mesma otimização do kernel CUDA do StarPU):
+        // cada pv[d] é lido uma vez da memória global e reaproveitado nos 4.
+        // A ordem das somas e o desempate são os mesmos da versão de 1 em 1.
+        int k = 0;
+        for (; k + 3 < K; k += 4) {
+            const double *c0 = centroids + k * dimensions;
+            const double *c1 = c0 + dimensions;
+            const double *c2 = c1 + dimensions;
+            const double *c3 = c2 + dimensions;
+            double d0 = 0.0, d1 = 0.0, d2 = 0.0, d3 = 0.0;
+            for (int d = 0; d < dimensions; d++) {
+                double p = pv[d];
+                double e0 = p - c0[d], e1 = p - c1[d], e2 = p - c2[d], e3 = p - c3[d];
+                d0 += e0 * e0; d1 += e1 * e1; d2 += e2 * e2; d3 += e3 * e3;
+            }
+            if (d0 < min_dist) { min_dist = d0; best_cluster = k; }
+            if (d1 < min_dist) { min_dist = d1; best_cluster = k + 1; }
+            if (d2 < min_dist) { min_dist = d2; best_cluster = k + 2; }
+            if (d3 < min_dist) { min_dist = d3; best_cluster = k + 3; }
+        }
+        for (; k < K; k++) {
             double dist = 0.0;
             for (int d = 0; d < dimensions; d++) {
-                double diff = points[i * dimensions + d] - centroids[k * dimensions + d];
+                double diff = pv[d] - centroids[k * dimensions + d];
                 dist += diff * diff;
             }
             if (dist < min_dist) { min_dist = dist; best_cluster = k; }
@@ -46,18 +78,21 @@ int assign_point_to_cluster_gpu(double *points, double *centroids, int *labels, 
 void calculate_partial_sums_gpu(double *points, int *labels, double *partial_sums, int *partial_counts, int n_points, int K, int dimensions) {
     int on_device = 0;
     
+    // Atomics na memória global, como o kernel CUDA do StarPU (a reduction
+    // em array do OpenMP replica K*D somas por thread e é muito lenta)
     #pragma omp target teams distribute parallel for \
         map(present: points[0:n_points*dimensions], labels[0:n_points]) \
         map(tofrom: partial_sums[0:K*dimensions], partial_counts[0:K]) \
         map(from: on_device) \
-        reduction(+: partial_counts[0:K], partial_sums[0:K*dimensions]) \
         thread_limit(256)
     for (int i = 0; i < n_points; i++) {
         if (i == 0) on_device = !omp_is_initial_device();
         int cluster_id = labels[i] - 1;
         if (cluster_id >= 0 && cluster_id < K) {
+            #pragma omp atomic update
             partial_counts[cluster_id]++;
             for (int d = 0; d < dimensions; d++) {
+                #pragma omp atomic update
                 partial_sums[cluster_id * dimensions + d] += points[i * dimensions + d];
             }
         }

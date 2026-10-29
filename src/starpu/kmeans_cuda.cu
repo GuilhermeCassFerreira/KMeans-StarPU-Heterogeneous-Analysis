@@ -62,27 +62,50 @@ __global__ void assign_point_to_cluster_cuda_kernel(
 {
     if (*converged == 1) return; // ghost task: iteração já convergiu
 
-    int idx = blockIdx.x * blockDim.x + threadIdx.x;
-    if (idx >= npoints) return;
+    // Grid-stride: o lançamento limita as threads ativas por SM (ver
+    // assign_point_to_cluster_cuda), então cada thread processa vários pontos
+    for (int idx = blockIdx.x * blockDim.x + threadIdx.x; idx < npoints;
+         idx += gridDim.x * blockDim.x) {
+        const double *pv = points_values + (size_t)idx * dimensions;
+        double min_dist = 1e300;
+        int best = -1;
 
-    const double *pv = points_values + (size_t)idx * dimensions;
-    double min_dist = 1e300;
-    int best = -1;
-
-    for (int c = 0; c < K; ++c) {
-        double dist = 0.0;
-        const double *cent = centroids + c * dimensions;
-        for (int d = 0; d < dimensions; ++d) {
-            double diff = pv[d] - cent[d];
-            dist += diff * diff;
+        // 4 centroides por vez: cada pv[d] é lido uma vez da memória global e
+        // reaproveitado nos 4 (o acesso ao ponto não é coalescido, então reler
+        // o ponto para cada centroide domina o tempo quando D é grande).
+        // A ordem das somas e o desempate são os mesmos da versão de 1 em 1.
+        int c = 0;
+        for (; c + 3 < K; c += 4) {
+            const double *c0 = centroids + c * dimensions;
+            const double *c1 = c0 + dimensions;
+            const double *c2 = c1 + dimensions;
+            const double *c3 = c2 + dimensions;
+            double d0 = 0.0, d1 = 0.0, d2 = 0.0, d3 = 0.0;
+            for (int d = 0; d < dimensions; ++d) {
+                double p = pv[d];
+                double e0 = p - c0[d], e1 = p - c1[d], e2 = p - c2[d], e3 = p - c3[d];
+                d0 += e0 * e0; d1 += e1 * e1; d2 += e2 * e2; d3 += e3 * e3;
+            }
+            if (d0 < min_dist) { min_dist = d0; best = c; }
+            if (d1 < min_dist) { min_dist = d1; best = c + 1; }
+            if (d2 < min_dist) { min_dist = d2; best = c + 2; }
+            if (d3 < min_dist) { min_dist = d3; best = c + 3; }
         }
-        if (dist < min_dist) { min_dist = dist; best = c; }
-    }
+        for (; c < K; ++c) {
+            double dist = 0.0;
+            const double *cent = centroids + c * dimensions;
+            for (int d = 0; d < dimensions; ++d) {
+                double diff = pv[d] - cent[d];
+                dist += diff * diff;
+            }
+            if (dist < min_dist) { min_dist = dist; best = c; }
+        }
 
-    int new_label = best + 1;
-    if (nearestClusterIds[idx] != new_label) {
-        nearestClusterIds[idx] = new_label;
-        atomicAdd(local_changes, 1); // REDUX: acumula na cópia privada deste chunk
+        int new_label = best + 1;
+        if (nearestClusterIds[idx] != new_label) {
+            nearestClusterIds[idx] = new_label;
+            atomicAdd(local_changes, 1); // REDUX: acumula na cópia privada deste chunk
+        }
     }
 }
 
@@ -101,8 +124,20 @@ void assign_point_to_cluster_cuda(void *buffers[], void *cl_arg) {
 
     cudaStream_t stream = starpu_cuda_get_local_stream();
 
-    int threads = 256;
+    // Poucas threads ativas por SM: cada thread relê o próprio ponto (D doubles)
+    // a cada grupo de 4 centroides, e com a GPU cheia (1536 threads/SM) esses
+    // pontos não cabem no cache e as releituras vão para a DRAM. Com 256
+    // threads/SM o kernel fica limitado pelo cálculo em FP64, não pela memória.
+    static int cached_sm_count = 0;
+    if (cached_sm_count == 0) {
+        int dev;
+        cudaGetDevice(&dev);
+        cudaDeviceGetAttribute(&cached_sm_count, cudaDevAttrMultiProcessorCount, dev);
+    }
+    int threads = 128;
     int blocks  = (chunk_size + threads - 1) / threads;
+    int max_blocks = cached_sm_count * 2; // 2 blocos de 128 = 256 threads por SM
+    if (blocks > max_blocks) blocks = max_blocks;
 
     assign_point_to_cluster_cuda_kernel<<<blocks, threads, 0, stream>>>(
         points_values, centroids, K, dimensions, chunk_size,
