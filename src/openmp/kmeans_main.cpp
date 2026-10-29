@@ -119,7 +119,7 @@ int main(int argc, char **argv) {
     unsigned int seed = (argc >= 8) ? (unsigned int)stoul(argv[7]) : 42;
     int nIters = (argc >= 9) ? stoi(argv[8]) : 100;
 
-    if (rank == 0) cout << "[COMPILADOR] " << KMEANS_COMPILER << endl;
+    if (rank == 0) cout << "[COMPILADOR] " << compiler_name() << endl;
 
     assign_fn assign_points = assign_point_to_cluster_cpu;
     calculate_fn calc_sums = calculate_partial_sums_cpu;

@@ -18,6 +18,12 @@
 
 // Marca no binário para conferir sem executar (usada pelos scripts de experimento):
 //   grep -a -o -m1 'KMEANS_COMPILER=[[:print:]]*' <binário>
+// O nvc++ descarta a variável se ninguém a usa (mesmo com "used"), por isso o
+// log imprime o compilador a partir dela, via compiler_name().
 __attribute__((used)) static const char kmeans_compiler_tag[] = "KMEANS_COMPILER=" KMEANS_COMPILER;
+
+static inline const char *compiler_name() {
+    return kmeans_compiler_tag + sizeof("KMEANS_COMPILER=") - 1;
+}
 
 #endif
