@@ -298,24 +298,30 @@ int main(int argc, char **argv) {
             }
         }
 
+        // Mesmo padrão do StarPU: as parciais vão para o rank 0 (reduce), só ele
+        // atualiza os centroides e depois os envia a todos (bcast)
         int global_changes = 0;
-        MPI_Allreduce(&local_changes, &global_changes, 1, MPI_INT, MPI_SUM, MPI_COMM_WORLD);
+        MPI_Reduce(&local_changes, &global_changes, 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
+        MPI_Reduce(local_sums, global_sums, K * dimensions, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
+        MPI_Reduce(local_counts, global_counts, K, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
+
+        if (rank == 0 && global_changes != 0) {
+            if (mode == 2) {
+                #ifdef USE_GPU
+                hybrid_update_centroids(global_sums, global_counts, global_centroids, K, gpu_k, dimensions);
+                #endif
+            } else {
+                update_cents(global_sums, global_counts, global_centroids, K, dimensions);
+            }
+        }
+
+        MPI_Bcast(&global_changes, 1, MPI_INT, 0, MPI_COMM_WORLD);
         if (global_changes == 0) {
             iter_converged = iter + 1;
             if (rank == 0) cout << "[OMP] Convergiu (label changes=0) na iteracao " << iter + 1 << endl;
             break;
         }
-
-        MPI_Allreduce(local_sums, global_sums, K * dimensions, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
-        MPI_Allreduce(local_counts, global_counts, K, MPI_INT, MPI_SUM, MPI_COMM_WORLD);
-
-        if (mode == 2) {
-            #ifdef USE_GPU
-            hybrid_update_centroids(global_sums, global_counts, global_centroids, K, gpu_k, dimensions);
-            #endif
-        } else {
-            update_cents(global_sums, global_counts, global_centroids, K, dimensions);
-        }
+        MPI_Bcast(global_centroids, K * dimensions, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
         if (rank == 0) cout << "[OMP] Iteracao " << iter + 1 << " | mudancas: " << global_changes << endl;
 

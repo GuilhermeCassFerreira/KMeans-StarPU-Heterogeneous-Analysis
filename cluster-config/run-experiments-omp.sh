@@ -26,7 +26,9 @@ TIMED_REPS=3
 DO_SYNC=1
 DO_BUILD=1
 BUILD_CLEAN=1
-GLOBAL_MPIRUN_ARGS="--bind-to none"
+# Reduce linear (todos enviam direto ao rank 0), como o acumulo do StarPU,
+# em vez da árvore que o OpenMPI escolhe por padrão
+GLOBAL_MPIRUN_ARGS="--bind-to none --mca coll_tuned_use_dynamic_rules 1 --mca coll_tuned_reduce_algorithm 1"
 SAVE_LOGS=1
 
 # Chunks por nó (aplicados por rank)
