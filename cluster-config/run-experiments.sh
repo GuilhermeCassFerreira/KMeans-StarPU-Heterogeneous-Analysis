@@ -48,6 +48,16 @@ EXPECTED_COMPILER="nvc++"
 # arquivos de sampling e pasta do repositório com a calibração feita na AWS
 STARPU_HOSTNAME_FIXED="g6.4xlarge"
 CALIB_DIR="calibracao_aws/sampling"
+# 1 = reinstala a calibração salva antes de cada execução, para todas começarem do mesmo
+# estado do escalonador, e não grava de volta a calibração atualizada no fim
+FREEZE_CALIBRATION=0
+REP_OFFSET=0             # somado ao índice das medições (rodadas alternadas entre cenários)
+SKIP_SETUP=0             # 1 = não desliga HT nem confere o compilador (já feito na etapa)
+
+CSV_HEADER="timestamp,mode,nodes,N,K,chunks,rep_kind,rep_idx,loop_ms,sse,run_ok"
+CSV_HEADER+=",assign_cpu,assign_gpu,calculate_cpu,calculate_gpu,clean_cpu,clean_gpu"
+CSV_HEADER+=",update_cpu,update_gpu,accumulate_cpu,accumulate_gpu,calib_md5,calib_warn"
+CALIB_MD5=""
 
 POOL_CONTROL_IPS=()
 POOL_MPI_IPS=()
@@ -67,6 +77,8 @@ Opcoes:
   --timed-reps <n>       Runs de metricas por cenario (default: 3)
   --no-sync              Nao sincronizar repositorio
   --no-build             Nao compilar
+  --rep-offset <n>       Soma n ao indice das medicoes (resultados acrescentados ao CSV da sessao)
+  --skip-setup           Nao desligar HT nem conferir o compilador
   -h, --help             Mostrar ajuda
 USAGE
 }
@@ -89,6 +101,8 @@ parse_args() {
       --timed-reps)  TIMED_REPS="$2";   shift 2 ;;
       --no-sync)    DO_SYNC=0;           shift   ;;
       --no-build)   DO_BUILD=0;          shift   ;;
+      --rep-offset) REP_OFFSET="$2";     shift 2 ;;
+      --skip-setup) SKIP_SETUP=1;        shift   ;;
       -h|--help)    usage; exit 0 ;;
       *) die "Argumento desconhecido: $1" ;;
     esac
@@ -202,6 +216,22 @@ extract_sse() {
   awk '/SSE/ {print $NF; exit}' <<< "$output"
 }
 
+# Tarefas de cada kernel na CPU e na GPU (tabela "Distribuicao por kernel" do log):
+# "assign_cpu,assign_gpu,calculate_cpu,...,accumulate_gpu"
+extract_kernel_counts() {
+  local output="$1" k counts=()
+  for k in Assign Calculate Clean Update Accumulate; do
+    counts+=("$(awk -v k="$k" '$1 == k && $2 ~ /^[0-9]+$/ {print $2 "," $4; exit}' <<< "$output")")
+    [[ -n "${counts[-1]}" ]] || counts[-1]=","
+  done
+  (IFS=','; echo "${counts[*]}")
+}
+
+# Avisos do StarPU de que algum modelo dos nossos kernels não estava calibrado
+count_calibration_warnings() {
+  grep -c "model kmeans_[a-z_]* is not calibrated enough" <<< "$1" || true
+}
+
 run_single() {
   local mode="$1" nodes="$2" chunks="$3" rep_kind="$4" rep_idx="$5"
   local csv_file="$6" logs_dir="$7"
@@ -212,10 +242,12 @@ run_single() {
   local out_dir="output_bench/exp_${mode}_np${nodes}_${rep_kind}${rep_idx}"
   local run_args="${INPUT_FILE} ${K} ${out_dir} ${chunks} 0 ${SEED} ${ITERS}"
 
-  local mpirun_args="${GLOBAL_MPIRUN_ARGS} -x STARPU_SCHED=dmda -x STARPU_NOPENCL=1 -x STARPU_RESERVE_NCPU=1 -x STARPU_HOSTNAME=${STARPU_HOSTNAME_FIXED}"
+  local mpirun_args="${GLOBAL_MPIRUN_ARGS} -x STARPU_SCHED=dmda -x STARPU_NOPENCL=1 -x STARPU_RESERVE_NCPU=1 -x STARPU_HOSTNAME=${STARPU_HOSTNAME_FIXED} -x STARPU_CALIBRATE=0"
   for var in $starpu_env; do
     mpirun_args+=" -x ${var}"
   done
+
+  [[ "$FREEZE_CALIBRATION" -eq 1 ]] && reinstall_calibration_checked "$nodes"
 
   log "Run mode=${mode} nodes=${nodes} chunks=${chunks} ${rep_kind}:${rep_idx}"
 
@@ -234,9 +266,11 @@ run_single() {
     printf '%s\n' "$output" > "$log_file"
   fi
 
-  local loop_ms sse run_ok notes
+  local loop_ms sse run_ok notes kernels warns
   loop_ms="$(extract_loop_time_ms "$output")"
   sse="$(extract_sse "$output")"
+  kernels="$(extract_kernel_counts "$output")"
+  warns="$(count_calibration_warnings "$output")"
   run_ok="1"
   notes=""
 
@@ -244,12 +278,14 @@ run_single() {
     run_ok="0"
     notes="exit_status_${status}"
   fi
+  [[ "$warns" -eq 0 ]] || log "AVISO: ${warns} aviso(s) de calibracao dos kernels nesta execucao"
 
-  printf '%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n' \
+  printf '%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n' \
     "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
     "$mode" "$nodes" "$N" "$K" "$chunks" \
     "$rep_kind" "$rep_idx" \
     "$loop_ms" "$sse" "$run_ok" \
+    "$kernels" "$CALIB_MD5" "$warns" \
     >> "$csv_file"
 }
 
@@ -261,6 +297,19 @@ install_calibration() {
   else
     log "Sem calibração salva em ${CALIB_DIR}; o StarPU vai calibrar do zero"
   fi
+}
+
+# Apaga a calibração de cada nó (com o que execuções anteriores acrescentaram), reinstala a
+# salva e confere pelo md5 que todos os nós ficaram com exatamente os arquivos de CALIB_DIR
+reinstall_calibration_checked() {
+  local nodes="$1" ref out ok
+  [[ -d "${REPO_ROOT}/${CALIB_DIR}" ]] || die "Sem calibração salva em ${CALIB_DIR}"
+  ref="$(cd "${REPO_ROOT}/${CALIB_DIR}" && find . -type f | LC_ALL=C sort | xargs md5sum | md5sum | cut -c1-32)"
+  out="$("${CLUSTER_TOOL}" exec-all "rm -rf ~/.starpu/sampling && mkdir -p ~/.starpu/sampling && cp -r ${CALIB_DIR}/. ~/.starpu/sampling/ && cd ~/.starpu/sampling && find . -type f | LC_ALL=C sort | xargs md5sum | md5sum | cut -c1-32")"
+  ok="$(grep -c "^${ref}\$" <<< "$out" || true)"
+  CALIB_MD5="$ref"
+  log "Calibracao reinstalada: md5 ${ref} (igual em ${ok}/${nodes} nos)"
+  [[ "$ok" -eq "$nodes" ]] || die "Calibracao diferente da salva em algum no"
 }
 
 # Copia a calibração atualizada do nó 0 de volta para calibracao_aws/sampling
@@ -280,11 +329,13 @@ main() {
   local LOGS_DIR="${RESULTS_DIR}/logs"
   mkdir -p "$RESULTS_DIR" "$LOGS_DIR"
 
-  echo "timestamp,mode,nodes,N,K,chunks,rep_kind,rep_idx,loop_ms,sse,run_ok" > "$RESULTS_CSV"
+  # Acrescenta à sessão se o CSV já existe (rodadas alternadas chamam o script várias vezes)
+  [[ -f "$RESULTS_CSV" ]] || echo "$CSV_HEADER" > "$RESULTS_CSV"
 
-  # Desabilitar HT em todos os nos
-  log "Desabilitando hyperthreading em todos os nos..."
-  "${CLUSTER_TOOL}" disable-ht
+  if [[ "$SKIP_SETUP" -eq 0 ]]; then
+    log "Desabilitando hyperthreading em todos os nos..."
+    "${CLUSTER_TOOL}" disable-ht
+  fi
 
   # Gerar a entrada apenas no no mestre (rank 0)
   if [[ "$DO_GENERATE" -eq 1 ]]; then
@@ -302,8 +353,9 @@ main() {
     set_cluster_subset "$nodes"
     [[ "$DO_SYNC" -eq 1 ]] && "${CLUSTER_TOOL}" sync
     build_for_nodes "$nodes"
-    check_compiler kmeans_starpu "$nodes"
-    install_calibration
+    [[ "$SKIP_SETUP" -eq 0 ]] && check_compiler kmeans_starpu "$nodes"
+    # Congelada: a calibração é reinstalada antes de cada execução, em run_single
+    [[ "$FREEZE_CALIBRATION" -eq 0 ]] && install_calibration
 
     total_reps=$((WARMUP_REPS + TIMED_REPS))
     for mode in "${MODES[@]}"; do
@@ -312,14 +364,14 @@ main() {
         if ((rep <= WARMUP_REPS)); then
           rep_kind="calibracao"; rep_idx="$rep"
         else
-          rep_kind="metricas"; rep_idx="$((rep - WARMUP_REPS))"
+          rep_kind="metricas"; rep_idx="$((rep - WARMUP_REPS + REP_OFFSET))"
         fi
         run_single "$mode" "$nodes" "$chunks" "$rep_kind" "$rep_idx" "$RESULTS_CSV" "$LOGS_DIR"
       done
     done
   done
 
-  save_calibration
+  [[ "$FREEZE_CALIBRATION" -eq 0 ]] && save_calibration
   log "Concluido. Resultados em: ${RESULTS_CSV}"
 }
 
