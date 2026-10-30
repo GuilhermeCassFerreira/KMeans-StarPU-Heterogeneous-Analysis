@@ -27,9 +27,9 @@ TIMED_REPS=3
 DO_SYNC=1
 DO_BUILD=1
 BUILD_CLEAN=1
-# Reduce linear (todos enviam direto ao rank 0), como o acumulo do StarPU,
-# em vez da árvore que o OpenMPI escolhe por padrão
-GLOBAL_MPIRUN_ARGS="--bind-to none --mca coll_tuned_use_dynamic_rules 1 --mca coll_tuned_reduce_algorithm 1"
+# Reduce e broadcast lineares (cada nó envia direto ao rank 0, que devolve os centroides a
+# cada nó), como o acúmulo e o envio dos centroides no StarPU, em vez da árvore do OpenMPI
+GLOBAL_MPIRUN_ARGS="--bind-to none --mca coll_tuned_use_dynamic_rules 1 --mca coll_tuned_reduce_algorithm 1 --mca coll_tuned_bcast_algorithm 1"
 SAVE_LOGS=1
 # Compilador que os binários devem ter (StarPU e OpenMP iguais); vazio = não confere
 EXPECTED_COMPILER="nvc++"
@@ -38,7 +38,10 @@ EXPECTED_COMPILER="nvc++"
 CHUNKS_CPU_PER_NODE=1
 CHUNKS_GPU_PER_NODE=1
 CHUNKS_HYBRID_PER_NODE=4
-GPU_RATIO_HYBRID=0.75
+# Fração dos pontos na GPU para CPU e GPU terminarem juntas (scripts/gpu_ratio.py):
+# r = t_cpu / (t_cpu + t_gpu), t = K·D/velocidade + (8·D+4)/banda; na g6.4xlarge, com
+# 6 threads de cálculo na CPU, dá 0,85 nos três cenários (K = 256, D = 16, 96 e 128)
+GPU_RATIO_HYBRID=0.85
 
 POOL_CONTROL_IPS=()
 NODE_COUNTS=()
@@ -135,7 +138,7 @@ run_single() {
     omp_gpu)
       omp_mode=1; omp_threads=1 ;;
     omp_hybrid)
-      omp_mode=2; omp_threads=6 ;;
+      omp_mode=2; omp_threads=7 ;;   # 1 controla a GPU + 6 de CPU, como os workers do StarPU
   esac
 
   local gpu_ratio

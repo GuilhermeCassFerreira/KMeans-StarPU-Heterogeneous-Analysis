@@ -247,7 +247,8 @@ int main(int argc, char **argv) {
     }
     #endif
 
-    MPI_Barrier(MPI_COMM_WORLD);
+    // Sem barreira antes do cronômetro: cada rank começa a contar quando chega aqui, como no
+    // StarPU, para os tempos de loop (rank mais lento) serem medidos do mesmo jeito
     auto t_start = high_resolution_clock::now();
     int iter_converged = -1;
 
