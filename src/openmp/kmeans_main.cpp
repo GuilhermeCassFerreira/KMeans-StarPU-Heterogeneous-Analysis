@@ -180,7 +180,6 @@ int main(int argc, char **argv) {
     MPI_Bcast(&K, 1, MPI_INT, 0, MPI_COMM_WORLD);
 
     if (rank != 0) global_centroids = new double[K * dimensions];
-    MPI_Bcast(global_centroids, K * dimensions, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
     #ifdef USE_GPU
     if (mode == 1 || mode == 2) {
@@ -210,6 +209,10 @@ int main(int argc, char **argv) {
     #endif
 
     MPI_Scatterv(global_points, sendCountsPts, displsPts, MPI_DOUBLE, local_points, sendCountsPts[rank], MPI_DOUBLE, 0, MPI_COMM_WORLD);
+
+    // Centroides iniciais enviados depois dos pontos, como no StarPU: o rank 0 só envia ao
+    // terminar a distribuição, então todos os ranks começam o loop depois dela
+    MPI_Bcast(global_centroids, K * dimensions, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
     int num_chunks = requested_chunks;
     int chunk_size = (local_n + num_chunks - 1) / num_chunks;
