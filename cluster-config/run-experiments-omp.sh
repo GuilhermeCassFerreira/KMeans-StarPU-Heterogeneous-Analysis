@@ -116,7 +116,8 @@ check_compiler() {
 }
 
 extract_loop_time_ms() {
-  awk '/Tempo do loop/ {gsub(/[^0-9.]/, "", $NF); print $NF; exit}' <<< "$1"
+  # Primeiro número da linha: o tempo com 1 nó e o (max), rank mais lento, com vários nós
+  awk '/Tempo do loop/ {for (i = 1; i <= NF; i++) if ($i ~ /^[0-9]+(\.[0-9]+)?$/) {print $i; exit}}' <<< "$1"
 }
 
 extract_sse() {

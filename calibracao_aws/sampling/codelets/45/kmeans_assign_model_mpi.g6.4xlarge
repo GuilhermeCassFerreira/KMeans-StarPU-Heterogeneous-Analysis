@@ -1,0 +1,76 @@
+##################
+# Performance Model Version
+45
+
+####################
+# COMBs
+# number of combinations
+2
+####################
+# COMB_0
+# number of types devices
+1
+####################
+# DEV_0
+# device type (CPU - 0, CUDA - 1, OpenCL - 2, FPGA - 4, MPI_SC - 5, TCPIP_SC - 6, HIP - 7)
+1
+####################
+# DEV_0
+# device id 
+0
+####################
+# DEV_0
+# number of cores 
+1
+##########
+# number of implementations
+1
+#####
+# Model for cuda0_cores1_impl0 (Comb0)
+# number of entries
+3
+# sumlnx	sumlnx2		sumlny		sumlnxlny	alpha		beta		n	minx		maxx
+0.000000e+00   	0.000000e+00   	0.000000e+00   	0.000000e+00   	nan            	nan            	0	0              	0              
+# a		b		c
+nan            	nan            	nan            
+# not multiple-regression-base
+0
+# hash		size		flops		mean (us or J)	dev (us or J)	sum		sum2		n
+a63ec082	15636616       	0.000000e+00   	5.144899e+03   	2.626306e+01   	1.124829e+08   	5.787283e+11   	21863
+5c9e1475	13232776       	0.000000e+00   	4.082947e+03   	1.067689e+01   	9.507141e+07   	3.881742e+11   	23285
+4082e3c9	10542152       	0.000000e+00   	4.534599e+03   	2.285182e+01   	9.226095e+07   	4.183771e+11   	20346
+
+####################
+# COMB_1
+# number of types devices
+1
+####################
+# DEV_0
+# device type (CPU - 0, CUDA - 1, OpenCL - 2, FPGA - 4, MPI_SC - 5, TCPIP_SC - 6, HIP - 7)
+0
+####################
+# DEV_0
+# device id 
+0
+####################
+# DEV_0
+# number of cores 
+1
+##########
+# number of implementations
+1
+#####
+# Model for cpu0_cores1_impl0 (Comb1)
+# number of entries
+3
+# sumlnx	sumlnx2		sumlny		sumlnxlny	alpha		beta		n	minx		maxx
+0.000000e+00   	0.000000e+00   	0.000000e+00   	0.000000e+00   	nan            	nan            	0	0              	0              
+# a		b		c
+nan            	nan            	nan            
+# not multiple-regression-base
+0
+# hash		size		flops		mean (us or J)	dev (us or J)	sum		sum2		n
+a63ec082	15636616       	0.000000e+00   	7.443433e+04   	1.801175e+03   	6.591160e+08   	4.908959e+13   	8855
+5c9e1475	13232776       	0.000000e+00   	7.493789e+04   	2.123613e+03   	5.569384e+08   	4.176931e+13   	7432
+4082e3c9	10542152       	0.000000e+00   	5.207587e+04   	1.381146e+03   	5.401309e+08   	2.814757e+13   	10372
+

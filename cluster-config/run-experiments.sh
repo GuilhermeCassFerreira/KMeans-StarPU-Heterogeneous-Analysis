@@ -36,6 +36,7 @@ WARMUP_REPS=2
 TIMED_REPS=3
 DO_SYNC=1
 DO_BUILD=1
+DO_GENERATE=1             # 0 = reaproveita o INPUT_FILE já gerado no nó mestre
 BUILD_CLEAN=1
 BUILD_ARGS_STARPU=""
 GLOBAL_MPIRUN_ARGS="--bind-to none"
@@ -192,7 +193,8 @@ check_compiler() {
 
 extract_loop_time_ms() {
   local output="$1"
-  awk '/Tempo do loop/ {gsub(/[^0-9.]/, "", $NF); print $NF; exit}' <<< "$output"
+  # Primeiro número da linha: o tempo com 1 nó e o (max), rank mais lento, com vários nós
+  awk '/Tempo do loop/ {for (i = 1; i <= NF; i++) if ($i ~ /^[0-9]+(\.[0-9]+)?$/) {print $i; exit}}' <<< "$output"
 }
 
 extract_sse() {
@@ -285,8 +287,12 @@ main() {
   "${CLUSTER_TOOL}" disable-ht
 
   # Gerar a entrada apenas no no mestre (rank 0)
-  log "Gerando dataset no no mestre..."
-  "${CLUSTER_TOOL}" generate-input "$N" "$DIM" "$SEED" "$INPUT_FILE" 8
+  if [[ "$DO_GENERATE" -eq 1 ]]; then
+    log "Gerando dataset no no mestre..."
+    "${CLUSTER_TOOL}" generate-input "$N" "$DIM" "$SEED" "$INPUT_FILE" 8
+  else
+    log "Reaproveitando ${INPUT_FILE} ja gerado no no mestre"
+  fi
 
   log "Sessao: ${RESULTS_DIR}"
 
