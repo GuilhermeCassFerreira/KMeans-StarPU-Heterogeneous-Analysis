@@ -32,6 +32,11 @@ CHUNKS_HYBRID_PER_NODE=32
 # Total fixo de chunks do híbrido (> 0 substitui o "por nó"): mesmo tamanho de chunk
 # com qualquer número de nós, então a calibração do StarPU vale para todos
 CHUNKS_HYBRID_TOTAL=0
+# Mínimo de chunks por nó do híbrido junto com o total fixo (0 = desligado): chunks =
+# max(CHUNKS_HYBRID_TOTAL, CHUNKS_HYBRID_MIN_PER_NODE * nós). Com muitos nós, o total fixo
+# deixa poucos chunks por nó e uma tarefa de CPU passa a durar boa parte da iteração. O
+# tamanho do chunk muda com o número de nós, então a calibração precisa ter esses tamanhos
+CHUNKS_HYBRID_MIN_PER_NODE=0
 WARMUP_REPS=2
 TIMED_REPS=3
 DO_SYNC=1
@@ -79,6 +84,8 @@ Opcoes:
   --no-build             Nao compilar
   --rep-offset <n>       Soma n ao indice das medicoes (resultados acrescentados ao CSV da sessao)
   --skip-setup           Nao desligar HT nem conferir o compilador
+  --chunks-total <n>     Total fixo de chunks do hibrido (substitui CHUNKS_HYBRID_TOTAL)
+  --chunks-min-per-node <n>  Minimo de chunks por no do hibrido (0 = so o total fixo)
   -h, --help             Mostrar ajuda
 USAGE
 }
@@ -103,6 +110,8 @@ parse_args() {
       --no-build)   DO_BUILD=0;          shift   ;;
       --rep-offset) REP_OFFSET="$2";     shift 2 ;;
       --skip-setup) SKIP_SETUP=1;        shift   ;;
+      --chunks-total) CHUNKS_HYBRID_TOTAL="$2"; shift 2 ;;
+      --chunks-min-per-node) CHUNKS_HYBRID_MIN_PER_NODE="$2"; shift 2 ;;
       -h|--help)    usage; exit 0 ;;
       *) die "Argumento desconhecido: $1" ;;
     esac
@@ -156,7 +165,9 @@ chunks_for_mode() {
     starpu_cpu)    echo $((CHUNKS_CPU_PER_NODE    * nodes)) ;;
     starpu_gpu)    echo $((CHUNKS_GPU_PER_NODE    * nodes)) ;;
     starpu_hybrid)
-      if ((CHUNKS_HYBRID_TOTAL > 0)); then echo "$CHUNKS_HYBRID_TOTAL"
+      if ((CHUNKS_HYBRID_TOTAL > 0)); then
+        local min=$((CHUNKS_HYBRID_MIN_PER_NODE * nodes))
+        echo $((min > CHUNKS_HYBRID_TOTAL ? min : CHUNKS_HYBRID_TOTAL))
       else echo $((CHUNKS_HYBRID_PER_NODE * nodes)); fi ;;
   esac
 }
