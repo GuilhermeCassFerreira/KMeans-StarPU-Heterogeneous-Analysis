@@ -179,21 +179,28 @@ static bool env_ligada(const char *nome, bool padrao) {
     return v ? atoi(v) == 1 : padrao;
 }
 
-/* As duas ligadas por padrão; =0 volta ao comportamento antigo, para medir cada uma.
+/* Todas ligadas por padrão; =0 volta ao comportamento antigo, para medir cada uma.
  * KMEANS_ACC_MODEL: modelo de desempenho no Accumulate, para o dmda escolher entre CPU e GPU nas
  * somas locais de cada nó sabendo o tempo de cada uma (a parcial de um Calculate na GPU já está
- * na GPU). KMEANS_ACC_NODES_CPU: soma entre nós no rank 0 só na CPU. */
+ * na GPU). KMEANS_ACC_NODES_CPU: soma entre nós no rank 0 só na CPU. KMEANS_UPDATE_CPU: Update
+ * só na CPU; na GPU, a cópia de volta do flag de convergência (que os outros nós e as CPUs
+ * esperam) levou ~8 ms por iteração no PQ com 32 nós. */
 static void aplicar_opcoes_accumulate(int rank) {
     if (env_ligada("KMEANS_ACC_MODEL", true)) {
         cl_accumulate_nodes.model = &accumulate_perf_model;
         cl_accumulate_nodes_cpu.model = &accumulate_perf_model; // mesma função de CPU, mesmo modelo
     }
     g_acc_nodes_cpu = env_ligada("KMEANS_ACC_NODES_CPU", true);
-    if (rank == 0)
+    bool update_cpu = env_ligada("KMEANS_UPDATE_CPU", true);
+    if (update_cpu) cl_update_centroids.where = STARPU_CPU;
+    if (rank == 0) {
+        const char *blocos = getenv("KMEANS_ASSIGN_BLOCOS_SM");
         std::cout << "[ACCUMULATE] modelo de desempenho: " << (cl_accumulate_nodes.model ? "sim" : "nao")
                   << " | soma entre nos so na CPU: " << (g_acc_nodes_cpu ? "sim" : "nao")
+                  << " | Update so na CPU: " << (update_cpu ? "sim" : "nao")
                   << " | Assign GPU balanceado: " << (env_ligada("KMEANS_ASSIGN_BALANCEADO", true) ? "sim" : "nao")
-                  << std::endl;
+                  << " | blocos por SM: " << (blocos ? blocos : "2") << std::endl;
+    }
 }
 
 /* ========================================================================== */

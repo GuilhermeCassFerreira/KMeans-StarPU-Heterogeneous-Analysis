@@ -127,6 +127,18 @@ static bool assign_balanceado() {
     return v == 1;
 }
 
+/* KMEANS_ASSIGN_BLOCOS_SM: até quantos blocos de 128 threads por SM (padrão 2), para testar
+ * se mais threads ativas compensam os pontos relidos saírem do cache */
+static int assign_blocos_sm() {
+    static int v = 0;
+    if (v <= 0) {
+        const char *e = getenv("KMEANS_ASSIGN_BLOCOS_SM");
+        v = e ? atoi(e) : 2;
+        if (v <= 0) v = 2;
+    }
+    return v;
+}
+
 void assign_point_to_cluster_cuda(void *buffers[], void *cl_arg) {
     int K, dimensions, chunk_size;
     starpu_codelet_unpack_args(cl_arg, &K, &dimensions, &chunk_size);
@@ -152,10 +164,10 @@ void assign_point_to_cluster_cuda(void *buffers[], void *cl_arg) {
         cudaGetDevice(&dev);
         cudaDeviceGetAttribute(&cached_sm_count, cudaDevAttrMultiProcessorCount, dev);
     }
-    int max_blocks = cached_sm_count * 2; // 2 blocos de 128 = 256 threads por SM
+    int max_blocks = cached_sm_count * assign_blocos_sm(); // padrão 2 blocos de 128 = 256 threads por SM
     int threads = 128, blocks, pts_per_block = 0;
     if (assign_balanceado()) {
-        // Mesma quantidade de pontos por bloco, com até 2 blocos por SM. Com o
+        // Mesma quantidade de pontos por bloco, com até assign_blocos_sm() blocos por SM. Com o
         // grid-stride, um chunk pequeno deixava SMs com o dobro de pontos de outras
         // (SIFT na L4: 10 mil pontos em 79 blocos para 58 SMs); como o kernel é
         // limitado pelo FP64 de cada SM, ele terminava junto com a SM mais cheia
