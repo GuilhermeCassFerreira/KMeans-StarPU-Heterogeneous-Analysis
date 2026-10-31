@@ -58,14 +58,22 @@ static volatile int cuda_kernel_calls = 0;
 __global__ void assign_point_to_cluster_cuda_kernel(
     const double *points_values, const double *centroids,
     int K, int dimensions, int npoints, int *nearestClusterIds,
-    int *converged, int *local_changes)
+    int *converged, int *local_changes, int pts_per_block)
 {
     if (*converged == 1) return; // ghost task: iteração já convergiu
 
-    // Grid-stride: o lançamento limita as threads ativas por SM (ver
-    // assign_point_to_cluster_cuda), então cada thread processa vários pontos
-    for (int idx = blockIdx.x * blockDim.x + threadIdx.x; idx < npoints;
-         idx += gridDim.x * blockDim.x) {
+    // O lançamento limita as threads ativas por SM (ver assign_point_to_cluster_cuda),
+    // então cada thread processa vários pontos. pts_per_block > 0: cada bloco fica com
+    // uma faixa contínua de pts_per_block pontos; 0: grid-stride (lançamento antigo)
+    int first = 0, last = npoints, step = gridDim.x * blockDim.x;
+    if (pts_per_block > 0) {
+        first = blockIdx.x * pts_per_block;
+        last = min(first + pts_per_block, npoints);
+        step = blockDim.x;
+    } else {
+        first = blockIdx.x * blockDim.x;
+    }
+    for (int idx = first + threadIdx.x; idx < last; idx += step) {
         const double *pv = points_values + (size_t)idx * dimensions;
         double min_dist = 1e300;
         int best = -1;
@@ -109,6 +117,16 @@ __global__ void assign_point_to_cluster_cuda_kernel(
     }
 }
 
+/* KMEANS_ASSIGN_BALANCEADO=0 volta ao lançamento antigo (grid-stride), para comparar */
+static bool assign_balanceado() {
+    static int v = -1;
+    if (v < 0) {
+        const char *e = getenv("KMEANS_ASSIGN_BALANCEADO");
+        v = e ? (atoi(e) == 1) : 1;
+    }
+    return v == 1;
+}
+
 void assign_point_to_cluster_cuda(void *buffers[], void *cl_arg) {
     int K, dimensions, chunk_size;
     starpu_codelet_unpack_args(cl_arg, &K, &dimensions, &chunk_size);
@@ -134,14 +152,25 @@ void assign_point_to_cluster_cuda(void *buffers[], void *cl_arg) {
         cudaGetDevice(&dev);
         cudaDeviceGetAttribute(&cached_sm_count, cudaDevAttrMultiProcessorCount, dev);
     }
-    int threads = 128;
-    int blocks  = (chunk_size + threads - 1) / threads;
     int max_blocks = cached_sm_count * 2; // 2 blocos de 128 = 256 threads por SM
-    if (blocks > max_blocks) blocks = max_blocks;
+    int threads = 128, blocks, pts_per_block = 0;
+    if (assign_balanceado()) {
+        // Mesma quantidade de pontos por bloco, com até 2 blocos por SM. Com o
+        // grid-stride, um chunk pequeno deixava SMs com o dobro de pontos de outras
+        // (SIFT na L4: 10 mil pontos em 79 blocos para 58 SMs); como o kernel é
+        // limitado pelo FP64 de cada SM, ele terminava junto com a SM mais cheia
+        pts_per_block = (chunk_size + max_blocks - 1) / max_blocks;
+        threads = (pts_per_block + 31) / 32 * 32;
+        if (threads > 128) threads = 128;
+        blocks = (chunk_size + pts_per_block - 1) / pts_per_block;
+    } else {
+        blocks = (chunk_size + threads - 1) / threads;
+        if (blocks > max_blocks) blocks = max_blocks;
+    }
 
     assign_point_to_cluster_cuda_kernel<<<blocks, threads, 0, stream>>>(
         points_values, centroids, K, dimensions, chunk_size,
-        nearestClusterIds, converged, local_changes);
+        nearestClusterIds, converged, local_changes, pts_per_block);
 
     CUDA_CHECK(cudaGetLastError());
 }
@@ -357,13 +386,11 @@ __global__ void accumulate_nodes_cuda_kernel(double *master_sums, int *master_co
                                            int K, int dimensions, int *converged) {
     if (*converged == 1) return; 
 
-    int c = blockIdx.x * blockDim.x + threadIdx.x;
-    if (c < K) {
-        master_counts[c] += node_counts[c];
-        for (int d = 0; d < dimensions; d++) {
-            master_sums[c * dimensions + d] += node_sums[c * dimensions + d];
-        }
-    }
+    // Uma thread por elemento das K*D somas: threads vizinhas acessam endereços
+    // vizinhos (coalescido). Cada elemento recebe a mesma soma de antes.
+    int i = blockIdx.x * blockDim.x + threadIdx.x;
+    if (i < K * dimensions) master_sums[i] += node_sums[i];
+    if (i < K) master_counts[i] += node_counts[i];
 }
 
 extern "C" void accumulate_nodes_cuda(void *buffers[], void *cl_arg) {
@@ -380,12 +407,13 @@ extern "C" void accumulate_nodes_cuda(void *buffers[], void *cl_arg) {
     int    *converged     = (int *)STARPU_VARIABLE_GET_PTR(buffers[4]); 
 
     int threads = 256;
-    int blocks = (K + threads - 1) / threads;
+    int blocks = (K * dimensions + threads - 1) / threads;
 
     cudaStream_t stream = starpu_cuda_get_local_stream();
     accumulate_nodes_cuda_kernel<<<blocks, threads, 0, stream>>>(
         master_sums, master_counts, node_sums, node_counts, K, dimensions, converged
     );
+    CUDA_CHECK(cudaGetLastError());
 }
 
 
