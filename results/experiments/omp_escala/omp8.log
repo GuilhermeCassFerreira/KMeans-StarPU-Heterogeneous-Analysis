@@ -1,0 +1,38 @@
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.12' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.13' (ED25519) to the list of known hosts.
+ssh: connect to host 10.0.0.14 port 22: Connection timed out
+SSH-based private IP resolution failed for 10.0.0.14.
+Saved IPs, but unable to resolve/show MPI IPs now. Check SSH connectivity to control nodes for auto-resolution.
+===== 19:06:39 RODADA 1 pq np8
+pq: loop  ms, SSE 
+===== 19:06:51 RODADA 1 deep np8
+deep: loop  ms, SSE 
+===== 19:07:02 RODADA 1 sift np8
+sift: loop  ms, SSE 
+===== 19:07:14 RODADA 2 pq np8
+pq: loop  ms, SSE 
+===== 19:07:25 RODADA 2 deep np8
+deep: loop  ms, SSE 
+===== 19:07:37 RODADA 2 sift np8
+sift: loop  ms, SSE 
+===== 19:07:48 RODADA 3 pq np8
+pq: loop  ms, SSE 
+===== 19:08:00 RODADA 3 deep np8
+deep: loop  ms, SSE 
+===== 19:08:11 RODADA 3 sift np8
+sift: loop  ms, SSE 
+===== 19:08:23 RODADA 4 pq np8
+pq: loop  ms, SSE 
+===== 19:08:34 RODADA 4 deep np8
+deep: loop  ms, SSE 
+===== 19:08:46 RODADA 4 sift np8
+sift: loop  ms, SSE 
+===== 19:08:57 RODADA 5 pq np8
+pq: loop  ms, SSE 
+===== 19:09:09 RODADA 5 deep np8
+deep: loop  ms, SSE 
+===== 19:09:20 RODADA 5 sift np8
+sift: loop  ms, SSE 
+===== OMP NP8 CONCLUIDO

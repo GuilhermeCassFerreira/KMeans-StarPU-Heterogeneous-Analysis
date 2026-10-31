@@ -1,0 +1,80 @@
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+[run] launch host: 10.0.0.10
+[run] hostfile: /home/ec2-user/KMeans-StarPU-Heterogeneous-Analysis/cluster-config/.cluster/hostfile
+[run] np: 2
+[run] mpirun args: --bind-to none -x OMP_NUM_THREADS=6
+[run] preparing MPI SSH from launch host 10.0.0.10 ...
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+[RANK 0/2] Operando no host: ip-10-0-0-10.us-east-2.compute.internal
+>> MODO 2: HIBRIDO - BALANCEAMENTO MANUAL (75% GPU | 25% CPU) (Com Pinned Memory)
+[RANK 1/2] Operando no host: ip-10-0-0-11.us-east-2.compute.internal
+>> Rank 0 inicializando centroides com SEED: 42
+>> Processando 300000000 pontos totais em 2 Rank(s).
+>> Cada Rank processa aproximadamente 150000000 pontos em 4 chunk(s).
+>> Divisão hibrida por Rank: 3 chunks na GPU e 1 na CPU.
+[OMP] Iteracao 1 | mudancas: 300000000
+[OMP] Iteracao 2 | mudancas: 53713927
+[OMP] Iteracao 3 | mudancas: 28360265
+[OMP] Iteracao 4 | mudancas: 19692680
+[OMP] Iteracao 5 | mudancas: 14958319
+[OMP] Iteracao 6 | mudancas: 12008758
+[OMP] Iteracao 7 | mudancas: 9949168
+[OMP] Iteracao 8 | mudancas: 8483072
+[OMP] Iteracao 9 | mudancas: 7534772
+[OMP] Iteracao 10 | mudancas: 6903242
+[OMP] Iteracao 11 | mudancas: 6471973
+[OMP] Iteracao 12 | mudancas: 6155238
+[OMP] Iteracao 13 | mudancas: 5870294
+[OMP] Iteracao 14 | mudancas: 5582179
+[OMP] Iteracao 15 | mudancas: 5288419
+[OMP] Iteracao 16 | mudancas: 5023350
+[OMP] Iteracao 17 | mudancas: 4750088
+[OMP] Iteracao 18 | mudancas: 4464928
+[OMP] Iteracao 19 | mudancas: 4157795
+[OMP] Iteracao 20 | mudancas: 3852500
+[OMP] Iteracao 21 | mudancas: 3563104
+[OMP] Iteracao 22 | mudancas: 3294697
+[OMP] Iteracao 23 | mudancas: 3044177
+[OMP] Iteracao 24 | mudancas: 2808975
+[OMP] Iteracao 25 | mudancas: 2592250
+[OMP] Iteracao 26 | mudancas: 2391302
+[OMP] Iteracao 27 | mudancas: 2208996
+[OMP] Iteracao 28 | mudancas: 2044519
+[OMP] Iteracao 29 | mudancas: 1896097
+[OMP] Iteracao 30 | mudancas: 1760890
+[INFO] Arquivos salvos em: output_bench/exp_omp_hybrid_np2_metricas1
+============================================================
+METRICAS FINAIS — OpenMP/MPI
+============================================================
+Versao                    : HIBRIDO (CPU+GPU)
+Configuracao              : 2 rank(s) MPI x 6 threads OMP  |  chunks: 4
+
+Tempo do loop (max)       : 71380.88   ms  [min: 71380.85]
+Tempo total (max, c/init) : 248642.60  ms  [min: 236150.21]
+T. medio/iter             : 2379.36    ms
+Iteracoes                 : 30 / max 30
+SSE                       : 4.0052e+12
+
+Tempos por rank:
+  Rank 0: loop=71380.85   ms  avg/iter=2379.36  ms  total=248642.60  ms
+  Rank 1: loop=71380.88   ms  avg/iter=2379.36  ms  total=236150.21  ms
+
+Dispositivos utilizados (por operacao — global):
+  Operacao      CPU (N / %)             GPU (N / %)             
+  ------------------------------------------------------------
+  Assign        60 (25%)                180 (75%)               
+  Calculate     60 (25%)                180 (75%)               
+  Update        0 (0%)                  60 (100%)               
+============================================================

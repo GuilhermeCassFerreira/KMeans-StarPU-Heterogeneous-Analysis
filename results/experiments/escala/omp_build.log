@@ -1,0 +1,48 @@
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+[build:openmp] 10.0.0.10
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+[build:openmp] build args changed; running openmp-clean
+===> [AUTO-CONFIG] NVIDIA HPC SDK detectado. Usando nvc++.
+>>> COMPILANDO MODO CPU (NVC++ OpenMP / AVX2) <<<
+rm -f *.o kmeans_openmp
+/home/ec2-user/KMeans-StarPU-Heterogeneous-Analysis
+===> [AUTO-CONFIG] NVIDIA HPC SDK detectado. Usando nvc++.
+>>> COMPILANDO MODO MULTI-GPU (NVC++ / cc89) <<<
+mpicxx -O3 -DNDEBUG -Wall -I../../include -I../common -DUSE_MPI -DUSE_GPU -mp=gpu -gpu=cc89 -Minfo=mp -c kmeans_main.cpp -o kmeans_main.o
+main:
+    258, Generating target enter data map(to: local_labels[:local_n],local_points[:dimensions*local_n])
+    264, Generating target enter data map(to: local_points[:dimensions*gpu_n],local_labels[:gpu_n])
+    339, Generating target exit data map(from: local_labels[:local_n])
+    343, Generating target exit data map(delete: local_points[:dimensions*gpu_n]) finalize
+         Generating target exit data map(from: local_labels[:gpu_n])
+_INTERNAL_15_kmeans_main_cpp_main::hybrid_assign_and_sums(double*, double*, int*, int, int, int, int, int, double*, int*, double*, int*):
+     44, #omp parallel
+         44, Generating reduction(+:changes)
+_INTERNAL_15_kmeans_main_cpp_main::hybrid_update_centroids(double*, int*, double*, int, int, int):
+     74, #omp parallel
+mpicxx -O3 -DNDEBUG -Wall -I../../include -I../common -DUSE_MPI -DUSE_GPU -mp=gpu -gpu=cc89 -Minfo=mp -c kmeans_cpu.cpp -o kmeans_cpu.o
+assign_point_to_cluster_cpu(double*, double*, int*, int, int, int):
+      8, #omp parallel
+          8, Generating reduction(+:changes)
+calculate_partial_sums_cpu(double*, int*, double*, int*, int, int, int):
+     33, #omp parallel
+         33, Generating reduction(+:partial_sums,partial_counts)
+update_centroids_cpu(double*, int*, double*, int, int):
+     46, #omp parallel
+mpicxx -O3 -DNDEBUG -Wall -I../../include -I../common -DUSE_MPI -DUSE_GPU -mp=gpu -gpu=cc89 -Minfo=mp -c kmeans_gpu.cpp -o kmeans_gpu.o
+assign_point_to_cluster_gpu(double*, double*, int*, int, int, int):
+     29, #omp target teams distribute parallel for num_teams(teams) thread_limit(128)
+         29, Generating "nvkernel__Z27assign_point_to_cluster_gpuPdS_Piiii_F1L29_2" GPU kernel
+             Loop parallelized across teams and threads(128), schedule(static)
+             Generating reduction(+:changes)
+calculate_partial_sums_gpu(double*, int*, double*, int*, int, int, int):
+     79, #omp target teams distribute parallel for thread_limit(256)
+         79, Generating "nvkernel__Z26calculate_partial_sums_gpuPdPiS_S0_iii_F1L79_6" GPU kernel
+         88, Loop parallelized across teams and threads(128), schedule(static)
+update_centroids_gpu(double*, int*, double*, int, int):
+    108, #omp target teams distribute parallel for thread_limit(256)
+        108, Generating "nvkernel__Z20update_centroids_gpuPdPiS_ii_F1L108_10" GPU kernel
+        114, Loop parallelized across teams and threads(128), schedule(static)
+mpicxx kmeans_main.o kmeans_cpu.o kmeans_gpu.o ../../build/io.o ../../build/metrics.o -mp=gpu -gpu=cc89 -L/opt/nvidia/hpc_sdk/Linux_x86_64/26.3/cuda/13.1/lib64 -lcudart -o kmeans_openmp
+/usr/bin/ld: warning: libcudart.so.12, needed by /usr/local/lib/libmpi.so, may conflict with libcudart.so.13
+/home/ec2-user/KMeans-StarPU-Heterogeneous-Analysis

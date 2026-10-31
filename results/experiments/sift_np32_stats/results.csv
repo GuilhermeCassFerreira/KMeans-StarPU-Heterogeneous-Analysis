@@ -1,0 +1,2 @@
+timestamp,mode,nodes,N,K,chunks,rep_kind,rep_idx,loop_ms,sse,run_ok
+2026-10-29T05:34:20Z,starpu_hybrid,32,10240000,256,1024,metricas,1,3489.10,4.0941e+14,1

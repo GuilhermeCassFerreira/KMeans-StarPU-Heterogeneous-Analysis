@@ -20,3 +20,6 @@ out/
 
 # Arquivos temporários
 *.tmp
+
+# Traces FxT brutos (centenas de MB; ficam só em disco)
+results/experiments/*/traces/

@@ -70,6 +70,12 @@ struct starpu_perfmodel update_perf_model = {
     .symbol = "kmeans_update_model_mpi"
 };
 
+/* Ligado só com KMEANS_ACC_MODEL=1 (ver aplicar_opcoes_accumulate) */
+struct starpu_perfmodel accumulate_perf_model = {
+    .type = STARPU_HISTORY_BASED,
+    .symbol = "kmeans_accumulate_model_mpi"
+};
+
 /* ========================================================================== */
 /* Codelets StarPU (definições atualizadas para Ghost Tasks)                  */
 /* ========================================================================== */
@@ -155,6 +161,32 @@ struct starpu_codelet cl_accumulate_nodes = {
     .modes = {STARPU_RW, STARPU_RW, STARPU_R, STARPU_R, STARPU_R},
     .name = "kmeans_accumulate_mpi"
 };
+
+/* Soma das parciais dos outros nós no rank 0, só na CPU (KMEANS_ACC_NODES_CPU=1). As parciais
+ * chegam pela rede na memória da CPU; somá-las na GPU exige copiar cada uma pelo PCIe, em série. */
+struct starpu_codelet cl_accumulate_nodes_cpu = {
+    .cpu_funcs = {accumulate_nodes_cpu},
+    .nbuffers = 5,
+    .modes = {STARPU_RW, STARPU_RW, STARPU_R, STARPU_R, STARPU_R},
+    .name = "kmeans_accumulate_nodes_cpu"
+};
+
+static bool g_acc_nodes_cpu = false;
+
+static bool env_ligada(const char *nome) {
+    const char *v = getenv(nome);
+    return v && atoi(v) == 1;
+}
+
+/* KMEANS_ACC_MODEL=1: modelo de desempenho no Accumulate, para o dmda escolher entre CPU e GPU
+ * sabendo o tempo de cada uma. KMEANS_ACC_NODES_CPU=1: soma entre nós no rank 0 só na CPU. */
+static void aplicar_opcoes_accumulate(int rank) {
+    if (env_ligada("KMEANS_ACC_MODEL")) cl_accumulate_nodes.model = &accumulate_perf_model;
+    g_acc_nodes_cpu = env_ligada("KMEANS_ACC_NODES_CPU");
+    if (rank == 0)
+        std::cout << "[ACCUMULATE] modelo de desempenho: " << (cl_accumulate_nodes.model ? "sim" : "nao")
+                  << " | soma entre nos so na CPU: " << (g_acc_nodes_cpu ? "sim" : "nao") << std::endl;
+}
 
 /* ========================================================================== */
 /* Implementação da classe KMeans                                             */
@@ -257,7 +289,7 @@ void KMeans::submitTasks(int N, starpu_data_handle_t converged_handle, int *conv
 
     if (world_size > 1) {
             for (int n = 1; n < world_size; n++) {
-                starpu_mpi_task_insert(MPI_COMM_WORLD, &cl_accumulate_nodes,
+                starpu_mpi_task_insert(MPI_COMM_WORLD, g_acc_nodes_cpu ? &cl_accumulate_nodes_cpu : &cl_accumulate_nodes,
                     STARPU_RW, partial_sums_handle[0],   
                     STARPU_RW, partial_counts_handle[0], 
                     STARPU_R, partial_sums_handle[n],    
@@ -306,6 +338,7 @@ void KMeans::submitTasks(int N, starpu_data_handle_t converged_handle, int *conv
     }
 
 void KMeans::run(const vector<double> &all_values, int N) {
+    aplicar_opcoes_accumulate(mpi_rank);
     total_points = N;
     points_ptr = nullptr;
     labels_ptr = nullptr;

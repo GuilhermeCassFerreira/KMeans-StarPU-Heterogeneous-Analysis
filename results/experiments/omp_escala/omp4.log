@@ -1,0 +1,35 @@
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.12' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.13' (ED25519) to the list of known hosts.
+===== 19:10:14 RODADA 1 pq np4
+pq: loop 27250.80 ms, SSE 2.9768e+14
+===== 19:11:18 RODADA 1 deep np4
+deep: loop 31820.96 ms, SSE 6.0084e+14
+===== 19:12:29 RODADA 1 sift np4
+sift: loop 21183.19 ms, SSE 4.0941e+14
+===== 19:13:18 RODADA 2 pq np4
+pq: loop 27274.79 ms, SSE 2.9768e+14
+===== 19:14:24 RODADA 2 deep np4
+deep: loop 31849.30 ms, SSE 6.0084e+14
+===== 19:15:35 RODADA 2 sift np4
+sift: loop 21172.36 ms, SSE 4.0941e+14
+===== 19:16:24 RODADA 3 pq np4
+pq: loop 27293.96 ms, SSE 2.9768e+14
+===== 19:17:30 RODADA 3 deep np4
+deep: loop 31862.08 ms, SSE 6.0084e+14
+===== 19:18:40 RODADA 3 sift np4
+sift: loop 21204.41 ms, SSE 4.0941e+14
+===== 19:19:30 RODADA 4 pq np4
+pq: loop 27295.89 ms, SSE 2.9768e+14
+===== 19:20:35 RODADA 4 deep np4
+deep: loop 31861.69 ms, SSE 6.0084e+14
+===== 19:21:46 RODADA 4 sift np4
+sift: loop 21199.80 ms, SSE 4.0941e+14
+===== 19:22:36 RODADA 5 pq np4
+pq: loop 27296.84 ms, SSE 2.9768e+14
+===== 19:23:42 RODADA 5 deep np4
+deep: loop 31868.88 ms, SSE 6.0084e+14
+===== 19:24:52 RODADA 5 sift np4
+sift: loop 21218.45 ms, SSE 4.0941e+14
+===== OMP NP4 CONCLUIDO

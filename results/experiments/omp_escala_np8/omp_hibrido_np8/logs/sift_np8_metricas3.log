@@ -1,0 +1,123 @@
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.12' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.13' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.14' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.15' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.16' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.17' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.12' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.13' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.14' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.15' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.16' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.17' (ED25519) to the list of known hosts.
+[run] launch host: 10.0.0.10
+[run] hostfile: /home/ec2-user/KMeans-StarPU-Heterogeneous-Analysis/cluster-config/.cluster/hostfile
+[run] np: 8
+[run] mpirun args: --bind-to none --mca coll_tuned_use_dynamic_rules 1 --mca coll_tuned_reduce_algorithm 1 --mca coll_tuned_bcast_algorithm 1 -x OMP_NUM_THREADS=7
+[run] preparing MPI SSH from launch host 10.0.0.10 ...
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.12' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.13' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.14' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.15' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.16' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.17' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.12' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.14' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.13' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.15' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.16' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.17' (ED25519) to the list of known hosts.
+[RANK 0/8] Operando no host: ip-10-0-0-10.ec2.internal
+[COMPILADOR] nvc++ 26.3
+>> MODO 2: HIBRIDO - BALANCEAMENTO MANUAL (85% GPU | 15% CPU) (Com Pinned Memory)
+[RANK 7/8] Operando no host: ip-10-0-0-17.ec2.internal
+[RANK 5/8] Operando no host: ip-10-0-0-15.ec2.internal
+[RANK 6/8] Operando no host: ip-10-0-0-16.ec2.internal
+[RANK 1/8] Operando no host: ip-10-0-0-11.ec2.internal
+[RANK 3/8] Operando no host: ip-10-0-0-13.ec2.internal
+[RANK 4/8] Operando no host: ip-10-0-0-14.ec2.internal
+[RANK 2/8] Operando no host: ip-10-0-0-12.ec2.internal
+>> Rank 0 inicializando centroides com SEED: 42
+>> Processando 10240000 pontos totais em 8 Rank(s).
+>> Divisão hibrida por Rank (concorrente): 1088000 pontos na GPU e 192000 na CPU | centroides: 217 na GPU e 39 na CPU | threads: 1 (GPU) + 6 (CPU)
+[OMP] Iteracao 1 | mudancas: 10240000
+[OMP] Iteracao 2 | mudancas: 4385544
+[OMP] Iteracao 3 | mudancas: 916816
+[OMP] Iteracao 4 | mudancas: 527108
+[OMP] Iteracao 5 | mudancas: 460471
+[OMP] Iteracao 6 | mudancas: 421175
+[OMP] Iteracao 7 | mudancas: 387382
+[OMP] Iteracao 8 | mudancas: 360568
+[OMP] Iteracao 9 | mudancas: 335981
+[OMP] Iteracao 10 | mudancas: 315627
+[OMP] Iteracao 11 | mudancas: 297796
+[OMP] Iteracao 12 | mudancas: 281515
+[OMP] Iteracao 13 | mudancas: 266915
+[OMP] Iteracao 14 | mudancas: 255364
+[OMP] Iteracao 15 | mudancas: 243583
+[OMP] Iteracao 16 | mudancas: 233160
+[OMP] Iteracao 17 | mudancas: 223330
+[OMP] Iteracao 18 | mudancas: 215468
+[OMP] Iteracao 19 | mudancas: 207021
+[OMP] Iteracao 20 | mudancas: 199786
+[OMP] Iteracao 21 | mudancas: 193268
+[OMP] Iteracao 22 | mudancas: 186791
+[OMP] Iteracao 23 | mudancas: 181739
+[OMP] Iteracao 24 | mudancas: 175958
+[OMP] Iteracao 25 | mudancas: 171624
+[OMP] Iteracao 26 | mudancas: 166479
+[OMP] Iteracao 27 | mudancas: 162032
+[OMP] Iteracao 28 | mudancas: 157547
+[OMP] Iteracao 29 | mudancas: 153085
+[OMP] Iteracao 30 | mudancas: 149136
+[INFO] Arquivos salvos em: output_bench/omp_hibrido_sift_np8
+============================================================
+METRICAS FINAIS — OpenMP/MPI
+============================================================
+Versao                    : HIBRIDO (CPU+GPU)
+Configuracao              : 8 rank(s) MPI x 7 threads OMP  |  chunks: 1
+
+Tempo do loop (max)       : 10732.71   ms  [min: 10730.43]
+Tempo total (max, c/init) : 31206.81   ms  [min: 30083.08]
+T. medio/iter             : 357.76     ms
+Iteracoes                 : 30 / max 30
+SSE                       : 4.0941e+14
+
+Tempos por rank:
+  Rank 0: loop=10730.43   ms  avg/iter=357.68   ms  total=31206.81   ms
+  Rank 1: loop=10732.51   ms  avg/iter=357.75   ms  total=30083.08   ms
+  Rank 2: loop=10732.43   ms  avg/iter=357.75   ms  total=30088.03   ms
+  Rank 3: loop=10732.71   ms  avg/iter=357.76   ms  total=30087.71   ms
+  Rank 4: loop=10731.90   ms  avg/iter=357.73   ms  total=30091.69   ms
+  Rank 5: loop=10732.71   ms  avg/iter=357.76   ms  total=30105.77   ms
+  Rank 6: loop=10732.37   ms  avg/iter=357.75   ms  total=30124.05   ms
+  Rank 7: loop=10730.46   ms  avg/iter=357.68   ms  total=30136.87   ms
+
+Dispositivos utilizados (por operacao — global):
+  Operacao      CPU (N / %)             GPU (N / %)             
+  ------------------------------------------------------------
+  (Hibrido: N = pontos em Assign/Calculate e centroides em Update)
+  Assign        46080000 (15%)          261120000 (85%)         
+  Calculate     46080000 (15%)          261120000 (85%)         
+  Update        54930 (89.4043%)        6510 (10.5957%)         
+============================================================

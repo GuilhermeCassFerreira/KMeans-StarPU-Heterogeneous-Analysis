@@ -1,0 +1,94 @@
+[run] launch host: 10.0.0.10
+[run] hostfile: /home/ec2-user/KMeans-StarPU-Heterogeneous-Analysis/cluster-config/.cluster/hostfile
+[run] np: 2
+[run] mpirun args: --bind-to none -x STARPU_SCHED=dmda -x STARPU_NOPENCL=1 -x STARPU_RESERVE_NCPU=1 -x STARPU_NCPUS=7 -x STARPU_NCUDA=1 -x STARPU_WORKERS_CPUID=0,1,2,3,4,5,6,7
+[run] preparing MPI SSH from launch host 10.0.0.10 ...
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+[RANK 0/2] Host: ip-10-0-0-10.us-east-2.compute.internal
+[RANK 1/2] Host: ip-10-0-0-11.us-east-2.compute.internal
+[MODO] Escalonamento ESTATICO (Manual via EXECUTE_ON_NODE)
+[INFO] Centroides iniciais escolhidos aleatoriamente (Seed: 42)
+[INFO] Injetando max 30 iteracoes no DAG (Assíncrono)...
+[starpu][ip-10-0-0-10.us-east-2.compute.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-10.us-east-2.compute.internal][__starpu_history_based_job_expected_perf] Warning: model kmeans_assign_model_mpi is not calibrated enough for cuda0_cores1_impl0 (Comb1) size 93750808 footprint c5f840de (only 0 measurements), forcing calibration for this run. Use the STARPU_CALIBRATE environment variable to control this. You probably need to run again to continue calibrating the model, until this warning disappears.
+[starpu][ip-10-0-0-11.us-east-2.compute.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-10.us-east-2.compute.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from NUMA 0 to CUDA 0 took a very long time (16.336167 ms)
+For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[starpu][ip-10-0-0-11.us-east-2.compute.internal][__starpu_history_based_job_expected_perf] Warning: model kmeans_assign_model_mpi is not calibrated enough for cuda0_cores1_impl0 (Comb1) size 93750808 footprint c5f840de (only 0 measurements), forcing calibration for this run. Use the STARPU_CALIBRATE environment variable to control this. You probably need to run again to continue calibrating the model, until this warning disappears.
+[starpu][ip-10-0-0-11.us-east-2.compute.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from NUMA 0 to CUDA 0 took a very long time (16.199435 ms)
+For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[starpu][ip-10-0-0-11.us-east-2.compute.internal][__starpu_history_based_job_expected_perf] Warning: model kmeans_calculate_model_mpi is not calibrated enough for cuda0_cores1_impl0 (Comb1) size 93751004 footprint 7520ff49 (only 0 measurements), forcing calibration for this run. Use the STARPU_CALIBRATE environment variable to control this. You probably need to run again to continue calibrating the model, until this warning disappears.
+[StarPU] Iteracao 1
+[StarPU] Iteracao 2
+[StarPU] Iteracao 3
+[StarPU] Iteracao 4
+[StarPU] Iteracao 5
+[StarPU] Iteracao 6
+[StarPU] Iteracao 7
+[StarPU] Iteracao 8
+[StarPU] Iteracao 9
+[StarPU] Iteracao 10
+[StarPU] Iteracao 11
+[StarPU] Iteracao 12
+[StarPU] Iteracao 13
+[StarPU] Iteracao 14
+[StarPU] Iteracao 15
+[StarPU] Iteracao 16
+[StarPU] Iteracao 17
+[StarPU] Iteracao 18
+[StarPU] Iteracao 19
+[StarPU] Iteracao 20
+[StarPU] Iteracao 21
+[StarPU] Iteracao 22
+[StarPU] Iteracao 23
+[StarPU] Iteracao 24
+[StarPU] Iteracao 25
+[StarPU] Iteracao 26
+[StarPU] Iteracao 27
+[StarPU] Iteracao 28
+[StarPU] Iteracao 29
+[StarPU] Iteracao 30
+[INFO] Limite de iterações atingido sem convergência completa.
+[INFO] Salvando centróides finais...
+[INFO] Arquivo de centróides salvo com sucesso em: output_bench/exp_starpu_hybrid_np2_calibracao1/50-clusters.txt
+============================================================
+METRICAS FINAIS — StarPU/MPI
+============================================================
+Workers (rank 0)          : 6 CPU  +  1 GPU CUDA
+Ranks MPI                 : 2
+
+Tempo do loop (max)       : 8209.53    ms  [min: 8206.29]
+Tempo total (max, c/init) : 169774.80  ms  [min: 168839.18]
+T. medio/iter             : 273.65     ms
+Iteracoes                 : 30 / max 30
+SSE                       : 4.0052e+12
+
+Tempos por rank:
+  Rank 0: loop=8209.53    ms  avg/iter=273.65   ms  total=169774.80  ms
+  Rank 1: loop=8206.29    ms  avg/iter=273.54   ms  total=168839.18  ms
+
+Distribuicao por kernel (CPU vs CUDA) — global:
+  Kernel        CPU (N / %)             GPU CUDA (N / %)        
+  ------------------------------------------------------------
+  Assign        22 (1.14583%)           1898 (98.8542%)         
+  Calculate     1706 (88.8542%)         214 (11.1458%)          
+  Clean         60 (100%)               0 (0%)                  
+  Update        6 (20%)                 24 (80%)                
+  Accumulate    1667 (85.4872%)         283 (14.5128%)          
+  ------------------------------------------------------------
+  TOTAL         3461 (58.8605%)         2419 (41.1395%)         
+
+Tarefas por rank MPI:
+  Rank 0: 1611 CPU + 1359 CUDA = 2970 total (50.5%)
+  Rank 1: 1850 CPU + 1060 CUDA = 2910 total (49.5%)
+============================================================
+Escalonador StarPU ativo: dmda

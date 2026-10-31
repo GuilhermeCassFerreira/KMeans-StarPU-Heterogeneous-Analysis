@@ -1,0 +1,2151 @@
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+===== 06:01:22 RODADA 1 pq np2
+[experiments] Desabilitando hyperthreading em todos os nos...
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+[disable-ht] 10.0.0.10
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+off
+HT disabled. CPUs: 8
+[disable-ht] 10.0.0.11
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+off
+HT disabled. CPUs: 8
+[experiments] Reaproveitando input_pq.bin ja gerado no no mestre
+[experiments] Sessao: /home/ec2-user/KMeans-StarPU-Heterogeneous-Analysis/results/experiments/pq_escala_np2
+[experiments] Selecionando 2 nos
+[experiments] Pulando build
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+[experiments] Compilador de kmeans_starpu: nvc++ 26.3 (2/2 nos com nvc++)
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+[experiments] Calibracao reinstalada: md5 b9e74d614a2deb152d562a383af68e25 (igual em 2/2 nos)
+[experiments] Run mode=starpu_hybrid nodes=2 chunks=1024 metricas:1
+[run] launch host: 10.0.0.10
+[run] hostfile: /home/ec2-user/KMeans-StarPU-Heterogeneous-Analysis/cluster-config/.cluster/hostfile
+[run] np: 2
+[run] mpirun args: --bind-to none -x STARPU_SCHED=dmda -x STARPU_NOPENCL=1 -x STARPU_RESERVE_NCPU=1 -x STARPU_HOSTNAME=g6.4xlarge -x STARPU_CALIBRATE=0 -x STARPU_NCPUS=7 -x STARPU_NCUDA=1 -x STARPU_WORKERS_CPUID=0,1,2,3,4,5,6,7
+[run] preparing MPI SSH from launch host 10.0.0.10 ...
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+[RANK 0/2] Host: ip-10-0-0-10.ec2.internal
+[RANK 1/2] Host: ip-10-0-0-11.ec2.internal
+[COMPILADOR] nvc++ 26.3
+[MODO] Escalonamento ESTATICO (Manual via EXECUTE_ON_NODE)
+[INFO] Centroides iniciais escolhidos aleatoriamente (Seed: 42)
+[INFO] Injetando max 30 iteracoes no DAG (Assíncrono)...
+[starpu][ip-10-0-0-10.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-11.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-10.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from NUMA 0 to CUDA 0 took a very long time (16.595682 ms)
+For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[starpu][ip-10-0-0-11.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from NUMA 0 to CUDA 0 took a very long time (15.771598 ms)
+For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[StarPU] Iteracao 1
+[StarPU] Iteracao 2
+[StarPU] Iteracao 3
+[StarPU] Iteracao 4
+[StarPU] Iteracao 5
+[StarPU] Iteracao 6
+[StarPU] Iteracao 7
+[StarPU] Iteracao 8
+[StarPU] Iteracao 9
+[StarPU] Iteracao 10
+[StarPU] Iteracao 11
+[StarPU] Iteracao 12
+[StarPU] Iteracao 13
+[StarPU] Iteracao 14
+[StarPU] Iteracao 15
+[StarPU] Iteracao 16
+[StarPU] Iteracao 17
+[StarPU] Iteracao 18
+[StarPU] Iteracao 19
+[StarPU] Iteracao 20
+[StarPU] Iteracao 21
+[StarPU] Iteracao 22
+[StarPU] Iteracao 23
+[StarPU] Iteracao 24
+[StarPU] Iteracao 25
+[StarPU] Iteracao 26
+[StarPU] Iteracao 27
+[StarPU] Iteracao 28
+[StarPU] Iteracao 29
+[StarPU] Iteracao 30
+[INFO] Limite de iterações atingido sem convergência completa.
+[INFO] Salvando centróides finais...
+[INFO] Arquivo de centróides salvo com sucesso em: output_bench/exp_starpu_hybrid_np2_metricas1/256-clusters.txt
+============================================================
+METRICAS FINAIS — StarPU/MPI
+============================================================
+Workers (rank 0)          : 6 CPU  +  1 GPU CUDA
+Ranks MPI                 : 2
+
+Tempo do loop (max)       : 49080.42   ms  [min: 49064.50]
+Tempo total (max, c/init) : 86133.03   ms  [min: 85706.93]
+T. medio/iter             : 1636.01    ms
+Iteracoes                 : 30 / max 30
+SSE                       : 2.9768e+14
+
+Tempos por rank:
+  Rank 0: loop=49080.42   ms  avg/iter=1636.01  ms  total=86133.03   ms
+  Rank 1: loop=49064.50   ms  avg/iter=1635.48  ms  total=85706.93   ms
+
+Distribuicao por kernel (CPU vs CUDA) — global:
+  Kernel        CPU (N / %)             GPU CUDA (N / %)        
+  ------------------------------------------------------------
+  Assign        7560 (24.6094%)         23160 (75.3906%)        
+  Calculate     20082 (65.3711%)        10638 (34.6289%)        
+  Clean         60 (100%)               0 (0%)                  
+  Update        13 (43.3333%)           17 (56.6667%)           
+  Accumulate    17693 (57.5382%)        13057 (42.4618%)        
+  ------------------------------------------------------------
+  TOTAL         45408 (49.2068%)        46872 (50.7932%)        
+
+Tarefas por rank MPI:
+  Rank 0: 20741 CPU + 25429 CUDA = 46170 total (50.0%)
+  Rank 1: 24667 CPU + 21443 CUDA = 46110 total (50.0%)
+============================================================
+Escalonador StarPU ativo: dmda
+[experiments] Concluido. Resultados em: /home/ec2-user/KMeans-StarPU-Heterogeneous-Analysis/results/experiments/pq_escala_np2/results.csv
+===== 06:02:56 RODADA 1 deep np2
+[experiments] Reaproveitando input_deep.bin ja gerado no no mestre
+[experiments] Sessao: /home/ec2-user/KMeans-StarPU-Heterogeneous-Analysis/results/experiments/deep_escala_np2
+[experiments] Selecionando 2 nos
+[experiments] Pulando build
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+[experiments] Calibracao reinstalada: md5 b9e74d614a2deb152d562a383af68e25 (igual em 2/2 nos)
+[experiments] Run mode=starpu_hybrid nodes=2 chunks=1024 metricas:1
+[run] launch host: 10.0.0.10
+[run] hostfile: /home/ec2-user/KMeans-StarPU-Heterogeneous-Analysis/cluster-config/.cluster/hostfile
+[run] np: 2
+[run] mpirun args: --bind-to none -x STARPU_SCHED=dmda -x STARPU_NOPENCL=1 -x STARPU_RESERVE_NCPU=1 -x STARPU_HOSTNAME=g6.4xlarge -x STARPU_CALIBRATE=0 -x STARPU_NCPUS=7 -x STARPU_NCUDA=1 -x STARPU_WORKERS_CPUID=0,1,2,3,4,5,6,7
+[run] preparing MPI SSH from launch host 10.0.0.10 ...
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+[RANK 0/2] Host: ip-10-0-0-10.ec2.internal
+[RANK 1/2] Host: ip-10-0-0-11.ec2.internal
+[COMPILADOR] nvc++ 26.3
+[MODO] Escalonamento ESTATICO (Manual via EXECUTE_ON_NODE)
+[INFO] Centroides iniciais escolhidos aleatoriamente (Seed: 42)
+[INFO] Injetando max 30 iteracoes no DAG (Assíncrono)...
+[starpu][ip-10-0-0-10.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-11.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-10.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from NUMA 0 to CUDA 0 took a very long time (4.755800 ms)
+For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[starpu][ip-10-0-0-11.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from NUMA 0 to CUDA 0 took a very long time (15.724848 ms)
+For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[StarPU] Iteracao 1
+[StarPU] Iteracao 2
+[StarPU] Iteracao 3
+[StarPU] Iteracao 4
+[StarPU] Iteracao 5
+[StarPU] Iteracao 6
+[StarPU] Iteracao 7
+[StarPU] Iteracao 8
+[StarPU] Iteracao 9
+[StarPU] Iteracao 10
+[StarPU] Iteracao 11
+[StarPU] Iteracao 12
+[StarPU] Iteracao 13
+[StarPU] Iteracao 14
+[StarPU] Iteracao 15
+[StarPU] Iteracao 16
+[StarPU] Iteracao 17
+[StarPU] Iteracao 18
+[StarPU] Iteracao 19
+[StarPU] Iteracao 20
+[StarPU] Iteracao 21
+[StarPU] Iteracao 22
+[StarPU] Iteracao 23
+[StarPU] Iteracao 24
+[StarPU] Iteracao 25
+[StarPU] Iteracao 26
+[StarPU] Iteracao 27
+[StarPU] Iteracao 28
+[StarPU] Iteracao 29
+[StarPU] Iteracao 30
+[INFO] Limite de iterações atingido sem convergência completa.
+[INFO] Salvando centróides finais...
+[INFO] Arquivo de centróides salvo com sucesso em: output_bench/exp_starpu_hybrid_np2_metricas1/256-clusters.txt
+============================================================
+METRICAS FINAIS — StarPU/MPI
+============================================================
+Workers (rank 0)          : 6 CPU  +  1 GPU CUDA
+Ranks MPI                 : 2
+
+Tempo do loop (max)       : 58825.93   ms  [min: 58824.83]
+Tempo total (max, c/init) : 99843.55   ms  [min: 99817.83]
+T. medio/iter             : 1960.86    ms
+Iteracoes                 : 30 / max 30
+SSE                       : 6.0084e+14
+
+Tempos por rank:
+  Rank 0: loop=58825.93   ms  avg/iter=1960.86  ms  total=99843.55   ms
+  Rank 1: loop=58824.83   ms  avg/iter=1960.83  ms  total=99817.83   ms
+
+Distribuicao por kernel (CPU vs CUDA) — global:
+  Kernel        CPU (N / %)             GPU CUDA (N / %)        
+  ------------------------------------------------------------
+  Assign        9000 (29.2969%)         21720 (70.7031%)        
+  Calculate     11939 (38.8639%)        18781 (61.1361%)        
+  Clean         60 (100%)               0 (0%)                  
+  Update        5 (16.6667%)            25 (83.3333%)           
+  Accumulate    4605 (14.9756%)         26145 (85.0244%)        
+  ------------------------------------------------------------
+  TOTAL         25609 (27.7514%)        66671 (72.2486%)        
+
+Tarefas por rank MPI:
+  Rank 0: 13003 CPU + 33167 CUDA = 46170 total (50.0%)
+  Rank 1: 12606 CPU + 33504 CUDA = 46110 total (50.0%)
+============================================================
+Escalonador StarPU ativo: dmda
+[experiments] Concluido. Resultados em: /home/ec2-user/KMeans-StarPU-Heterogeneous-Analysis/results/experiments/deep_escala_np2/results.csv
+===== 06:04:43 RODADA 1 sift np2
+[experiments] Reaproveitando input_sift.bin ja gerado no no mestre
+[experiments] Sessao: /home/ec2-user/KMeans-StarPU-Heterogeneous-Analysis/results/experiments/sift_escala_np2
+[experiments] Selecionando 2 nos
+[experiments] Pulando build
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+[experiments] Calibracao reinstalada: md5 b9e74d614a2deb152d562a383af68e25 (igual em 2/2 nos)
+[experiments] Run mode=starpu_hybrid nodes=2 chunks=1024 metricas:1
+[run] launch host: 10.0.0.10
+[run] hostfile: /home/ec2-user/KMeans-StarPU-Heterogeneous-Analysis/cluster-config/.cluster/hostfile
+[run] np: 2
+[run] mpirun args: --bind-to none -x STARPU_SCHED=dmda -x STARPU_NOPENCL=1 -x STARPU_RESERVE_NCPU=1 -x STARPU_HOSTNAME=g6.4xlarge -x STARPU_CALIBRATE=0 -x STARPU_NCPUS=7 -x STARPU_NCUDA=1 -x STARPU_WORKERS_CPUID=0,1,2,3,4,5,6,7
+[run] preparing MPI SSH from launch host 10.0.0.10 ...
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+[RANK 0/2] Host: ip-10-0-0-10.ec2.internal
+[RANK 1/2] Host: ip-10-0-0-11.ec2.internal
+[COMPILADOR] nvc++ 26.3
+[MODO] Escalonamento ESTATICO (Manual via EXECUTE_ON_NODE)
+[INFO] Centroides iniciais escolhidos aleatoriamente (Seed: 42)
+[INFO] Injetando max 30 iteracoes no DAG (Assíncrono)...
+[starpu][ip-10-0-0-10.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-11.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-10.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from NUMA 0 to CUDA 0 took a very long time (16.014551 ms)
+For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[starpu][ip-10-0-0-11.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from NUMA 0 to CUDA 0 took a very long time (16.114072 ms)
+For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[StarPU] Iteracao 1
+[StarPU] Iteracao 2
+[StarPU] Iteracao 3
+[StarPU] Iteracao 4
+[StarPU] Iteracao 5
+[StarPU] Iteracao 6
+[StarPU] Iteracao 7
+[StarPU] Iteracao 8
+[StarPU] Iteracao 9
+[StarPU] Iteracao 10
+[StarPU] Iteracao 11
+[StarPU] Iteracao 12
+[StarPU] Iteracao 13
+[StarPU] Iteracao 14
+[StarPU] Iteracao 15
+[StarPU] Iteracao 16
+[StarPU] Iteracao 17
+[StarPU] Iteracao 18
+[StarPU] Iteracao 19
+[StarPU] Iteracao 20
+[StarPU] Iteracao 21
+[StarPU] Iteracao 22
+[StarPU] Iteracao 23
+[StarPU] Iteracao 24
+[StarPU] Iteracao 25
+[StarPU] Iteracao 26
+[StarPU] Iteracao 27
+[StarPU] Iteracao 28
+[StarPU] Iteracao 29
+[StarPU] Iteracao 30
+[INFO] Limite de iterações atingido sem convergência completa.
+[INFO] Salvando centróides finais...
+[INFO] Arquivo de centróides salvo com sucesso em: output_bench/exp_starpu_hybrid_np2_metricas1/256-clusters.txt
+============================================================
+METRICAS FINAIS — StarPU/MPI
+============================================================
+Workers (rank 0)          : 6 CPU  +  1 GPU CUDA
+Ranks MPI                 : 2
+
+Tempo do loop (max)       : 48098.89   ms  [min: 48098.01]
+Tempo total (max, c/init) : 77103.54   ms  [min: 77099.84]
+T. medio/iter             : 1603.30    ms
+Iteracoes                 : 30 / max 30
+SSE                       : 4.0941e+14
+
+Tempos por rank:
+  Rank 0: loop=48098.89   ms  avg/iter=1603.30  ms  total=77103.54   ms
+  Rank 1: loop=48098.01   ms  avg/iter=1603.27  ms  total=77099.84   ms
+
+Distribuicao por kernel (CPU vs CUDA) — global:
+  Kernel        CPU (N / %)             GPU CUDA (N / %)        
+  ------------------------------------------------------------
+  Assign        10439 (33.9822%)        20280 (66.0178%)        
+  Calculate     19130 (62.2721%)        11590 (37.7279%)        
+  Clean         60 (100%)               0 (0%)                  
+  Update        6 (20%)                 24 (80%)                
+  Accumulate    10613 (34.5138%)        20137 (65.4862%)        
+  ------------------------------------------------------------
+  TOTAL         40248 (43.6156%)        52031 (56.3844%)        
+
+Tarefas por rank MPI:
+  Rank 0: 18470 CPU + 27700 CUDA = 46170 total (50.0%)
+  Rank 1: 21778 CPU + 24331 CUDA = 46109 total (50.0%)
+============================================================
+Escalonador StarPU ativo: dmda
+[experiments] Concluido. Resultados em: /home/ec2-user/KMeans-StarPU-Heterogeneous-Analysis/results/experiments/sift_escala_np2/results.csv
+===== 06:06:06 RODADA 2 pq np2
+[experiments] Reaproveitando input_pq.bin ja gerado no no mestre
+[experiments] Sessao: /home/ec2-user/KMeans-StarPU-Heterogeneous-Analysis/results/experiments/pq_escala_np2
+[experiments] Selecionando 2 nos
+[experiments] Pulando build
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+[experiments] Calibracao reinstalada: md5 b9e74d614a2deb152d562a383af68e25 (igual em 2/2 nos)
+[experiments] Run mode=starpu_hybrid nodes=2 chunks=1024 metricas:2
+[run] launch host: 10.0.0.10
+[run] hostfile: /home/ec2-user/KMeans-StarPU-Heterogeneous-Analysis/cluster-config/.cluster/hostfile
+[run] np: 2
+[run] mpirun args: --bind-to none -x STARPU_SCHED=dmda -x STARPU_NOPENCL=1 -x STARPU_RESERVE_NCPU=1 -x STARPU_HOSTNAME=g6.4xlarge -x STARPU_CALIBRATE=0 -x STARPU_NCPUS=7 -x STARPU_NCUDA=1 -x STARPU_WORKERS_CPUID=0,1,2,3,4,5,6,7
+[run] preparing MPI SSH from launch host 10.0.0.10 ...
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+[RANK 0/2] Host: ip-10-0-0-10.ec2.internal
+[RANK 1/2] Host: ip-10-0-0-11.ec2.internal
+[COMPILADOR] nvc++ 26.3
+[MODO] Escalonamento ESTATICO (Manual via EXECUTE_ON_NODE)
+[INFO] Centroides iniciais escolhidos aleatoriamente (Seed: 42)
+[INFO] Injetando max 30 iteracoes no DAG (Assíncrono)...
+[starpu][ip-10-0-0-10.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-11.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-10.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from NUMA 0 to CUDA 0 took a very long time (15.960202 ms)
+For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[starpu][ip-10-0-0-11.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from NUMA 0 to CUDA 0 took a very long time (16.078170 ms)
+For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[StarPU] Iteracao 1
+[StarPU] Iteracao 2
+[StarPU] Iteracao 3
+[StarPU] Iteracao 4
+[StarPU] Iteracao 5
+[StarPU] Iteracao 6
+[StarPU] Iteracao 7
+[StarPU] Iteracao 8
+[StarPU] Iteracao 9
+[StarPU] Iteracao 10
+[StarPU] Iteracao 11
+[StarPU] Iteracao 12
+[StarPU] Iteracao 13
+[StarPU] Iteracao 14
+[StarPU] Iteracao 15
+[StarPU] Iteracao 16
+[StarPU] Iteracao 17
+[StarPU] Iteracao 18
+[StarPU] Iteracao 19
+[StarPU] Iteracao 20
+[StarPU] Iteracao 21
+[StarPU] Iteracao 22
+[StarPU] Iteracao 23
+[StarPU] Iteracao 24
+[StarPU] Iteracao 25
+[StarPU] Iteracao 26
+[StarPU] Iteracao 27
+[StarPU] Iteracao 28
+[StarPU] Iteracao 29
+[StarPU] Iteracao 30
+[INFO] Limite de iterações atingido sem convergência completa.
+[INFO] Salvando centróides finais...
+[INFO] Arquivo de centróides salvo com sucesso em: output_bench/exp_starpu_hybrid_np2_metricas2/256-clusters.txt
+============================================================
+METRICAS FINAIS — StarPU/MPI
+============================================================
+Workers (rank 0)          : 6 CPU  +  1 GPU CUDA
+Ranks MPI                 : 2
+
+Tempo do loop (max)       : 49123.10   ms  [min: 49106.92]
+Tempo total (max, c/init) : 85872.73   ms  [min: 85407.42]
+T. medio/iter             : 1637.44    ms
+Iteracoes                 : 30 / max 30
+SSE                       : 2.9768e+14
+
+Tempos por rank:
+  Rank 0: loop=49123.10   ms  avg/iter=1637.44  ms  total=85872.73   ms
+  Rank 1: loop=49106.92   ms  avg/iter=1636.90  ms  total=85407.42   ms
+
+Distribuicao por kernel (CPU vs CUDA) — global:
+  Kernel        CPU (N / %)             GPU CUDA (N / %)        
+  ------------------------------------------------------------
+  Assign        7560 (24.6094%)         23160 (75.3906%)        
+  Calculate     20080 (65.3646%)        10640 (34.6354%)        
+  Clean         60 (100%)               0 (0%)                  
+  Update        15 (50%)                15 (50%)                
+  Accumulate    17703 (57.5707%)        13047 (42.4293%)        
+  ------------------------------------------------------------
+  TOTAL         45418 (49.2176%)        46862 (50.7824%)        
+
+Tarefas por rank MPI:
+  Rank 0: 21721 CPU + 24449 CUDA = 46170 total (50.0%)
+  Rank 1: 23697 CPU + 22413 CUDA = 46110 total (50.0%)
+============================================================
+Escalonador StarPU ativo: dmda
+[experiments] Concluido. Resultados em: /home/ec2-user/KMeans-StarPU-Heterogeneous-Analysis/results/experiments/pq_escala_np2/results.csv
+===== 06:07:38 RODADA 2 deep np2
+[experiments] Reaproveitando input_deep.bin ja gerado no no mestre
+[experiments] Sessao: /home/ec2-user/KMeans-StarPU-Heterogeneous-Analysis/results/experiments/deep_escala_np2
+[experiments] Selecionando 2 nos
+[experiments] Pulando build
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+[experiments] Calibracao reinstalada: md5 b9e74d614a2deb152d562a383af68e25 (igual em 2/2 nos)
+[experiments] Run mode=starpu_hybrid nodes=2 chunks=1024 metricas:2
+[run] launch host: 10.0.0.10
+[run] hostfile: /home/ec2-user/KMeans-StarPU-Heterogeneous-Analysis/cluster-config/.cluster/hostfile
+[run] np: 2
+[run] mpirun args: --bind-to none -x STARPU_SCHED=dmda -x STARPU_NOPENCL=1 -x STARPU_RESERVE_NCPU=1 -x STARPU_HOSTNAME=g6.4xlarge -x STARPU_CALIBRATE=0 -x STARPU_NCPUS=7 -x STARPU_NCUDA=1 -x STARPU_WORKERS_CPUID=0,1,2,3,4,5,6,7
+[run] preparing MPI SSH from launch host 10.0.0.10 ...
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+[RANK 0/2] Host: ip-10-0-0-10.ec2.internal
+[RANK 1/2] Host: ip-10-0-0-11.ec2.internal
+[COMPILADOR] nvc++ 26.3
+[MODO] Escalonamento ESTATICO (Manual via EXECUTE_ON_NODE)
+[INFO] Centroides iniciais escolhidos aleatoriamente (Seed: 42)
+[INFO] Injetando max 30 iteracoes no DAG (Assíncrono)...
+[starpu][ip-10-0-0-10.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-11.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-10.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from NUMA 0 to CUDA 0 took a very long time (1.423976 ms)
+For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[starpu][ip-10-0-0-11.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from NUMA 0 to CUDA 0 took a very long time (16.109433 ms)
+For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[StarPU] Iteracao 1
+[StarPU] Iteracao 2
+[StarPU] Iteracao 3
+[StarPU] Iteracao 4
+[StarPU] Iteracao 5
+[StarPU] Iteracao 6
+[StarPU] Iteracao 7
+[StarPU] Iteracao 8
+[StarPU] Iteracao 9
+[StarPU] Iteracao 10
+[StarPU] Iteracao 11
+[StarPU] Iteracao 12
+[StarPU] Iteracao 13
+[StarPU] Iteracao 14
+[StarPU] Iteracao 15
+[StarPU] Iteracao 16
+[StarPU] Iteracao 17
+[StarPU] Iteracao 18
+[StarPU] Iteracao 19
+[StarPU] Iteracao 20
+[StarPU] Iteracao 21
+[StarPU] Iteracao 22
+[StarPU] Iteracao 23
+[StarPU] Iteracao 24
+[StarPU] Iteracao 25
+[StarPU] Iteracao 26
+[StarPU] Iteracao 27
+[StarPU] Iteracao 28
+[StarPU] Iteracao 29
+[StarPU] Iteracao 30
+[INFO] Limite de iterações atingido sem convergência completa.
+[INFO] Salvando centróides finais...
+[INFO] Arquivo de centróides salvo com sucesso em: output_bench/exp_starpu_hybrid_np2_metricas2/256-clusters.txt
+============================================================
+METRICAS FINAIS — StarPU/MPI
+============================================================
+Workers (rank 0)          : 6 CPU  +  1 GPU CUDA
+Ranks MPI                 : 2
+
+Tempo do loop (max)       : 58827.50   ms  [min: 58820.21]
+Tempo total (max, c/init) : 100094.58  ms  [min: 99949.28]
+T. medio/iter             : 1960.92    ms
+Iteracoes                 : 30 / max 30
+SSE                       : 6.0084e+14
+
+Tempos por rank:
+  Rank 0: loop=58827.50   ms  avg/iter=1960.92  ms  total=100094.58  ms
+  Rank 1: loop=58820.21   ms  avg/iter=1960.67  ms  total=99949.28   ms
+
+Distribuicao por kernel (CPU vs CUDA) — global:
+  Kernel        CPU (N / %)             GPU CUDA (N / %)        
+  ------------------------------------------------------------
+  Assign        9000 (29.2969%)         21720 (70.7031%)        
+  Calculate     11893 (38.7142%)        18827 (61.2858%)        
+  Clean         60 (100%)               0 (0%)                  
+  Update        4 (13.3333%)            26 (86.6667%)           
+  Accumulate    3792 (12.3317%)         26958 (87.6683%)        
+  ------------------------------------------------------------
+  TOTAL         24749 (26.8195%)        67531 (73.1805%)        
+
+Tarefas por rank MPI:
+  Rank 0: 12722 CPU + 33448 CUDA = 46170 total (50.0%)
+  Rank 1: 12027 CPU + 34083 CUDA = 46110 total (50.0%)
+============================================================
+Escalonador StarPU ativo: dmda
+[experiments] Concluido. Resultados em: /home/ec2-user/KMeans-StarPU-Heterogeneous-Analysis/results/experiments/deep_escala_np2/results.csv
+===== 06:09:25 RODADA 2 sift np2
+[experiments] Reaproveitando input_sift.bin ja gerado no no mestre
+[experiments] Sessao: /home/ec2-user/KMeans-StarPU-Heterogeneous-Analysis/results/experiments/sift_escala_np2
+[experiments] Selecionando 2 nos
+[experiments] Pulando build
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+[experiments] Calibracao reinstalada: md5 b9e74d614a2deb152d562a383af68e25 (igual em 2/2 nos)
+[experiments] Run mode=starpu_hybrid nodes=2 chunks=1024 metricas:2
+[run] launch host: 10.0.0.10
+[run] hostfile: /home/ec2-user/KMeans-StarPU-Heterogeneous-Analysis/cluster-config/.cluster/hostfile
+[run] np: 2
+[run] mpirun args: --bind-to none -x STARPU_SCHED=dmda -x STARPU_NOPENCL=1 -x STARPU_RESERVE_NCPU=1 -x STARPU_HOSTNAME=g6.4xlarge -x STARPU_CALIBRATE=0 -x STARPU_NCPUS=7 -x STARPU_NCUDA=1 -x STARPU_WORKERS_CPUID=0,1,2,3,4,5,6,7
+[run] preparing MPI SSH from launch host 10.0.0.10 ...
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+[RANK 0/2] Host: ip-10-0-0-10.ec2.internal
+[RANK 1/2] Host: ip-10-0-0-11.ec2.internal
+[COMPILADOR] nvc++ 26.3
+[MODO] Escalonamento ESTATICO (Manual via EXECUTE_ON_NODE)
+[INFO] Centroides iniciais escolhidos aleatoriamente (Seed: 42)
+[INFO] Injetando max 30 iteracoes no DAG (Assíncrono)...
+[starpu][ip-10-0-0-10.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-11.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-10.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from NUMA 0 to CUDA 0 took a very long time (15.724018 ms)
+For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[starpu][ip-10-0-0-11.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from NUMA 0 to CUDA 0 took a very long time (16.315013 ms)
+For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[StarPU] Iteracao 1
+[StarPU] Iteracao 2
+[StarPU] Iteracao 3
+[StarPU] Iteracao 4
+[StarPU] Iteracao 5
+[StarPU] Iteracao 6
+[StarPU] Iteracao 7
+[StarPU] Iteracao 8
+[StarPU] Iteracao 9
+[StarPU] Iteracao 10
+[StarPU] Iteracao 11
+[StarPU] Iteracao 12
+[StarPU] Iteracao 13
+[StarPU] Iteracao 14
+[StarPU] Iteracao 15
+[StarPU] Iteracao 16
+[StarPU] Iteracao 17
+[StarPU] Iteracao 18
+[StarPU] Iteracao 19
+[StarPU] Iteracao 20
+[StarPU] Iteracao 21
+[StarPU] Iteracao 22
+[StarPU] Iteracao 23
+[StarPU] Iteracao 24
+[StarPU] Iteracao 25
+[StarPU] Iteracao 26
+[StarPU] Iteracao 27
+[StarPU] Iteracao 28
+[StarPU] Iteracao 29
+[StarPU] Iteracao 30
+[INFO] Limite de iterações atingido sem convergência completa.
+[INFO] Salvando centróides finais...
+[INFO] Arquivo de centróides salvo com sucesso em: output_bench/exp_starpu_hybrid_np2_metricas2/256-clusters.txt
+============================================================
+METRICAS FINAIS — StarPU/MPI
+============================================================
+Workers (rank 0)          : 6 CPU  +  1 GPU CUDA
+Ranks MPI                 : 2
+
+Tempo do loop (max)       : 47966.51   ms  [min: 47965.81]
+Tempo total (max, c/init) : 77750.46   ms  [min: 77697.12]
+T. medio/iter             : 1598.88    ms
+Iteracoes                 : 30 / max 30
+SSE                       : 4.0941e+14
+
+Tempos por rank:
+  Rank 0: loop=47966.51   ms  avg/iter=1598.88  ms  total=77750.46   ms
+  Rank 1: loop=47965.81   ms  avg/iter=1598.86  ms  total=77697.12   ms
+
+Distribuicao por kernel (CPU vs CUDA) — global:
+  Kernel        CPU (N / %)             GPU CUDA (N / %)        
+  ------------------------------------------------------------
+  Assign        10440 (33.9844%)        20280 (66.0156%)        
+  Calculate     19366 (63.0404%)        11354 (36.9596%)        
+  Clean         60 (100%)               0 (0%)                  
+  Update        13 (43.3333%)           17 (56.6667%)           
+  Accumulate    14603 (47.4894%)        16147 (52.5106%)        
+  ------------------------------------------------------------
+  TOTAL         44482 (48.2033%)        47798 (51.7967%)        
+
+Tarefas por rank MPI:
+  Rank 0: 22828 CPU + 23342 CUDA = 46170 total (50.0%)
+  Rank 1: 21654 CPU + 24456 CUDA = 46110 total (50.0%)
+============================================================
+Escalonador StarPU ativo: dmda
+[experiments] Concluido. Resultados em: /home/ec2-user/KMeans-StarPU-Heterogeneous-Analysis/results/experiments/sift_escala_np2/results.csv
+===== 06:10:48 RODADA 3 pq np2
+[experiments] Reaproveitando input_pq.bin ja gerado no no mestre
+[experiments] Sessao: /home/ec2-user/KMeans-StarPU-Heterogeneous-Analysis/results/experiments/pq_escala_np2
+[experiments] Selecionando 2 nos
+[experiments] Pulando build
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+[experiments] Calibracao reinstalada: md5 b9e74d614a2deb152d562a383af68e25 (igual em 2/2 nos)
+[experiments] Run mode=starpu_hybrid nodes=2 chunks=1024 metricas:3
+[run] launch host: 10.0.0.10
+[run] hostfile: /home/ec2-user/KMeans-StarPU-Heterogeneous-Analysis/cluster-config/.cluster/hostfile
+[run] np: 2
+[run] mpirun args: --bind-to none -x STARPU_SCHED=dmda -x STARPU_NOPENCL=1 -x STARPU_RESERVE_NCPU=1 -x STARPU_HOSTNAME=g6.4xlarge -x STARPU_CALIBRATE=0 -x STARPU_NCPUS=7 -x STARPU_NCUDA=1 -x STARPU_WORKERS_CPUID=0,1,2,3,4,5,6,7
+[run] preparing MPI SSH from launch host 10.0.0.10 ...
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+[RANK 0/2] Host: ip-10-0-0-10.ec2.internal
+[RANK 1/2] Host: ip-10-0-0-11.ec2.internal
+[COMPILADOR] nvc++ 26.3
+[MODO] Escalonamento ESTATICO (Manual via EXECUTE_ON_NODE)
+[INFO] Centroides iniciais escolhidos aleatoriamente (Seed: 42)
+[INFO] Injetando max 30 iteracoes no DAG (Assíncrono)...
+[starpu][ip-10-0-0-10.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-11.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-10.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from NUMA 0 to CUDA 0 took a very long time (16.020260 ms)
+For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[starpu][ip-10-0-0-11.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from NUMA 0 to CUDA 0 took a very long time (15.971103 ms)
+For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[StarPU] Iteracao 1
+[StarPU] Iteracao 2
+[StarPU] Iteracao 3
+[StarPU] Iteracao 4
+[StarPU] Iteracao 5
+[StarPU] Iteracao 6
+[StarPU] Iteracao 7
+[StarPU] Iteracao 8
+[StarPU] Iteracao 9
+[StarPU] Iteracao 10
+[StarPU] Iteracao 11
+[StarPU] Iteracao 12
+[StarPU] Iteracao 13
+[StarPU] Iteracao 14
+[StarPU] Iteracao 15
+[StarPU] Iteracao 16
+[StarPU] Iteracao 17
+[StarPU] Iteracao 18
+[StarPU] Iteracao 19
+[StarPU] Iteracao 20
+[StarPU] Iteracao 21
+[StarPU] Iteracao 22
+[StarPU] Iteracao 23
+[StarPU] Iteracao 24
+[StarPU] Iteracao 25
+[StarPU] Iteracao 26
+[StarPU] Iteracao 27
+[StarPU] Iteracao 28
+[StarPU] Iteracao 29
+[StarPU] Iteracao 30
+[INFO] Limite de iterações atingido sem convergência completa.
+[INFO] Salvando centróides finais...
+[INFO] Arquivo de centróides salvo com sucesso em: output_bench/exp_starpu_hybrid_np2_metricas3/256-clusters.txt
+============================================================
+METRICAS FINAIS — StarPU/MPI
+============================================================
+Workers (rank 0)          : 6 CPU  +  1 GPU CUDA
+Ranks MPI                 : 2
+
+Tempo do loop (max)       : 49115.90   ms  [min: 49103.04]
+Tempo total (max, c/init) : 86331.64   ms  [min: 85920.47]
+T. medio/iter             : 1637.20    ms
+Iteracoes                 : 30 / max 30
+SSE                       : 2.9768e+14
+
+Tempos por rank:
+  Rank 0: loop=49115.90   ms  avg/iter=1637.20  ms  total=86331.64   ms
+  Rank 1: loop=49103.04   ms  avg/iter=1636.77  ms  total=85920.47   ms
+
+Distribuicao por kernel (CPU vs CUDA) — global:
+  Kernel        CPU (N / %)             GPU CUDA (N / %)        
+  ------------------------------------------------------------
+  Assign        7560 (24.6094%)         23160 (75.3906%)        
+  Calculate     20011 (65.14%)          10709 (34.86%)          
+  Clean         60 (100%)               0 (0%)                  
+  Update        17 (56.6667%)           13 (43.3333%)           
+  Accumulate    15752 (51.226%)         14998 (48.774%)         
+  ------------------------------------------------------------
+  TOTAL         43400 (47.0308%)        48880 (52.9692%)        
+
+Tarefas por rank MPI:
+  Rank 0: 22714 CPU + 23456 CUDA = 46170 total (50.0%)
+  Rank 1: 20686 CPU + 25424 CUDA = 46110 total (50.0%)
+============================================================
+Escalonador StarPU ativo: dmda
+[experiments] Concluido. Resultados em: /home/ec2-user/KMeans-StarPU-Heterogeneous-Analysis/results/experiments/pq_escala_np2/results.csv
+===== 06:12:21 RODADA 3 deep np2
+[experiments] Reaproveitando input_deep.bin ja gerado no no mestre
+[experiments] Sessao: /home/ec2-user/KMeans-StarPU-Heterogeneous-Analysis/results/experiments/deep_escala_np2
+[experiments] Selecionando 2 nos
+[experiments] Pulando build
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+[experiments] Calibracao reinstalada: md5 b9e74d614a2deb152d562a383af68e25 (igual em 2/2 nos)
+[experiments] Run mode=starpu_hybrid nodes=2 chunks=1024 metricas:3
+[run] launch host: 10.0.0.10
+[run] hostfile: /home/ec2-user/KMeans-StarPU-Heterogeneous-Analysis/cluster-config/.cluster/hostfile
+[run] np: 2
+[run] mpirun args: --bind-to none -x STARPU_SCHED=dmda -x STARPU_NOPENCL=1 -x STARPU_RESERVE_NCPU=1 -x STARPU_HOSTNAME=g6.4xlarge -x STARPU_CALIBRATE=0 -x STARPU_NCPUS=7 -x STARPU_NCUDA=1 -x STARPU_WORKERS_CPUID=0,1,2,3,4,5,6,7
+[run] preparing MPI SSH from launch host 10.0.0.10 ...
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+[RANK 0/2] Host: ip-10-0-0-10.ec2.internal
+[RANK 1/2] Host: ip-10-0-0-11.ec2.internal
+[COMPILADOR] nvc++ 26.3
+[MODO] Escalonamento ESTATICO (Manual via EXECUTE_ON_NODE)
+[INFO] Centroides iniciais escolhidos aleatoriamente (Seed: 42)
+[INFO] Injetando max 30 iteracoes no DAG (Assíncrono)...
+[starpu][ip-10-0-0-10.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-11.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-10.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from NUMA 0 to CUDA 0 took a very long time (16.091740 ms)
+For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[starpu][ip-10-0-0-11.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from NUMA 0 to CUDA 0 took a very long time (15.875896 ms)
+For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[StarPU] Iteracao 1
+[StarPU] Iteracao 2
+[StarPU] Iteracao 3
+[StarPU] Iteracao 4
+[StarPU] Iteracao 5
+[StarPU] Iteracao 6
+[StarPU] Iteracao 7
+[StarPU] Iteracao 8
+[StarPU] Iteracao 9
+[StarPU] Iteracao 10
+[StarPU] Iteracao 11
+[StarPU] Iteracao 12
+[StarPU] Iteracao 13
+[StarPU] Iteracao 14
+[StarPU] Iteracao 15
+[StarPU] Iteracao 16
+[StarPU] Iteracao 17
+[StarPU] Iteracao 18
+[StarPU] Iteracao 19
+[StarPU] Iteracao 20
+[StarPU] Iteracao 21
+[StarPU] Iteracao 22
+[StarPU] Iteracao 23
+[StarPU] Iteracao 24
+[StarPU] Iteracao 25
+[StarPU] Iteracao 26
+[StarPU] Iteracao 27
+[StarPU] Iteracao 28
+[StarPU] Iteracao 29
+[StarPU] Iteracao 30
+[INFO] Limite de iterações atingido sem convergência completa.
+[INFO] Salvando centróides finais...
+[INFO] Arquivo de centróides salvo com sucesso em: output_bench/exp_starpu_hybrid_np2_metricas3/256-clusters.txt
+============================================================
+METRICAS FINAIS — StarPU/MPI
+============================================================
+Workers (rank 0)          : 6 CPU  +  1 GPU CUDA
+Ranks MPI                 : 2
+
+Tempo do loop (max)       : 58837.86   ms  [min: 58836.99]
+Tempo total (max, c/init) : 99678.22   ms  [min: 99517.03]
+T. medio/iter             : 1961.26    ms
+Iteracoes                 : 30 / max 30
+SSE                       : 6.0084e+14
+
+Tempos por rank:
+  Rank 0: loop=58837.86   ms  avg/iter=1961.26  ms  total=99678.22   ms
+  Rank 1: loop=58836.99   ms  avg/iter=1961.23  ms  total=99517.03   ms
+
+Distribuicao por kernel (CPU vs CUDA) — global:
+  Kernel        CPU (N / %)             GPU CUDA (N / %)        
+  ------------------------------------------------------------
+  Assign        9000 (29.2969%)         21720 (70.7031%)        
+  Calculate     12063 (39.2676%)        18657 (60.7324%)        
+  Clean         60 (100%)               0 (0%)                  
+  Update        4 (13.3333%)            26 (86.6667%)           
+  Accumulate    4093 (13.3106%)         26657 (86.6894%)        
+  ------------------------------------------------------------
+  TOTAL         25220 (27.3299%)        67060 (72.6701%)        
+
+Tarefas por rank MPI:
+  Rank 0: 12585 CPU + 33585 CUDA = 46170 total (50.0%)
+  Rank 1: 12635 CPU + 33475 CUDA = 46110 total (50.0%)
+============================================================
+Escalonador StarPU ativo: dmda
+[experiments] Concluido. Resultados em: /home/ec2-user/KMeans-StarPU-Heterogeneous-Analysis/results/experiments/deep_escala_np2/results.csv
+===== 06:14:07 RODADA 3 sift np2
+[experiments] Reaproveitando input_sift.bin ja gerado no no mestre
+[experiments] Sessao: /home/ec2-user/KMeans-StarPU-Heterogeneous-Analysis/results/experiments/sift_escala_np2
+[experiments] Selecionando 2 nos
+[experiments] Pulando build
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+[experiments] Calibracao reinstalada: md5 b9e74d614a2deb152d562a383af68e25 (igual em 2/2 nos)
+[experiments] Run mode=starpu_hybrid nodes=2 chunks=1024 metricas:3
+[run] launch host: 10.0.0.10
+[run] hostfile: /home/ec2-user/KMeans-StarPU-Heterogeneous-Analysis/cluster-config/.cluster/hostfile
+[run] np: 2
+[run] mpirun args: --bind-to none -x STARPU_SCHED=dmda -x STARPU_NOPENCL=1 -x STARPU_RESERVE_NCPU=1 -x STARPU_HOSTNAME=g6.4xlarge -x STARPU_CALIBRATE=0 -x STARPU_NCPUS=7 -x STARPU_NCUDA=1 -x STARPU_WORKERS_CPUID=0,1,2,3,4,5,6,7
+[run] preparing MPI SSH from launch host 10.0.0.10 ...
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+[RANK 0/2] Host: ip-10-0-0-10.ec2.internal
+[RANK 1/2] Host: ip-10-0-0-11.ec2.internal
+[COMPILADOR] nvc++ 26.3
+[MODO] Escalonamento ESTATICO (Manual via EXECUTE_ON_NODE)
+[INFO] Centroides iniciais escolhidos aleatoriamente (Seed: 42)
+[INFO] Injetando max 30 iteracoes no DAG (Assíncrono)...
+[starpu][ip-10-0-0-10.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-11.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-10.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from NUMA 0 to CUDA 0 took a very long time (19.476679 ms)
+For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[StarPU] Iteracao 1
+[StarPU] Iteracao 2
+[StarPU] Iteracao 3
+[StarPU] Iteracao 4
+[StarPU] Iteracao 5
+[StarPU] Iteracao 6
+[StarPU] Iteracao 7
+[StarPU] Iteracao 8
+[StarPU] Iteracao 9
+[StarPU] Iteracao 10
+[StarPU] Iteracao 11
+[StarPU] Iteracao 12
+[StarPU] Iteracao 13
+[StarPU] Iteracao 14
+[StarPU] Iteracao 15
+[StarPU] Iteracao 16
+[StarPU] Iteracao 17
+[StarPU] Iteracao 18
+[StarPU] Iteracao 19
+[StarPU] Iteracao 20
+[StarPU] Iteracao 21
+[StarPU] Iteracao 22
+[StarPU] Iteracao 23
+[StarPU] Iteracao 24
+[StarPU] Iteracao 25
+[StarPU] Iteracao 26
+[StarPU] Iteracao 27
+[StarPU] Iteracao 28
+[StarPU] Iteracao 29
+[StarPU] Iteracao 30
+[INFO] Limite de iterações atingido sem convergência completa.
+[INFO] Salvando centróides finais...
+[INFO] Arquivo de centróides salvo com sucesso em: output_bench/exp_starpu_hybrid_np2_metricas3/256-clusters.txt
+============================================================
+METRICAS FINAIS — StarPU/MPI
+============================================================
+Workers (rank 0)          : 6 CPU  +  1 GPU CUDA
+Ranks MPI                 : 2
+
+Tempo do loop (max)       : 47914.32   ms  [min: 47913.53]
+Tempo total (max, c/init) : 77603.52   ms  [min: 77532.46]
+T. medio/iter             : 1597.14    ms
+Iteracoes                 : 30 / max 30
+SSE                       : 4.0941e+14
+
+Tempos por rank:
+  Rank 0: loop=47914.32   ms  avg/iter=1597.14  ms  total=77603.52   ms
+  Rank 1: loop=47913.53   ms  avg/iter=1597.12  ms  total=77532.46   ms
+
+Distribuicao por kernel (CPU vs CUDA) — global:
+  Kernel        CPU (N / %)             GPU CUDA (N / %)        
+  ------------------------------------------------------------
+  Assign        10440 (33.9844%)        20280 (66.0156%)        
+  Calculate     19187 (62.4577%)        11533 (37.5423%)        
+  Clean         60 (100%)               0 (0%)                  
+  Update        13 (43.3333%)           17 (56.6667%)           
+  Accumulate    13947 (45.3561%)        16803 (54.6439%)        
+  ------------------------------------------------------------
+  TOTAL         43647 (47.2984%)        48633 (52.7016%)        
+
+Tarefas por rank MPI:
+  Rank 0: 22885 CPU + 23285 CUDA = 46170 total (50.0%)
+  Rank 1: 20762 CPU + 25348 CUDA = 46110 total (50.0%)
+============================================================
+Escalonador StarPU ativo: dmda
+[experiments] Concluido. Resultados em: /home/ec2-user/KMeans-StarPU-Heterogeneous-Analysis/results/experiments/sift_escala_np2/results.csv
+===== 06:15:30 RODADA 4 pq np2
+[experiments] Reaproveitando input_pq.bin ja gerado no no mestre
+[experiments] Sessao: /home/ec2-user/KMeans-StarPU-Heterogeneous-Analysis/results/experiments/pq_escala_np2
+[experiments] Selecionando 2 nos
+[experiments] Pulando build
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+[experiments] Calibracao reinstalada: md5 b9e74d614a2deb152d562a383af68e25 (igual em 2/2 nos)
+[experiments] Run mode=starpu_hybrid nodes=2 chunks=1024 metricas:4
+[run] launch host: 10.0.0.10
+[run] hostfile: /home/ec2-user/KMeans-StarPU-Heterogeneous-Analysis/cluster-config/.cluster/hostfile
+[run] np: 2
+[run] mpirun args: --bind-to none -x STARPU_SCHED=dmda -x STARPU_NOPENCL=1 -x STARPU_RESERVE_NCPU=1 -x STARPU_HOSTNAME=g6.4xlarge -x STARPU_CALIBRATE=0 -x STARPU_NCPUS=7 -x STARPU_NCUDA=1 -x STARPU_WORKERS_CPUID=0,1,2,3,4,5,6,7
+[run] preparing MPI SSH from launch host 10.0.0.10 ...
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+[RANK 0/2] Host: ip-10-0-0-10.ec2.internal
+[RANK 1/2] Host: ip-10-0-0-11.ec2.internal
+[COMPILADOR] nvc++ 26.3
+[MODO] Escalonamento ESTATICO (Manual via EXECUTE_ON_NODE)
+[INFO] Centroides iniciais escolhidos aleatoriamente (Seed: 42)
+[INFO] Injetando max 30 iteracoes no DAG (Assíncrono)...
+[starpu][ip-10-0-0-10.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-11.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-10.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from NUMA 0 to CUDA 0 took a very long time (19.200251 ms)
+For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[starpu][ip-10-0-0-11.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from NUMA 0 to CUDA 0 took a very long time (16.058520 ms)
+For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[StarPU] Iteracao 1
+[StarPU] Iteracao 2
+[StarPU] Iteracao 3
+[StarPU] Iteracao 4
+[StarPU] Iteracao 5
+[StarPU] Iteracao 6
+[StarPU] Iteracao 7
+[StarPU] Iteracao 8
+[StarPU] Iteracao 9
+[StarPU] Iteracao 10
+[StarPU] Iteracao 11
+[StarPU] Iteracao 12
+[StarPU] Iteracao 13
+[StarPU] Iteracao 14
+[StarPU] Iteracao 15
+[StarPU] Iteracao 16
+[StarPU] Iteracao 17
+[StarPU] Iteracao 18
+[StarPU] Iteracao 19
+[StarPU] Iteracao 20
+[StarPU] Iteracao 21
+[StarPU] Iteracao 22
+[StarPU] Iteracao 23
+[StarPU] Iteracao 24
+[StarPU] Iteracao 25
+[StarPU] Iteracao 26
+[StarPU] Iteracao 27
+[StarPU] Iteracao 28
+[StarPU] Iteracao 29
+[StarPU] Iteracao 30
+[INFO] Limite de iterações atingido sem convergência completa.
+[INFO] Salvando centróides finais...
+[INFO] Arquivo de centróides salvo com sucesso em: output_bench/exp_starpu_hybrid_np2_metricas4/256-clusters.txt
+============================================================
+METRICAS FINAIS — StarPU/MPI
+============================================================
+Workers (rank 0)          : 6 CPU  +  1 GPU CUDA
+Ranks MPI                 : 2
+
+Tempo do loop (max)       : 49167.87   ms  [min: 49161.95]
+Tempo total (max, c/init) : 86251.37   ms  [min: 85799.36]
+T. medio/iter             : 1638.93    ms
+Iteracoes                 : 30 / max 30
+SSE                       : 2.9768e+14
+
+Tempos por rank:
+  Rank 0: loop=49167.87   ms  avg/iter=1638.93  ms  total=86251.37   ms
+  Rank 1: loop=49161.95   ms  avg/iter=1638.73  ms  total=85799.36   ms
+
+Distribuicao por kernel (CPU vs CUDA) — global:
+  Kernel        CPU (N / %)             GPU CUDA (N / %)        
+  ------------------------------------------------------------
+  Assign        7560 (24.6094%)         23160 (75.3906%)        
+  Calculate     20062 (65.306%)         10658 (34.694%)         
+  Clean         60 (100%)               0 (0%)                  
+  Update        19 (63.3333%)           11 (36.6667%)           
+  Accumulate    14737 (47.9252%)        16013 (52.0748%)        
+  ------------------------------------------------------------
+  TOTAL         42438 (45.9883%)        49842 (54.0117%)        
+
+Tarefas por rank MPI:
+  Rank 0: 23766 CPU + 22404 CUDA = 46170 total (50.0%)
+  Rank 1: 18672 CPU + 27438 CUDA = 46110 total (50.0%)
+============================================================
+Escalonador StarPU ativo: dmda
+[experiments] Concluido. Resultados em: /home/ec2-user/KMeans-StarPU-Heterogeneous-Analysis/results/experiments/pq_escala_np2/results.csv
+===== 06:17:03 RODADA 4 deep np2
+[experiments] Reaproveitando input_deep.bin ja gerado no no mestre
+[experiments] Sessao: /home/ec2-user/KMeans-StarPU-Heterogeneous-Analysis/results/experiments/deep_escala_np2
+[experiments] Selecionando 2 nos
+[experiments] Pulando build
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+[experiments] Calibracao reinstalada: md5 b9e74d614a2deb152d562a383af68e25 (igual em 2/2 nos)
+[experiments] Run mode=starpu_hybrid nodes=2 chunks=1024 metricas:4
+[run] launch host: 10.0.0.10
+[run] hostfile: /home/ec2-user/KMeans-StarPU-Heterogeneous-Analysis/cluster-config/.cluster/hostfile
+[run] np: 2
+[run] mpirun args: --bind-to none -x STARPU_SCHED=dmda -x STARPU_NOPENCL=1 -x STARPU_RESERVE_NCPU=1 -x STARPU_HOSTNAME=g6.4xlarge -x STARPU_CALIBRATE=0 -x STARPU_NCPUS=7 -x STARPU_NCUDA=1 -x STARPU_WORKERS_CPUID=0,1,2,3,4,5,6,7
+[run] preparing MPI SSH from launch host 10.0.0.10 ...
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+[RANK 0/2] Host: ip-10-0-0-10.ec2.internal
+[RANK 1/2] Host: ip-10-0-0-11.ec2.internal
+[COMPILADOR] nvc++ 26.3
+[MODO] Escalonamento ESTATICO (Manual via EXECUTE_ON_NODE)
+[INFO] Centroides iniciais escolhidos aleatoriamente (Seed: 42)
+[INFO] Injetando max 30 iteracoes no DAG (Assíncrono)...
+[starpu][ip-10-0-0-10.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-11.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-11.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from NUMA 0 to CUDA 0 took a very long time (16.212548 ms)
+For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[StarPU] Iteracao 1
+[StarPU] Iteracao 2
+[StarPU] Iteracao 3
+[StarPU] Iteracao 4
+[StarPU] Iteracao 5
+[StarPU] Iteracao 6
+[StarPU] Iteracao 7
+[StarPU] Iteracao 8
+[StarPU] Iteracao 9
+[StarPU] Iteracao 10
+[StarPU] Iteracao 11
+[StarPU] Iteracao 12
+[StarPU] Iteracao 13
+[StarPU] Iteracao 14
+[starpu][ip-10-0-0-10.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from CUDA 0 to NUMA 0 took a very long time (1.365424 ms)
+For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[StarPU] Iteracao 15
+[StarPU] Iteracao 16
+[StarPU] Iteracao 17
+[StarPU] Iteracao 18
+[StarPU] Iteracao 19
+[StarPU] Iteracao 20
+[StarPU] Iteracao 21
+[StarPU] Iteracao 22
+[StarPU] Iteracao 23
+[StarPU] Iteracao 24
+[StarPU] Iteracao 25
+[StarPU] Iteracao 26
+[StarPU] Iteracao 27
+[StarPU] Iteracao 28
+[StarPU] Iteracao 29
+[StarPU] Iteracao 30
+[INFO] Limite de iterações atingido sem convergência completa.
+[INFO] Salvando centróides finais...
+[INFO] Arquivo de centróides salvo com sucesso em: output_bench/exp_starpu_hybrid_np2_metricas4/256-clusters.txt
+============================================================
+METRICAS FINAIS — StarPU/MPI
+============================================================
+Workers (rank 0)          : 6 CPU  +  1 GPU CUDA
+Ranks MPI                 : 2
+
+Tempo do loop (max)       : 58790.39   ms  [min: 58789.45]
+Tempo total (max, c/init) : 100344.07  ms  [min: 100248.94]
+T. medio/iter             : 1959.68    ms
+Iteracoes                 : 30 / max 30
+SSE                       : 6.0084e+14
+
+Tempos por rank:
+  Rank 0: loop=58790.39   ms  avg/iter=1959.68  ms  total=100344.07  ms
+  Rank 1: loop=58789.45   ms  avg/iter=1959.65  ms  total=100248.94  ms
+
+Distribuicao por kernel (CPU vs CUDA) — global:
+  Kernel        CPU (N / %)             GPU CUDA (N / %)        
+  ------------------------------------------------------------
+  Assign        9000 (29.2969%)         21720 (70.7031%)        
+  Calculate     11977 (38.9876%)        18743 (61.0124%)        
+  Clean         60 (100%)               0 (0%)                  
+  Update        6 (20%)                 24 (80%)                
+  Accumulate    5129 (16.6797%)         25621 (83.3203%)        
+  ------------------------------------------------------------
+  TOTAL         26172 (28.3615%)        66108 (71.6385%)        
+
+Tarefas por rank MPI:
+  Rank 0: 13520 CPU + 32650 CUDA = 46170 total (50.0%)
+  Rank 1: 12652 CPU + 33458 CUDA = 46110 total (50.0%)
+============================================================
+Escalonador StarPU ativo: dmda
+[experiments] Concluido. Resultados em: /home/ec2-user/KMeans-StarPU-Heterogeneous-Analysis/results/experiments/deep_escala_np2/results.csv
+===== 06:18:50 RODADA 4 sift np2
+[experiments] Reaproveitando input_sift.bin ja gerado no no mestre
+[experiments] Sessao: /home/ec2-user/KMeans-StarPU-Heterogeneous-Analysis/results/experiments/sift_escala_np2
+[experiments] Selecionando 2 nos
+[experiments] Pulando build
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+[experiments] Calibracao reinstalada: md5 b9e74d614a2deb152d562a383af68e25 (igual em 2/2 nos)
+[experiments] Run mode=starpu_hybrid nodes=2 chunks=1024 metricas:4
+[run] launch host: 10.0.0.10
+[run] hostfile: /home/ec2-user/KMeans-StarPU-Heterogeneous-Analysis/cluster-config/.cluster/hostfile
+[run] np: 2
+[run] mpirun args: --bind-to none -x STARPU_SCHED=dmda -x STARPU_NOPENCL=1 -x STARPU_RESERVE_NCPU=1 -x STARPU_HOSTNAME=g6.4xlarge -x STARPU_CALIBRATE=0 -x STARPU_NCPUS=7 -x STARPU_NCUDA=1 -x STARPU_WORKERS_CPUID=0,1,2,3,4,5,6,7
+[run] preparing MPI SSH from launch host 10.0.0.10 ...
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+[RANK 0/2] Host: ip-10-0-0-10.ec2.internal
+[RANK 1/2] Host: ip-10-0-0-11.ec2.internal
+[COMPILADOR] nvc++ 26.3
+[MODO] Escalonamento ESTATICO (Manual via EXECUTE_ON_NODE)
+[INFO] Centroides iniciais escolhidos aleatoriamente (Seed: 42)
+[INFO] Injetando max 30 iteracoes no DAG (Assíncrono)...
+[starpu][ip-10-0-0-10.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-11.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[StarPU] Iteracao 1
+[StarPU] Iteracao 2
+[StarPU] Iteracao 3
+[StarPU] Iteracao 4
+[StarPU] Iteracao 5
+[StarPU] Iteracao 6
+[StarPU] Iteracao 7
+[StarPU] Iteracao 8
+[StarPU] Iteracao 9
+[StarPU] Iteracao 10
+[StarPU] Iteracao 11
+[StarPU] Iteracao 12
+[StarPU] Iteracao 13
+[StarPU] Iteracao 14
+[StarPU] Iteracao 15
+[StarPU] Iteracao 16
+[StarPU] Iteracao 17
+[StarPU] Iteracao 18
+[StarPU] Iteracao 19
+[StarPU] Iteracao 20
+[StarPU] Iteracao 21
+[StarPU] Iteracao 22
+[StarPU] Iteracao 23
+[StarPU] Iteracao 24
+[StarPU] Iteracao 25
+[StarPU] Iteracao 26
+[StarPU] Iteracao 27
+[StarPU] Iteracao 28
+[StarPU] Iteracao 29
+[INFO] Limite de iterações atingido sem convergência completa.
+[StarPU] Iteracao 30
+[INFO] Salvando centróides finais...
+[INFO] Arquivo de centróides salvo com sucesso em: output_bench/exp_starpu_hybrid_np2_metricas4/256-clusters.txt
+============================================================
+METRICAS FINAIS — StarPU/MPI
+============================================================
+Workers (rank 0)          : 6 CPU  +  1 GPU CUDA
+Ranks MPI                 : 2
+
+Tempo do loop (max)       : 47887.87   ms  [min: 47887.18]
+Tempo total (max, c/init) : 77764.77   ms  [min: 77730.72]
+T. medio/iter             : 1596.26    ms
+Iteracoes                 : 30 / max 30
+SSE                       : 4.0941e+14
+
+Tempos por rank:
+  Rank 0: loop=47887.87   ms  avg/iter=1596.26  ms  total=77730.72   ms
+  Rank 1: loop=47887.18   ms  avg/iter=1596.24  ms  total=77764.77   ms
+
+Distribuicao por kernel (CPU vs CUDA) — global:
+  Kernel        CPU (N / %)             GPU CUDA (N / %)        
+  ------------------------------------------------------------
+  Assign        10440 (33.9844%)        20280 (66.0156%)        
+  Calculate     18845 (61.3444%)        11875 (38.6556%)        
+  Clean         60 (100%)               0 (0%)                  
+  Update        14 (46.6667%)           16 (53.3333%)           
+  Accumulate    15215 (49.4797%)        15535 (50.5203%)        
+  ------------------------------------------------------------
+  TOTAL         44574 (48.303%)         47706 (51.697%)         
+
+Tarefas por rank MPI:
+  Rank 0: 23948 CPU + 22222 CUDA = 46170 total (50.0%)
+  Rank 1: 20626 CPU + 25484 CUDA = 46110 total (50.0%)
+============================================================
+Escalonador StarPU ativo: dmda
+[experiments] Concluido. Resultados em: /home/ec2-user/KMeans-StarPU-Heterogeneous-Analysis/results/experiments/sift_escala_np2/results.csv
+===== 06:20:13 RODADA 5 pq np2
+[experiments] Reaproveitando input_pq.bin ja gerado no no mestre
+[experiments] Sessao: /home/ec2-user/KMeans-StarPU-Heterogeneous-Analysis/results/experiments/pq_escala_np2
+[experiments] Selecionando 2 nos
+[experiments] Pulando build
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+[experiments] Calibracao reinstalada: md5 b9e74d614a2deb152d562a383af68e25 (igual em 2/2 nos)
+[experiments] Run mode=starpu_hybrid nodes=2 chunks=1024 metricas:5
+[run] launch host: 10.0.0.10
+[run] hostfile: /home/ec2-user/KMeans-StarPU-Heterogeneous-Analysis/cluster-config/.cluster/hostfile
+[run] np: 2
+[run] mpirun args: --bind-to none -x STARPU_SCHED=dmda -x STARPU_NOPENCL=1 -x STARPU_RESERVE_NCPU=1 -x STARPU_HOSTNAME=g6.4xlarge -x STARPU_CALIBRATE=0 -x STARPU_NCPUS=7 -x STARPU_NCUDA=1 -x STARPU_WORKERS_CPUID=0,1,2,3,4,5,6,7
+[run] preparing MPI SSH from launch host 10.0.0.10 ...
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+[RANK 0/2] Host: ip-10-0-0-10.ec2.internal
+[RANK 1/2] Host: ip-10-0-0-11.ec2.internal
+[COMPILADOR] nvc++ 26.3
+[MODO] Escalonamento ESTATICO (Manual via EXECUTE_ON_NODE)
+[INFO] Centroides iniciais escolhidos aleatoriamente (Seed: 42)
+[INFO] Injetando max 30 iteracoes no DAG (Assíncrono)...
+[starpu][ip-10-0-0-10.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-11.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-10.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from NUMA 0 to CUDA 0 took a very long time (16.345321 ms)
+For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[starpu][ip-10-0-0-11.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from NUMA 0 to CUDA 0 took a very long time (16.085983 ms)
+For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[StarPU] Iteracao 1
+[StarPU] Iteracao 2
+[StarPU] Iteracao 3
+[StarPU] Iteracao 4
+[StarPU] Iteracao 5
+[StarPU] Iteracao 6
+[StarPU] Iteracao 7
+[StarPU] Iteracao 8
+[StarPU] Iteracao 9
+[StarPU] Iteracao 10
+[StarPU] Iteracao 11
+[StarPU] Iteracao 12
+[StarPU] Iteracao 13
+[StarPU] Iteracao 14
+[StarPU] Iteracao 15
+[StarPU] Iteracao 16
+[StarPU] Iteracao 17
+[StarPU] Iteracao 18
+[StarPU] Iteracao 19
+[StarPU] Iteracao 20
+[StarPU] Iteracao 21
+[StarPU] Iteracao 22
+[StarPU] Iteracao 23
+[StarPU] Iteracao 24
+[StarPU] Iteracao 25
+[StarPU] Iteracao 26
+[StarPU] Iteracao 27
+[StarPU] Iteracao 28
+[StarPU] Iteracao 29
+[StarPU] Iteracao 30
+[INFO] Limite de iterações atingido sem convergência completa.
+[INFO] Salvando centróides finais...
+[INFO] Arquivo de centróides salvo com sucesso em: output_bench/exp_starpu_hybrid_np2_metricas5/256-clusters.txt
+============================================================
+METRICAS FINAIS — StarPU/MPI
+============================================================
+Workers (rank 0)          : 6 CPU  +  1 GPU CUDA
+Ranks MPI                 : 2
+
+Tempo do loop (max)       : 49156.77   ms  [min: 49151.77]
+Tempo total (max, c/init) : 86214.13   ms  [min: 85793.94]
+T. medio/iter             : 1638.56    ms
+Iteracoes                 : 30 / max 30
+SSE                       : 2.9768e+14
+
+Tempos por rank:
+  Rank 0: loop=49156.77   ms  avg/iter=1638.56  ms  total=86214.13   ms
+  Rank 1: loop=49151.77   ms  avg/iter=1638.39  ms  total=85793.94   ms
+
+Distribuicao por kernel (CPU vs CUDA) — global:
+  Kernel        CPU (N / %)             GPU CUDA (N / %)        
+  ------------------------------------------------------------
+  Assign        7560 (24.6094%)         23160 (75.3906%)        
+  Calculate     20025 (65.1855%)        10695 (34.8145%)        
+  Clean         60 (100%)               0 (0%)                  
+  Update        21 (70%)                9 (30%)                 
+  Accumulate    15194 (49.4114%)        15556 (50.5886%)        
+  ------------------------------------------------------------
+  TOTAL         42860 (46.4456%)        49420 (53.5544%)        
+
+Tarefas por rank MPI:
+  Rank 0: 24691 CPU + 21479 CUDA = 46170 total (50.0%)
+  Rank 1: 18169 CPU + 27941 CUDA = 46110 total (50.0%)
+============================================================
+Escalonador StarPU ativo: dmda
+[experiments] Concluido. Resultados em: /home/ec2-user/KMeans-StarPU-Heterogeneous-Analysis/results/experiments/pq_escala_np2/results.csv
+===== 06:21:46 RODADA 5 deep np2
+[experiments] Reaproveitando input_deep.bin ja gerado no no mestre
+[experiments] Sessao: /home/ec2-user/KMeans-StarPU-Heterogeneous-Analysis/results/experiments/deep_escala_np2
+[experiments] Selecionando 2 nos
+[experiments] Pulando build
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+[experiments] Calibracao reinstalada: md5 b9e74d614a2deb152d562a383af68e25 (igual em 2/2 nos)
+[experiments] Run mode=starpu_hybrid nodes=2 chunks=1024 metricas:5
+[run] launch host: 10.0.0.10
+[run] hostfile: /home/ec2-user/KMeans-StarPU-Heterogeneous-Analysis/cluster-config/.cluster/hostfile
+[run] np: 2
+[run] mpirun args: --bind-to none -x STARPU_SCHED=dmda -x STARPU_NOPENCL=1 -x STARPU_RESERVE_NCPU=1 -x STARPU_HOSTNAME=g6.4xlarge -x STARPU_CALIBRATE=0 -x STARPU_NCPUS=7 -x STARPU_NCUDA=1 -x STARPU_WORKERS_CPUID=0,1,2,3,4,5,6,7
+[run] preparing MPI SSH from launch host 10.0.0.10 ...
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+[RANK 0/2] Host: ip-10-0-0-10.ec2.internal
+[RANK 1/2] Host: ip-10-0-0-11.ec2.internal
+[COMPILADOR] nvc++ 26.3
+[MODO] Escalonamento ESTATICO (Manual via EXECUTE_ON_NODE)
+[INFO] Centroides iniciais escolhidos aleatoriamente (Seed: 42)
+[INFO] Injetando max 30 iteracoes no DAG (Assíncrono)...
+[starpu][ip-10-0-0-10.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-11.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-10.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from NUMA 0 to CUDA 0 took a very long time (15.668433 ms)
+For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[StarPU] Iteracao 1
+[StarPU] Iteracao 2
+[StarPU] Iteracao 3
+[StarPU] Iteracao 4
+[StarPU] Iteracao 5
+[StarPU] Iteracao 6
+[StarPU] Iteracao 7
+[StarPU] Iteracao 8
+[StarPU] Iteracao 9
+[StarPU] Iteracao 10
+[StarPU] Iteracao 11
+[StarPU] Iteracao 12
+[StarPU] Iteracao 13
+[StarPU] Iteracao 14
+[StarPU] Iteracao 15
+[StarPU] Iteracao 16
+[StarPU] Iteracao 17
+[StarPU] Iteracao 18
+[StarPU] Iteracao 19
+[StarPU] Iteracao 20
+[StarPU] Iteracao 21
+[StarPU] Iteracao 22
+[StarPU] Iteracao 23
+[StarPU] Iteracao 24
+[StarPU] Iteracao 25
+[StarPU] Iteracao 26
+[StarPU] Iteracao 27
+[StarPU] Iteracao 28
+[StarPU] Iteracao 29
+[StarPU] Iteracao 30
+[INFO] Limite de iterações atingido sem convergência completa.
+[INFO] Salvando centróides finais...
+[INFO] Arquivo de centróides salvo com sucesso em: output_bench/exp_starpu_hybrid_np2_metricas5/256-clusters.txt
+============================================================
+METRICAS FINAIS — StarPU/MPI
+============================================================
+Workers (rank 0)          : 6 CPU  +  1 GPU CUDA
+Ranks MPI                 : 2
+
+Tempo do loop (max)       : 59215.49   ms  [min: 59204.86]
+Tempo total (max, c/init) : 99645.37   ms  [min: 99497.09]
+T. medio/iter             : 1973.85    ms
+Iteracoes                 : 30 / max 30
+SSE                       : 6.0084e+14
+
+Tempos por rank:
+  Rank 0: loop=59215.49   ms  avg/iter=1973.85  ms  total=99645.37   ms
+  Rank 1: loop=59204.86   ms  avg/iter=1973.50  ms  total=99497.09   ms
+
+Distribuicao por kernel (CPU vs CUDA) — global:
+  Kernel        CPU (N / %)             GPU CUDA (N / %)        
+  ------------------------------------------------------------
+  Assign        9000 (29.2969%)         21720 (70.7031%)        
+  Calculate     11808 (38.4375%)        18912 (61.5625%)        
+  Clean         60 (100%)               0 (0%)                  
+  Update        5 (16.6667%)            25 (83.3333%)           
+  Accumulate    4093 (13.3106%)         26657 (86.6894%)        
+  ------------------------------------------------------------
+  TOTAL         24966 (27.0546%)        67314 (72.9454%)        
+
+Tarefas por rank MPI:
+  Rank 0: 12888 CPU + 33282 CUDA = 46170 total (50.0%)
+  Rank 1: 12078 CPU + 34032 CUDA = 46110 total (50.0%)
+============================================================
+Escalonador StarPU ativo: dmda
+[experiments] Concluido. Resultados em: /home/ec2-user/KMeans-StarPU-Heterogeneous-Analysis/results/experiments/deep_escala_np2/results.csv
+===== 06:23:32 RODADA 5 sift np2
+[experiments] Reaproveitando input_sift.bin ja gerado no no mestre
+[experiments] Sessao: /home/ec2-user/KMeans-StarPU-Heterogeneous-Analysis/results/experiments/sift_escala_np2
+[experiments] Selecionando 2 nos
+[experiments] Pulando build
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+[experiments] Calibracao reinstalada: md5 b9e74d614a2deb152d562a383af68e25 (igual em 2/2 nos)
+[experiments] Run mode=starpu_hybrid nodes=2 chunks=1024 metricas:5
+[run] launch host: 10.0.0.10
+[run] hostfile: /home/ec2-user/KMeans-StarPU-Heterogeneous-Analysis/cluster-config/.cluster/hostfile
+[run] np: 2
+[run] mpirun args: --bind-to none -x STARPU_SCHED=dmda -x STARPU_NOPENCL=1 -x STARPU_RESERVE_NCPU=1 -x STARPU_HOSTNAME=g6.4xlarge -x STARPU_CALIBRATE=0 -x STARPU_NCPUS=7 -x STARPU_NCUDA=1 -x STARPU_WORKERS_CPUID=0,1,2,3,4,5,6,7
+[run] preparing MPI SSH from launch host 10.0.0.10 ...
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+[RANK 0/2] Host: ip-10-0-0-10.ec2.internal
+[RANK 1/2] Host: ip-10-0-0-11.ec2.internal
+[COMPILADOR] nvc++ 26.3
+[MODO] Escalonamento ESTATICO (Manual via EXECUTE_ON_NODE)
+[INFO] Centroides iniciais escolhidos aleatoriamente (Seed: 42)
+[INFO] Injetando max 30 iteracoes no DAG (Assíncrono)...
+[starpu][ip-10-0-0-10.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-11.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-10.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from NUMA 0 to CUDA 0 took a very long time (15.660679 ms)
+For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[starpu][ip-10-0-0-11.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from NUMA 0 to CUDA 0 took a very long time (16.068102 ms)
+For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[StarPU] Iteracao 1
+[StarPU] Iteracao 2
+[StarPU] Iteracao 3
+[StarPU] Iteracao 4
+[StarPU] Iteracao 5
+[StarPU] Iteracao 6
+[StarPU] Iteracao 7
+[StarPU] Iteracao 8
+[StarPU] Iteracao 9
+[StarPU] Iteracao 10
+[StarPU] Iteracao 11
+[StarPU] Iteracao 12
+[StarPU] Iteracao 13
+[StarPU] Iteracao 14
+[StarPU] Iteracao 15
+[StarPU] Iteracao 16
+[StarPU] Iteracao 17
+[StarPU] Iteracao 18
+[StarPU] Iteracao 19
+[StarPU] Iteracao 20
+[StarPU] Iteracao 21
+[StarPU] Iteracao 22
+[StarPU] Iteracao 23
+[StarPU] Iteracao 24
+[StarPU] Iteracao 25
+[StarPU] Iteracao 26
+[StarPU] Iteracao 27
+[StarPU] Iteracao 28
+[StarPU] Iteracao 29
+[StarPU] Iteracao 30
+[INFO] Limite de iterações atingido sem convergência completa.
+[INFO] Salvando centróides finais...
+[INFO] Arquivo de centróides salvo com sucesso em: output_bench/exp_starpu_hybrid_np2_metricas5/256-clusters.txt
+============================================================
+METRICAS FINAIS — StarPU/MPI
+============================================================
+Workers (rank 0)          : 6 CPU  +  1 GPU CUDA
+Ranks MPI                 : 2
+
+Tempo do loop (max)       : 48121.83   ms  [min: 48118.07]
+Tempo total (max, c/init) : 78009.75   ms  [min: 77927.99]
+T. medio/iter             : 1604.06    ms
+Iteracoes                 : 30 / max 30
+SSE                       : 4.0941e+14
+
+Tempos por rank:
+  Rank 0: loop=48121.83   ms  avg/iter=1604.06  ms  total=78009.75   ms
+  Rank 1: loop=48118.07   ms  avg/iter=1603.94  ms  total=77927.99   ms
+
+Distribuicao por kernel (CPU vs CUDA) — global:
+  Kernel        CPU (N / %)             GPU CUDA (N / %)        
+  ------------------------------------------------------------
+  Assign        10440 (33.9844%)        20280 (66.0156%)        
+  Calculate     19003 (61.8587%)        11717 (38.1413%)        
+  Clean         60 (100%)               0 (0%)                  
+  Update        11 (36.6667%)           19 (63.3333%)           
+  Accumulate    10538 (34.2699%)        20212 (65.7301%)        
+  ------------------------------------------------------------
+  TOTAL         40052 (43.4027%)        52228 (56.5973%)        
+
+Tarefas por rank MPI:
+  Rank 0: 19846 CPU + 26324 CUDA = 46170 total (50.0%)
+  Rank 1: 20206 CPU + 25904 CUDA = 46110 total (50.0%)
+============================================================
+Escalonador StarPU ativo: dmda
+[experiments] Concluido. Resultados em: /home/ec2-user/KMeans-StarPU-Heterogeneous-Analysis/results/experiments/sift_escala_np2/results.csv
+===== 06:24:56 FXT pq np2
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+[experiments] Reaproveitando input_pq.bin ja gerado no no mestre
+[experiments] Sessao: /home/ec2-user/KMeans-StarPU-Heterogeneous-Analysis/results/experiments/pq_escala_np2_fxt
+[experiments] Selecionando 2 nos
+[experiments] Pulando build
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+[experiments] Calibracao reinstalada: md5 b9e74d614a2deb152d562a383af68e25 (igual em 2/2 nos)
+[experiments] Run mode=starpu_hybrid nodes=2 chunks=1024 metricas:1
+[run] launch host: 10.0.0.10
+[run] hostfile: /home/ec2-user/KMeans-StarPU-Heterogeneous-Analysis/cluster-config/.cluster/hostfile
+[run] np: 2
+[run] mpirun args: --bind-to none -x STARPU_FXT_TRACE=1 -x STARPU_FXT_PREFIX=/tmp/fxt/ -x STARPU_WORKER_STATS=1 -x STARPU_PROFILING=1 -x STARPU_MPI_STATS=1 -x STARPU_SCHED=dmda -x STARPU_NOPENCL=1 -x STARPU_RESERVE_NCPU=1 -x STARPU_HOSTNAME=g6.4xlarge -x STARPU_CALIBRATE=0 -x STARPU_NCPUS=7 -x STARPU_NCUDA=1 -x STARPU_WORKERS_CPUID=0,1,2,3,4,5,6,7
+[run] preparing MPI SSH from launch host 10.0.0.10 ...
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+[RANK 0/2] Host: ip-10-0-0-10.ec2.internal
+[RANK 1/2] Host: ip-10-0-0-11.ec2.internal
+[COMPILADOR] nvc++ 26.3
+[MODO] Escalonamento ESTATICO (Manual via EXECUTE_ON_NODE)
+[starpu][ip-10-0-0-10.ec2.internal][starpu_initialize] Warning: FxT is enabled, which slows down a bit, limits scalability and makes worker initialization sequential
+[starpu][ip-10-0-0-11.ec2.internal][starpu_initialize] Warning: FxT is enabled, which slows down a bit, limits scalability and makes worker initialization sequential
+[starpu][ip-10-0-0-11.ec2.internal][_starpu_mpi_comm_amounts_init] Warning: StarPU is executed with STARPU_MPI_STATS=1, which slows down a bit
+[starpu][ip-10-0-0-10.ec2.internal][_starpu_mpi_comm_amounts_init] Warning: StarPU is executed with STARPU_MPI_STATS=1, which slows down a bit
+[INFO] Centroides iniciais escolhidos aleatoriamente (Seed: 42)
+[INFO] Injetando max 30 iteracoes no DAG (Assíncrono)...
+[starpu][ip-10-0-0-10.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-11.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-11.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from NUMA 0 to CUDA 0 took a very long time (16.126931 ms)
+For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[StarPU] Iteracao 1
+[StarPU] Iteracao 2
+[starpu][ip-10-0-0-10.ec2.internal][_starpu_fxt_flush_callback] FxT is flushing trace to disk ! This can impact performance.
+[starpu][ip-10-0-0-10.ec2.internal][_starpu_fxt_flush_callback] Maybe you should increase the value of STARPU_TRACE_BUFFER_SIZE ?
+[starpu][ip-10-0-0-11.ec2.internal][_starpu_fxt_flush_callback] FxT is flushing trace to disk ! This can impact performance.
+[starpu][ip-10-0-0-11.ec2.internal][_starpu_fxt_flush_callback] Maybe you should increase the value of STARPU_TRACE_BUFFER_SIZE ?
+[StarPU] Iteracao 3
+[StarPU] Iteracao 4
+[StarPU] Iteracao 5
+[StarPU] Iteracao 6
+[StarPU] Iteracao 7
+[StarPU] Iteracao 8
+[StarPU] Iteracao 9
+[StarPU] Iteracao 10
+[StarPU] Iteracao 11
+[StarPU] Iteracao 12
+[StarPU] Iteracao 13
+[StarPU] Iteracao 14
+[StarPU] Iteracao 15
+[StarPU] Iteracao 16
+[StarPU] Iteracao 17
+[StarPU] Iteracao 18
+[StarPU] Iteracao 19
+[starpu][ip-10-0-0-10.ec2.internal][_starpu_fxt_flush_callback] FxT is flushing trace to disk ! This can impact performance.
+[starpu][ip-10-0-0-10.ec2.internal][_starpu_fxt_flush_callback] Maybe you should increase the value of STARPU_TRACE_BUFFER_SIZE ?
+[StarPU] Iteracao 20
+[starpu][ip-10-0-0-11.ec2.internal][_starpu_fxt_flush_callback] FxT is flushing trace to disk ! This can impact performance.
+[starpu][ip-10-0-0-11.ec2.internal][_starpu_fxt_flush_callback] Maybe you should increase the value of STARPU_TRACE_BUFFER_SIZE ?
+[StarPU] Iteracao 21
+[StarPU] Iteracao 22
+[StarPU] Iteracao 23
+[StarPU] Iteracao 24
+[StarPU] Iteracao 25
+[StarPU] Iteracao 26
+[StarPU] Iteracao 27
+[StarPU] Iteracao 28
+[StarPU] Iteracao 29
+[StarPU] Iteracao 30
+[INFO] Limite de iterações atingido sem convergência completa.
+[INFO] Salvando centróides finais...
+[INFO] Arquivo de centróides salvo com sucesso em: output_bench/exp_starpu_hybrid_np2_metricas1/256-clusters.txt
+============================================================
+METRICAS FINAIS — StarPU/MPI
+============================================================
+Workers (rank 0)          : 6 CPU  +  1 GPU CUDA
+Ranks MPI                 : 2
+
+Tempo do loop (max)       : 49678.63   ms  [min: 49663.14]
+Tempo total (max, c/init) : 87033.94   ms  [min: 86605.40]
+T. medio/iter             : 1655.95    ms
+Iteracoes                 : 30 / max 30
+SSE                       : 2.9768e+14
+
+Tempos por rank:
+  Rank 0: loop=49678.63   ms  avg/iter=1655.95  ms  total=87033.94   ms
+  Rank 1: loop=49663.14   ms  avg/iter=1655.44  ms  total=86605.40   ms
+
+Distribuicao por kernel (CPU vs CUDA) — global:
+  Kernel        CPU (N / %)             GPU CUDA (N / %)        
+  ------------------------------------------------------------
+  Assign        7560 (24.6094%)         23160 (75.3906%)        
+  Calculate     20092 (65.4036%)        10628 (34.5964%)        
+  Clean         60 (100%)               0 (0%)                  
+  Update        8 (26.6667%)            22 (73.3333%)           
+  Accumulate    7631 (24.8163%)         23119 (75.1837%)        
+  ------------------------------------------------------------
+  TOTAL         35351 (38.3084%)        56929 (61.6916%)        
+
+Tarefas por rank MPI:
+  Rank 0: 18200 CPU + 27970 CUDA = 46170 total (50.0%)
+  Rank 1: 17151 CPU + 28959 CUDA = 46110 total (50.0%)
+============================================================
+
+[starpu_comm_stats][1] TOTAL:	205813888.000000 B	196.279419 MB	 2.889799 B/s	 0.000002 MB/s
+[starpu_comm_stats][1] nb_sends: 602
+[starpu_comm_stats][1] max_sent_size: 400000
+[starpu_comm_stats][1] average sent size: 341883
+[starpu_comm_stats][1:0]	205813888.000000 B	196.279419 MB	 2.889799 B/s	 0.000003 MB/s
+[starpu_comm_stats_memnode][1:NUMA 0]	205813888.000000 B	196.279419 MB	 2.889799 B/s	 0.000003 MB/s
+[starpu_comm_stats][1] NB_COOP: 0
+
+[starpu_comm_stats][0] TOTAL:	983160.000000 B	0.937614 MB	 0.013806 B/s	 0.000000 MB/s
+[starpu_comm_stats][0] nb_sends: 60
+[starpu_comm_stats][0] max_sent_size: 32768
+[starpu_comm_stats][0] average sent size: 16386
+[starpu_comm_stats][0:1]	983160.000000 B	0.937614 MB	 0.013806 B/s	 0.000000 MB/s
+[starpu_comm_stats_memnode][0:NUMA 0]	983160.000000 B	0.937614 MB	 0.013806 B/s	 0.000000 MB/s
+[starpu_comm_stats][0] NB_COOP: 0
+
+#---------------------
+Worker stats:
+CUDA 0.0 (NVIDIA L4 19.8 GiB 35:00.0)
+	28161 task(s)
+	time split: total 71210.88 ms = executing: 48815.73 ms + callback: 3.86 ms + waiting: 63.27 ms + sleeping: 22058.76 ms + scheduling: 0.00 ms + overhead 269.26 ms
+	all time: executing: 48815.73 ms callback: 3.86 ms waiting: 111.74 ms sleeping: 22185.70 ms scheduling: 22221.74 ms
+CPU 0                           
+	2434 task(s)
+	time split: total 71210.89 ms = executing: 48507.43 ms + callback: 0.99 ms + waiting: 102.64 ms + sleeping: 22521.57 ms + scheduling: 6.35 ms + overhead 71.91 ms
+	all time: executing: 48507.43 ms callback: 0.99 ms waiting: 102.64 ms sleeping: 22521.57 ms scheduling: 4244.35 ms
+CPU 1                           
+	2909 task(s)
+	time split: total 71210.90 ms = executing: 48486.43 ms + callback: 0.24 ms + waiting: 95.29 ms + sleeping: 22567.29 ms + scheduling: 7.20 ms + overhead 54.45 ms
+	all time: executing: 48486.43 ms callback: 0.24 ms waiting: 95.29 ms sleeping: 22567.29 ms scheduling: 3818.55 ms
+CPU 2                           
+	2316 task(s)
+	time split: total 71210.90 ms = executing: 48485.71 ms + callback: 0.04 ms + waiting: 89.11 ms + sleeping: 22584.91 ms + scheduling: 6.25 ms + overhead 44.88 ms
+	all time: executing: 48485.71 ms callback: 0.04 ms waiting: 89.11 ms sleeping: 22584.91 ms scheduling: 3585.15 ms
+CPU 3                           
+	4150 task(s)
+	time split: total 71210.91 ms = executing: 48520.68 ms + callback: 0.64 ms + waiting: 101.09 ms + sleeping: 22483.61 ms + scheduling: 8.20 ms + overhead 96.68 ms
+	all time: executing: 48520.68 ms callback: 0.64 ms waiting: 101.09 ms sleeping: 22483.61 ms scheduling: 4208.76 ms
+CPU 4                           
+	2858 task(s)
+	time split: total 71210.92 ms = executing: 48499.71 ms + callback: 0.31 ms + waiting: 91.89 ms + sleeping: 22556.93 ms + scheduling: 7.26 ms + overhead 54.82 ms
+	all time: executing: 48499.71 ms callback: 0.31 ms waiting: 91.89 ms sleeping: 22556.93 ms scheduling: 4160.52 ms
+CPU 5                           
+	3582 task(s)
+	time split: total 71210.93 ms = executing: 48501.41 ms + callback: 0.37 ms + waiting: 77.94 ms + sleeping: 22562.59 ms + scheduling: 7.93 ms + overhead 60.68 ms
+	all time: executing: 48501.41 ms callback: 0.37 ms waiting: 77.94 ms sleeping: 22562.59 ms scheduling: 3872.67 ms
+
+Global time split: total 498476.33 ms = executing: 339817.11 ms (68.17%) + callback: 6.45 ms (0.00%) + waiting: 621.24 ms (0.12%) + sleeping: 157335.68 ms (31.56%) + scheduling: 43.18 ms (0.01%) + overhead 652.67 ms (0.13%)
+#---------------------
+
+#---------------------
+Worker stats:
+CUDA 0.0 (NVIDIA L4 19.8 GiB 35:00.0)
+	29113 task(s)
+	time split: total 71221.19 ms = executing: 48695.94 ms + callback: 7.74 ms + waiting: 69.46 ms + sleeping: 22210.52 ms + scheduling: 0.00 ms + overhead 237.54 ms
+	all time: executing: 48695.94 ms callback: 7.74 ms waiting: 163.87 ms sleeping: 22345.11 ms scheduling: 22379.68 ms
+CPU 0                           
+	2342 task(s)
+	time split: total 71221.20 ms = executing: 48458.71 ms + callback: 0.00 ms + waiting: 26.07 ms + sleeping: 22678.89 ms + scheduling: 6.25 ms + overhead 51.28 ms
+	all time: executing: 48458.71 ms callback: 0.00 ms waiting: 26.07 ms sleeping: 22678.89 ms scheduling: 4338.74 ms
+CPU 1                           
+	3054 task(s)
+	time split: total 71221.21 ms = executing: 48466.67 ms + callback: 0.22 ms + waiting: 44.21 ms + sleeping: 22648.55 ms + scheduling: 7.19 ms + overhead 54.37 ms
+	all time: executing: 48466.67 ms callback: 0.22 ms waiting: 44.21 ms sleeping: 22648.55 ms scheduling: 4376.59 ms
+CPU 2                           
+	2311 task(s)
+	time split: total 71221.21 ms = executing: 48458.16 ms + callback: 0.00 ms + waiting: 25.23 ms + sleeping: 22687.66 ms + scheduling: 6.33 ms + overhead 43.84 ms
+	all time: executing: 48458.16 ms callback: 0.00 ms waiting: 25.23 ms sleeping: 22687.66 ms scheduling: 3905.29 ms
+CPU 3                           
+	3324 task(s)
+	time split: total 71221.22 ms = executing: 48468.49 ms + callback: 0.21 ms + waiting: 30.33 ms + sleeping: 22657.61 ms + scheduling: 7.44 ms + overhead 57.14 ms
+	all time: executing: 48468.49 ms callback: 0.21 ms waiting: 30.33 ms sleeping: 22657.61 ms scheduling: 3588.31 ms
+CPU 4                           
+	2878 task(s)
+	time split: total 71221.22 ms = executing: 48461.08 ms + callback: 0.13 ms + waiting: 12.66 ms + sleeping: 22688.66 ms + scheduling: 7.29 ms + overhead 51.40 ms
+	all time: executing: 48461.08 ms callback: 0.13 ms waiting: 12.66 ms sleeping: 22688.66 ms scheduling: 4323.79 ms
+CPU 5                           
+	3298 task(s)
+	time split: total 71221.23 ms = executing: 48466.77 ms + callback: 0.30 ms + waiting: 29.78 ms + sleeping: 22660.85 ms + scheduling: 7.36 ms + overhead 56.18 ms
+	all time: executing: 48466.77 ms callback: 0.30 ms waiting: 29.78 ms sleeping: 22660.85 ms scheduling: 3895.56 ms
+
+Global time split: total 498548.49 ms = executing: 339475.82 ms (68.09%) + callback: 8.60 ms (0.00%) + waiting: 237.74 ms (0.05%) + sleeping: 158232.73 ms (31.74%) + scheduling: 41.85 ms (0.01%) + overhead 551.75 ms (0.11%)
+#---------------------
+Escalonador StarPU ativo: dmda
+[experiments] Concluido. Resultados em: /home/ec2-user/KMeans-StarPU-Heterogeneous-Analysis/results/experiments/pq_escala_np2_fxt/results.csv
+total 345796
+drwxrwxr-x.  2 ec2-user ec2-user        62 Oct 30 06:26 .
+drwxrwxr-x. 15 ec2-user ec2-user     16384 Oct 30 06:26 ..
+-rw-rw-r--.  1 ec2-user ec2-user 176867701 Oct 30 06:26 prof_file_ec2-user_0
+-rw-rw-r--.  1 ec2-user ec2-user 177208565 Oct 30 06:26 prof_file_ec2-user_1
+===== 06:26:30 FXT deep np2
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+[experiments] Reaproveitando input_deep.bin ja gerado no no mestre
+[experiments] Sessao: /home/ec2-user/KMeans-StarPU-Heterogeneous-Analysis/results/experiments/deep_escala_np2_fxt
+[experiments] Selecionando 2 nos
+[experiments] Pulando build
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+[experiments] Calibracao reinstalada: md5 b9e74d614a2deb152d562a383af68e25 (igual em 2/2 nos)
+[experiments] Run mode=starpu_hybrid nodes=2 chunks=1024 metricas:1
+[run] launch host: 10.0.0.10
+[run] hostfile: /home/ec2-user/KMeans-StarPU-Heterogeneous-Analysis/cluster-config/.cluster/hostfile
+[run] np: 2
+[run] mpirun args: --bind-to none -x STARPU_FXT_TRACE=1 -x STARPU_FXT_PREFIX=/tmp/fxt/ -x STARPU_WORKER_STATS=1 -x STARPU_PROFILING=1 -x STARPU_MPI_STATS=1 -x STARPU_SCHED=dmda -x STARPU_NOPENCL=1 -x STARPU_RESERVE_NCPU=1 -x STARPU_HOSTNAME=g6.4xlarge -x STARPU_CALIBRATE=0 -x STARPU_NCPUS=7 -x STARPU_NCUDA=1 -x STARPU_WORKERS_CPUID=0,1,2,3,4,5,6,7
+[run] preparing MPI SSH from launch host 10.0.0.10 ...
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+[RANK 0/2] Host: ip-10-0-0-10.ec2.internal
+[RANK 1/2] Host: ip-10-0-0-11.ec2.internal
+[COMPILADOR] nvc++ 26.3
+[MODO] Escalonamento ESTATICO (Manual via EXECUTE_ON_NODE)
+[starpu][ip-10-0-0-10.ec2.internal][starpu_initialize] Warning: FxT is enabled, which slows down a bit, limits scalability and makes worker initialization sequential
+[starpu][ip-10-0-0-11.ec2.internal][starpu_initialize] Warning: FxT is enabled, which slows down a bit, limits scalability and makes worker initialization sequential
+[starpu][ip-10-0-0-11.ec2.internal][_starpu_mpi_comm_amounts_init] Warning: StarPU is executed with STARPU_MPI_STATS=1, which slows down a bit
+[starpu][ip-10-0-0-10.ec2.internal][_starpu_mpi_comm_amounts_init] Warning: StarPU is executed with STARPU_MPI_STATS=1, which slows down a bit
+[INFO] Centroides iniciais escolhidos aleatoriamente (Seed: 42)
+[INFO] Injetando max 30 iteracoes no DAG (Assíncrono)...
+[starpu][ip-10-0-0-10.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-11.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-11.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from NUMA 0 to CUDA 0 took a very long time (16.399511 ms)
+For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[StarPU] Iteracao 1
+[StarPU] Iteracao 2
+[starpu][ip-10-0-0-10.ec2.internal][_starpu_fxt_flush_callback] FxT is flushing trace to disk ! This can impact performance.
+[starpu][ip-10-0-0-10.ec2.internal][_starpu_fxt_flush_callback] Maybe you should increase the value of STARPU_TRACE_BUFFER_SIZE ?
+[starpu][ip-10-0-0-11.ec2.internal][_starpu_fxt_flush_callback] FxT is flushing trace to disk ! This can impact performance.
+[starpu][ip-10-0-0-11.ec2.internal][_starpu_fxt_flush_callback] Maybe you should increase the value of STARPU_TRACE_BUFFER_SIZE ?
+[StarPU] Iteracao 3
+[StarPU] Iteracao 4
+[StarPU] Iteracao 5
+[StarPU] Iteracao 6
+[StarPU] Iteracao 7
+[StarPU] Iteracao 8
+[StarPU] Iteracao 9
+[StarPU] Iteracao 10
+[StarPU] Iteracao 11
+[StarPU] Iteracao 12
+[StarPU] Iteracao 13
+[StarPU] Iteracao 14
+[StarPU] Iteracao 15
+[StarPU] Iteracao 16
+[StarPU] Iteracao 17
+[StarPU] Iteracao 18
+[StarPU] Iteracao 19
+[StarPU] Iteracao 20
+[starpu][ip-10-0-0-10.ec2.internal][_starpu_fxt_flush_callback] FxT is flushing trace to disk ! This can impact performance.
+[starpu][ip-10-0-0-10.ec2.internal][_starpu_fxt_flush_callback] Maybe you should increase the value of STARPU_TRACE_BUFFER_SIZE ?
+[starpu][ip-10-0-0-11.ec2.internal][_starpu_fxt_flush_callback] FxT is flushing trace to disk ! This can impact performance.
+[starpu][ip-10-0-0-11.ec2.internal][_starpu_fxt_flush_callback] Maybe you should increase the value of STARPU_TRACE_BUFFER_SIZE ?
+[StarPU] Iteracao 21
+[StarPU] Iteracao 22
+[StarPU] Iteracao 23
+[StarPU] Iteracao 24
+[StarPU] Iteracao 25
+[StarPU] Iteracao 26
+[StarPU] Iteracao 27
+[StarPU] Iteracao 28
+[StarPU] Iteracao 29
+[StarPU] Iteracao 30
+[INFO] Limite de iterações atingido sem convergência completa.
+[INFO] Salvando centróides finais...
+[INFO] Arquivo de centróides salvo com sucesso em: output_bench/exp_starpu_hybrid_np2_metricas1/256-clusters.txt
+============================================================
+METRICAS FINAIS — StarPU/MPI
+============================================================
+Workers (rank 0)          : 6 CPU  +  1 GPU CUDA
+Ranks MPI                 : 2
+
+Tempo do loop (max)       : 59223.37   ms  [min: 59222.54]
+Tempo total (max, c/init) : 99833.55   ms  [min: 99674.32]
+T. medio/iter             : 1974.11    ms
+Iteracoes                 : 30 / max 30
+SSE                       : 6.0084e+14
+
+Tempos por rank:
+  Rank 0: loop=59223.37   ms  avg/iter=1974.11  ms  total=99833.55   ms
+  Rank 1: loop=59222.54   ms  avg/iter=1974.08  ms  total=99674.32   ms
+
+Distribuicao por kernel (CPU vs CUDA) — global:
+  Kernel        CPU (N / %)             GPU CUDA (N / %)        
+  ------------------------------------------------------------
+  Assign        9000 (29.2969%)         21720 (70.7031%)        
+  Calculate     11993 (39.0397%)        18727 (60.9603%)        
+  Clean         60 (100%)               0 (0%)                  
+  Update        4 (13.3333%)            26 (86.6667%)           
+  Accumulate    4093 (13.3106%)         26657 (86.6894%)        
+  ------------------------------------------------------------
+  TOTAL         25150 (27.254%)         67130 (72.746%)         
+
+Tarefas por rank MPI:
+  Rank 0: 12675 CPU + 33495 CUDA = 46170 total (50.0%)
+  Rank 1: 12475 CPU + 33635 CUDA = 46110 total (50.0%)
+============================================================
+
+[starpu_comm_stats][1] TOTAL:	46889080.000000 B	44.716911 MB	 0.555627 B/s	 0.000000 MB/s
+[starpu_comm_stats][1] nb_sends: 602
+[starpu_comm_stats][1] max_sent_size: 196608
+[starpu_comm_stats][1] average sent size: 77888
+[starpu_comm_stats][1:0]	46889080.000000 B	44.716911 MB	 0.555627 B/s	 0.000001 MB/s
+[starpu_comm_stats_memnode][1:NUMA 0]	46889080.000000 B	44.716911 MB	 0.555627 B/s	 0.000001 MB/s
+[starpu_comm_stats][1] NB_COOP: 0
+
+#---------------------
+Worker stats:
+CUDA 0.0 (NVIDIA L4 19.8 GiB 35:00.0)
+	33790 task(s)
+	time split: total 84390.08 ms = executing: 58150.37 ms + callback: 7.90 ms + waiting: 128.62 ms + sleeping: 25831.18 ms + scheduling: 0.00 ms + overhead 272.00 ms
+	all time: executing: 58150.37 ms callback: 7.90 ms waiting: 188.86 ms sleeping: 26683.94 ms scheduling: 26772.38 ms
+CPU 0                           
+	2176 task(s)
+	time split: total 84390.20 ms = executing: 57230.47 ms + callback: 0.11 ms + waiting: 28.59 ms + sleeping: 27083.84 ms + scheduling: 4.82 ms + overhead 42.36 ms
+	all time: executing: 57230.47 ms callback: 0.11 ms waiting: 28.59 ms sleeping: 27083.84 ms scheduling: 5254.32 ms
+CPU 1                           
+	1625 task(s)
+	time split: total 84390.30 ms = executing: 57216.15 ms + callback: 0.00 ms + waiting: 22.52 ms + sleeping: 27116.86 ms + scheduling: 4.19 ms + overhead 30.58 ms
+	all time: executing: 57216.15 ms callback: 0.00 ms waiting: 22.52 ms sleeping: 27116.86 ms scheduling: 5333.61 ms
+
+[starpu_comm_stats][0] TOTAL:	5898360.000000 B	5.625114 MB	 0.069903 B/s	 0.000000 MB/s
+[starpu_comm_stats][0] nb_sends: 60
+[starpu_comm_stats][0] max_sent_size: 196608
+[starpu_comm_stats][0] average sent size: 98306
+[starpu_comm_stats][0:1]	5898360.000000 B	5.625114 MB	 0.069903 B/s	 0.000000 MB/s
+[starpu_comm_stats_memnode][0:NUMA 0]	5898360.000000 B	5.625114 MB	 0.069903 B/s	 0.000000 MB/s
+[starpu_comm_stats][0] NB_COOP: 0
+
+#---------------------
+Worker stats:
+CUDA 0.0 (NVIDIA L4 19.8 GiB 35:00.0)
+	33685 task(s)
+	time split: total 84379.85 ms = executing: 58237.18 ms + callback: 3.40 ms + waiting: 130.30 ms + sleeping: 25726.54 ms + scheduling: 0.00 ms + overhead 282.43 ms
+	all time: executing: 58237.18 ms callback: 3.40 ms waiting: 214.59 ms sleeping: 26570.19 ms scheduling: 26612.23 ms
+CPU 0                           
+	1669 task(s)
+	time split: total 84379.85 ms = executing: 57282.12 ms + callback: 0.00 ms + waiting: 96.52 ms + sleeping: 26964.34 ms + scheduling: 4.29 ms + overhead 32.59 ms
+	all time: executing: 57282.12 ms callback: 0.00 ms waiting: 96.52 ms sleeping: 26964.34 ms scheduling: 5115.73 ms
+CPU 1                           
+	1794 task(s)
+	time split: total 84379.86 ms = executing: 57289.16 ms + callback: 0.02 ms + waiting: 105.53 ms + sleeping: 26946.66 ms + scheduling: 4.66 ms + overhead 33.83 ms
+	all time: executing: 57289.16 ms callback: 0.02 ms waiting: 105.53 ms sleeping: 26946.66 ms scheduling: 4568.91 ms
+CPU 2                           
+	1776 task(s)
+	time split: total 84379.87 ms = executing: 57276.32 ms + callback: 0.15 ms + waiting: 97.84 ms + sleeping: 26967.20 ms + scheduling: 4.46 ms + overhead 33.88 ms
+	all time: executing: 57276.32 ms callback: 0.15 ms waiting: 97.84 ms sleeping: 26967.20 ms scheduling: 4283.42 ms
+CPU 3                           
+	2331 task(s)
+	time split: total 84379.87 ms = executing: 57273.28 ms + callback: 0.29 ms + waiting: 86.38 ms + sleeping: 26971.10 ms + scheduling: 5.13 ms + overhead 43.69 ms
+	all time: executing: 57273.28 ms callback: 0.29 ms waiting: 86.38 ms sleeping: 26971.10 ms scheduling: 5053.93 ms
+CPU 4                           
+	3317 task(s)
+CPU 2                           
+	time split: total 84379.88 ms = executing: 57298.18 ms + callback: 4.14 ms + waiting: 114.52 ms + sleeping: 26891.95 ms + scheduling: 6.50 ms + overhead 64.60 ms
+	all time: executing: 57298.18 ms callback: 4.14 ms waiting: 114.52 ms sleeping: 26891.95 ms scheduling: 5199.64 ms
+CPU 5                           
+	1838 task(s)
+	time split: total 84379.95 ms = executing: 57259.83 ms + callback: 0.07 ms + waiting: 98.03 ms + sleeping: 26982.67 ms + scheduling: 4.75 ms + overhead 34.60 ms
+	all time: executing: 57259.83 ms callback: 0.07 ms waiting: 98.03 ms sleeping: 26982.67 ms scheduling: 4623.63 ms
+
+Global time split: total 590659.12 ms = executing: 401916.06 ms (68.05%) + callback: 8.07 ms (0.00%) + waiting: 729.11 ms (0.12%) + sleeping: 187450.45 ms (31.74%) + scheduling: 29.80 ms (0.01%) + overhead 525.63 ms (0.09%)
+#---------------------
+	1870 task(s)
+	time split: total 84390.40 ms = executing: 57172.41 ms + callback: 0.00 ms + waiting: 21.77 ms + sleeping: 27158.34 ms + scheduling: 4.79 ms + overhead 33.09 ms
+	all time: executing: 57172.41 ms callback: 0.00 ms waiting: 21.77 ms sleeping: 27158.34 ms scheduling: 4708.98 ms
+CPU 3                           
+	1606 task(s)
+	time split: total 84390.50 ms = executing: 57223.66 ms + callback: 0.00 ms + waiting: 21.00 ms + sleeping: 27111.66 ms + scheduling: 4.01 ms + overhead 30.16 ms
+	all time: executing: 57223.66 ms callback: 0.00 ms waiting: 21.00 ms sleeping: 27111.66 ms scheduling: 4304.33 ms
+CPU 4                           
+	2372 task(s)
+	time split: total 84390.60 ms = executing: 57209.98 ms + callback: 0.16 ms + waiting: 28.02 ms + sleeping: 27106.52 ms + scheduling: 5.38 ms + overhead 40.54 ms
+	all time: executing: 57209.98 ms callback: 0.16 ms waiting: 28.02 ms sleeping: 27106.52 ms scheduling: 5086.23 ms
+CPU 5                           
+	2881 task(s)
+	time split: total 84390.69 ms = executing: 57197.99 ms + callback: 0.19 ms + waiting: 39.49 ms + sleeping: 27099.34 ms + scheduling: 5.86 ms + overhead 47.83 ms
+	all time: executing: 57197.99 ms callback: 0.19 ms waiting: 39.49 ms sleeping: 27099.34 ms scheduling: 4643.84 ms
+
+Global time split: total 590732.76 ms = executing: 401401.04 ms (67.95%) + callback: 8.35 ms (0.00%) + waiting: 290.02 ms (0.05%) + sleeping: 188507.74 ms (31.91%) + scheduling: 29.06 ms (0.00%) + overhead 496.56 ms (0.08%)
+#---------------------
+Escalonador StarPU ativo: dmda
+[experiments] Concluido. Resultados em: /home/ec2-user/KMeans-StarPU-Heterogeneous-Analysis/results/experiments/deep_escala_np2_fxt/results.csv
+total 339972
+drwxrwxr-x.  2 ec2-user ec2-user        62 Oct 30 06:28 .
+drwxrwxr-x. 16 ec2-user ec2-user     16384 Oct 30 06:28 ..
+-rw-rw-r--.  1 ec2-user ec2-user 174220493 Oct 30 06:28 prof_file_ec2-user_0
+-rw-rw-r--.  1 ec2-user ec2-user 173890365 Oct 30 06:28 prof_file_ec2-user_1
+===== 06:28:18 FXT sift np2
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+[experiments] Reaproveitando input_sift.bin ja gerado no no mestre
+[experiments] Sessao: /home/ec2-user/KMeans-StarPU-Heterogeneous-Analysis/results/experiments/sift_escala_np2_fxt
+[experiments] Selecionando 2 nos
+[experiments] Pulando build
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+[experiments] Calibracao reinstalada: md5 b9e74d614a2deb152d562a383af68e25 (igual em 2/2 nos)
+[experiments] Run mode=starpu_hybrid nodes=2 chunks=1024 metricas:1
+[run] launch host: 10.0.0.10
+[run] hostfile: /home/ec2-user/KMeans-StarPU-Heterogeneous-Analysis/cluster-config/.cluster/hostfile
+[run] np: 2
+[run] mpirun args: --bind-to none -x STARPU_FXT_TRACE=1 -x STARPU_FXT_PREFIX=/tmp/fxt/ -x STARPU_WORKER_STATS=1 -x STARPU_PROFILING=1 -x STARPU_MPI_STATS=1 -x STARPU_SCHED=dmda -x STARPU_NOPENCL=1 -x STARPU_RESERVE_NCPU=1 -x STARPU_HOSTNAME=g6.4xlarge -x STARPU_CALIBRATE=0 -x STARPU_NCPUS=7 -x STARPU_NCUDA=1 -x STARPU_WORKERS_CPUID=0,1,2,3,4,5,6,7
+[run] preparing MPI SSH from launch host 10.0.0.10 ...
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+[RANK 0/2] Host: ip-10-0-0-10.ec2.internal
+[RANK 1/2] Host: ip-10-0-0-11.ec2.internal
+[COMPILADOR] nvc++ 26.3
+[MODO] Escalonamento ESTATICO (Manual via EXECUTE_ON_NODE)
+[starpu][ip-10-0-0-10.ec2.internal][starpu_initialize] Warning: FxT is enabled, which slows down a bit, limits scalability and makes worker initialization sequential
+[starpu][ip-10-0-0-11.ec2.internal][starpu_initialize] Warning: FxT is enabled, which slows down a bit, limits scalability and makes worker initialization sequential
+[starpu][ip-10-0-0-11.ec2.internal][_starpu_mpi_comm_amounts_init] Warning: StarPU is executed with STARPU_MPI_STATS=1, which slows down a bit
+[starpu][ip-10-0-0-10.ec2.internal][_starpu_mpi_comm_amounts_init] Warning: StarPU is executed with STARPU_MPI_STATS=1, which slows down a bit
+[INFO] Centroides iniciais escolhidos aleatoriamente (Seed: 42)
+[INFO] Injetando max 30 iteracoes no DAG (Assíncrono)...
+[starpu][ip-10-0-0-10.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-11.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-10.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from NUMA 0 to CUDA 0 took a very long time (16.060303 ms)
+For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[starpu][ip-10-0-0-11.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from NUMA 0 to CUDA 0 took a very long time (16.170164 ms)
+For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[StarPU] Iteracao 1
+[StarPU] Iteracao 2
+[starpu][ip-10-0-0-11.ec2.internal][_starpu_fxt_flush_callback] FxT is flushing trace to disk ! This can impact performance.
+[starpu][ip-10-0-0-11.ec2.internal][_starpu_fxt_flush_callback] Maybe you should increase the value of STARPU_TRACE_BUFFER_SIZE ?
+[starpu][ip-10-0-0-10.ec2.internal][_starpu_fxt_flush_callback] FxT is flushing trace to disk ! This can impact performance.
+[starpu][ip-10-0-0-10.ec2.internal][_starpu_fxt_flush_callback] Maybe you should increase the value of STARPU_TRACE_BUFFER_SIZE ?
+[StarPU] Iteracao 3
+[StarPU] Iteracao 4
+[StarPU] Iteracao 5
+[StarPU] Iteracao 6
+[StarPU] Iteracao 7
+[StarPU] Iteracao 8
+[StarPU] Iteracao 9
+[StarPU] Iteracao 10
+[StarPU] Iteracao 11
+[StarPU] Iteracao 12
+[StarPU] Iteracao 13
+[StarPU] Iteracao 14
+[StarPU] Iteracao 15
+[StarPU] Iteracao 16
+[StarPU] Iteracao 17
+[StarPU] Iteracao 18
+[StarPU] Iteracao 19
+[StarPU] Iteracao 20
+[starpu][ip-10-0-0-11.ec2.internal][_starpu_fxt_flush_callback] FxT is flushing trace to disk ! This can impact performance.
+[starpu][ip-10-0-0-11.ec2.internal][_starpu_fxt_flush_callback] Maybe you should increase the value of STARPU_TRACE_BUFFER_SIZE ?
+[starpu][ip-10-0-0-10.ec2.internal][_starpu_fxt_flush_callback] FxT is flushing trace to disk ! This can impact performance.
+[starpu][ip-10-0-0-10.ec2.internal][_starpu_fxt_flush_callback] Maybe you should increase the value of STARPU_TRACE_BUFFER_SIZE ?
+[StarPU] Iteracao 21
+[StarPU] Iteracao 22
+[StarPU] Iteracao 23
+[StarPU] Iteracao 24
+[StarPU] Iteracao 25
+[StarPU] Iteracao 26
+[StarPU] Iteracao 27
+[StarPU] Iteracao 28
+[StarPU] Iteracao 29
+[StarPU] Iteracao 30
+[INFO] Limite de iterações atingido sem convergência completa.
+[INFO] Salvando centróides finais...
+[INFO] Arquivo de centróides salvo com sucesso em: output_bench/exp_starpu_hybrid_np2_metricas1/256-clusters.txt
+============================================================
+METRICAS FINAIS — StarPU/MPI
+============================================================
+Workers (rank 0)          : 6 CPU  +  1 GPU CUDA
+Ranks MPI                 : 2
+
+Tempo do loop (max)       : 48453.50   ms  [min: 48452.37]
+Tempo total (max, c/init) : 78477.10   ms  [min: 78475.83]
+T. medio/iter             : 1615.12    ms
+Iteracoes                 : 30 / max 30
+SSE                       : 4.0941e+14
+
+Tempos por rank:
+  Rank 0: loop=48453.50   ms  avg/iter=1615.12  ms  total=78477.10   ms
+  Rank 1: loop=48452.37   ms  avg/iter=1615.08  ms  total=78475.83   ms
+
+Distribuicao por kernel (CPU vs CUDA) — global:
+  Kernel        CPU (N / %)             GPU CUDA (N / %)        
+  ------------------------------------------------------------
+  Assign        10440 (33.9844%)        20280 (66.0156%)        
+  Calculate     19126 (62.2591%)        11594 (37.7409%)        
+  Clean         60 (100%)               0 (0%)                  
+  Update        7 (23.3333%)            23 (76.6667%)           
+  Accumulate    7829 (25.4602%)         22921 (74.5398%)        
+  ------------------------------------------------------------
+  TOTAL         37462 (40.596%)         54818 (59.404%)         
+
+Tarefas por rank MPI:
+  Rank 0: 18483 CPU + 27687 CUDA = 46170 total (50.0%)
+  Rank 1: 18979 CPU + 27131 CUDA = 46110 total (50.0%)
+============================================================
+
+[starpu_comm_stats][1] TOTAL:	28375160.000000 B	27.060661 MB	 0.434902 B/s	 0.000000 MB/s
+[starpu_comm_stats][1] nb_sends: 602
+[starpu_comm_stats][1] max_sent_size: 262144
+[starpu_comm_stats][1] average sent size: 47134
+[starpu_comm_stats][1:0]	28375160.000000 B	27.060661 MB	 0.434902 B/s	 0.000000 MB/s
+[starpu_comm_stats_memnode][1:NUMA 0]	28375160.000000 B	27.060661 MB	 0.434902 B/s	 0.000000 MB/s
+[starpu_comm_stats][1] NB_COOP: 0
+
+#---------------------
+Worker stats:
+CUDA 0.0 (NVIDIA L4 19.8 GiB 35:00.0)
+	27287 task(s)
+	time split: total 65245.50 ms = executing: 47248.47 ms + callback: 8.12 ms + waiting: 181.89 ms + sleeping: 17580.70 ms + scheduling: 0.00 ms + overhead 226.31 ms
+	all time: executing: 47248.47 ms callback: 8.12 ms waiting: 225.16 ms sleeping: 18331.84 ms scheduling: 18363.67 ms
+CPU 0                           
+	2619 task(s)
+	time split: total 65245.62 ms = executing: 46467.76 ms + callback: 0.00 ms + waiting: 25.49 ms + sleeping: 18695.74 ms + scheduling: 6.72 ms + overhead 49.90 ms
+	all time: executing: 46467.76 ms callback: 0.00 ms waiting: 25.49 ms sleeping: 18695.74 ms scheduling: 3609.14 ms
+CPU 1                           
+	3926 task(s)
+	time split: total 65245.72 ms = executing: 46513.48 ms + callback: 0.66 ms + waiting: 38.32 ms + sleeping: 18617.39 ms + scheduling: 7.94 ms + overhead 67.93 ms
+	all time: executing: 46513.48 ms callback: 0.66 ms waiting: 38.32 ms sleeping: 18617.39 ms scheduling: 3265.62 ms
+CPU 2                           
+	2722 task(s)
+	time split: total 65245.83 ms = executing: 46499.04 ms + callback: 0.00 ms + waiting: 25.85 ms + sleeping: 18662.34 ms + scheduling: 6.91 ms + overhead 51.69 ms
+	all time: executing: 46499.04 ms callback: 0.00 ms waiting: 25.85 ms sleeping: 18662.34 ms scheduling: 2970.79 ms
+CPU 3                           
+	3125 task(s)
+	time split: total 65245.94 ms = executing: 46473.53 ms + callback: 0.11 ms + waiting: 30.61 ms + sleeping: 18680.23 ms + scheduling: 7.25 ms + overhead 54.21 ms
+	all time: executing: 46473.53 ms callback: 0.11 ms waiting: 30.61 ms sleeping: 18680.23 ms scheduling: 3503.31 ms
+CPU 4                           
+	3558 task(s)
+	time split: total 65246.03 ms = executing: 46489.64 ms + callback: 0.17 ms + waiting: 17.69 ms + sleeping: 18669.00 ms + scheduling: 7.88 ms + overhead 61.65 ms
+	all time: executing: 46489.64 ms callback: 0.17 ms waiting: 17.69 ms sleeping: 18669.00 ms scheduling: 3537.01 ms
+CPU 5                           
+	3083 task(s)
+	time split: total 65246.13 ms = executing: 46470.80 ms + callback: 0.07 ms + waiting: 29.27 ms + sleeping: 18685.28 ms + scheduling: 7.28 ms + overhead 53.41 ms
+	all time: executing: 46470.80 ms callback: 0.07 ms waiting: 29.27 ms sleeping: 18685.28 ms scheduling: 3252.75 ms
+
+Global time split: total 456720.76 ms = executing: 326162.72 ms (71.41%) + callback: 9.13 ms (0.00%) + waiting: 349.11 ms (0.08%) + sleeping: 129590.68 ms (28.37%) + scheduling: 43.99 ms (0.01%) + overhead 565.12 ms (0.12%)
+#---------------------
+
+[starpu_comm_stats][0] TOTAL:	7864440.000000 B	7.500114 MB	 0.120555 B/s	 0.000000 MB/s
+[starpu_comm_stats][0] nb_sends: 60
+[starpu_comm_stats][0] max_sent_size: 262144
+[starpu_comm_stats][0] average sent size: 131074
+[starpu_comm_stats][0:1]	7864440.000000 B	7.500114 MB	 0.120555 B/s	 0.000000 MB/s
+[starpu_comm_stats_memnode][0:NUMA 0]	7864440.000000 B	7.500114 MB	 0.120555 B/s	 0.000000 MB/s
+[starpu_comm_stats][0] NB_COOP: 0
+
+#---------------------
+Worker stats:
+CUDA 0.0 (NVIDIA L4 19.8 GiB 35:00.0)
+	27831 task(s)
+	time split: total 65236.24 ms = executing: 47411.84 ms + callback: 5.30 ms + waiting: 162.25 ms + sleeping: 17422.35 ms + scheduling: 0.00 ms + overhead 234.50 ms
+	all time: executing: 47411.84 ms callback: 5.30 ms waiting: 203.50 ms sleeping: 18163.39 ms scheduling: 18192.71 ms
+CPU 0                           
+	4680 task(s)
+	time split: total 65236.34 ms = executing: 46490.31 ms + callback: 2.52 ms + waiting: 132.83 ms + sleeping: 18516.29 ms + scheduling: 6.74 ms + overhead 87.64 ms
+	all time: executing: 46490.31 ms callback: 2.52 ms waiting: 132.83 ms sleeping: 18516.29 ms scheduling: 3489.48 ms
+CPU 1                           
+	3086 task(s)
+	time split: total 65236.49 ms = executing: 46103.23 ms + callback: 0.15 ms + waiting: 94.39 ms + sleeping: 18978.10 ms + scheduling: 6.95 ms + overhead 53.67 ms
+	all time: executing: 46103.23 ms callback: 0.15 ms waiting: 94.39 ms sleeping: 18978.10 ms scheduling: 3219.02 ms
+CPU 2                           
+	2025 task(s)
+	time split: total 65236.57 ms = executing: 46275.21 ms + callback: 0.01 ms + waiting: 74.22 ms + sleeping: 18848.24 ms + scheduling: 4.68 ms + overhead 34.21 ms
+	all time: executing: 46275.21 ms callback: 0.01 ms waiting: 74.22 ms sleeping: 18848.24 ms scheduling: 3000.90 ms
+CPU 3                           
+	2864 task(s)
+	time split: total 65236.70 ms = executing: 46120.02 ms + callback: 0.04 ms + waiting: 96.97 ms + sleeping: 18970.19 ms + scheduling: 6.27 ms + overhead 43.21 ms
+	all time: executing: 46120.02 ms callback: 0.04 ms waiting: 96.97 ms sleeping: 18970.19 ms scheduling: 3546.09 ms
+CPU 4                           
+	2601 task(s)
+	time split: total 65236.82 ms = executing: 46102.16 ms + callback: 0.00 ms + waiting: 91.58 ms + sleeping: 18995.60 ms + scheduling: 6.12 ms + overhead 41.36 ms
+	all time: executing: 46102.16 ms callback: 0.00 ms waiting: 91.58 ms sleeping: 18995.60 ms scheduling: 3536.43 ms
+CPU 5                           
+	3323 task(s)
+	time split: total 65236.90 ms = executing: 46116.62 ms + callback: 0.38 ms + waiting: 92.99 ms + sleeping: 18968.46 ms + scheduling: 6.76 ms + overhead 51.69 ms
+	all time: executing: 46116.62 ms callback: 0.38 ms waiting: 92.99 ms sleeping: 18968.46 ms scheduling: 3259.48 ms
+
+Global time split: total 456656.06 ms = executing: 324619.38 ms (71.09%) + callback: 8.41 ms (0.00%) + waiting: 745.23 ms (0.16%) + sleeping: 130699.24 ms (28.62%) + scheduling: 37.52 ms (0.01%) + overhead 546.29 ms (0.12%)
+#---------------------
+Escalonador StarPU ativo: dmda
+[experiments] Concluido. Resultados em: /home/ec2-user/KMeans-StarPU-Heterogeneous-Analysis/results/experiments/sift_escala_np2_fxt/results.csv
+total 344384
+drwxrwxr-x.  2 ec2-user ec2-user        62 Oct 30 06:29 .
+drwxrwxr-x. 17 ec2-user ec2-user     16384 Oct 30 06:29 ..
+-rw-rw-r--.  1 ec2-user ec2-user 176064693 Oct 30 06:29 prof_file_ec2-user_0
+-rw-rw-r--.  1 ec2-user ec2-user 176563597 Oct 30 06:29 prof_file_ec2-user_1
+/dev/nvme0n1p1  100G   79G   22G  79% /
+===== ETAPA 2 CONCLUIDA

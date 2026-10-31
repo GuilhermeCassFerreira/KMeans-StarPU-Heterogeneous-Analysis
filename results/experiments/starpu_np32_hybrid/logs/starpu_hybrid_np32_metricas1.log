@@ -1,0 +1,305 @@
+[run] launch host: 10.0.0.10
+[run] hostfile: /home/ec2-user/KMeans-StarPU-Heterogeneous-Analysis/cluster-config/.cluster/hostfile
+[run] np: 32
+[run] mpirun args: --bind-to none -x STARPU_SCHED=dmda -x STARPU_NOPENCL=1 -x STARPU_RESERVE_NCPU=1 -x STARPU_NCPUS=7 -x STARPU_NCUDA=1 -x STARPU_WORKERS_CPUID=0,1,2,3,4,5,6,7
+[run] preparing MPI SSH from launch host 10.0.0.10 ...
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.12' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.13' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.14' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.15' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.16' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.17' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.18' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.19' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.20' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.21' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.22' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.23' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.24' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.25' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.26' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.27' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.28' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.29' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.30' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.31' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.32' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.33' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.34' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.35' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.36' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.37' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.38' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.39' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.40' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.41' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+[ip-10-0-0-10.ec2.internal:18344] plm:ssh: Warning: setpgid(18368,18368) failed in parent with errno=Permission denied(13)
+Warning: Permanently added '10.0.0.22' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.21' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.17' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.16' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.14' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.18' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.13' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.27' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.12' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.15' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.20' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.25' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.29' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.19' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.30' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.34' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.26' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.28' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.36' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.33' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.31' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.35' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.39' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.41' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.40' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.32' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.23' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.24' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.38' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.37' (ED25519) to the list of known hosts.
+[RANK 0/32] Host: ip-10-0-0-10.ec2.internal
+[RANK 8/32] Host: ip-10-0-0-18.ec2.internal
+[RANK 3/32] Host: ip-10-0-0-13.ec2.internal
+[RANK 18/32] Host: ip-10-0-0-28.ec2.internal
+[RANK 9/32] Host: ip-10-0-0-19.ec2.internal
+[RANK 24/32] Host: ip-10-0-0-34.ec2.internal
+[RANK 13/32] Host: ip-10-0-0-23.ec2.internal
+[RANK 4/32] Host: ip-10-0-0-14.ec2.internal
+[RANK 26/32] Host: ip-10-0-0-36.ec2.internal
+[RANK 21/32] Host: ip-10-0-0-31.ec2.internal
+[RANK 23/32] Host: ip-10-0-0-33.ec2.internal
+[RANK 15/32] Host: ip-10-0-0-25.ec2.internal
+[RANK 20/32] Host: ip-10-0-0-30.ec2.internal
+[RANK 7/32] Host: ip-10-0-0-17.ec2.internal
+[RANK 19/32] Host: ip-10-0-0-29.ec2.internal
+[RANK 30/32] Host: ip-10-0-0-40.ec2.internal
+[RANK 12/32] Host: ip-10-0-0-22.ec2.internal
+[RANK 1/32] Host: ip-10-0-0-11.ec2.internal
+[RANK 2/32] Host: ip-10-0-0-12.ec2.internal
+[RANK 14/32] Host: ip-10-0-0-24.ec2.internal
+[RANK 28/32] Host: ip-10-0-0-38.ec2.internal
+[RANK 5/32] Host: ip-10-0-0-15.ec2.internal
+[RANK 11/32] Host: ip-10-0-0-21.ec2.internal
+[RANK 22/32] Host: ip-10-0-0-32.ec2.internal
+[RANK 10/32] Host: ip-10-0-0-20.ec2.internal
+[RANK 17/32] Host: ip-10-0-0-27.ec2.internal
+[RANK 6/32] Host: ip-10-0-0-16.ec2.internal
+[RANK 29/32] Host: ip-10-0-0-39.ec2.internal
+[RANK 16/32] Host: ip-10-0-0-26.ec2.internal
+[RANK 31/32] Host: ip-10-0-0-41.ec2.internal
+[RANK 27/32] Host: ip-10-0-0-37.ec2.internal
+[RANK 25/32] Host: ip-10-0-0-35.ec2.internal
+[MODO] Escalonamento ESTATICO (Manual via EXECUTE_ON_NODE)
+[INFO] Centroides iniciais escolhidos aleatoriamente (Seed: 42)
+[INFO] Injetando max 30 iteracoes no DAG (Assíncrono)...
+[starpu][ip-10-0-0-10.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-18.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-34.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-14.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-19.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-27.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-30.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-29.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-15.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-23.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-38.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-12.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-39.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-20.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-33.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-17.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-11.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-36.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-16.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-13.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-21.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-37.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-22.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-40.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-35.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-25.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-26.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-41.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-24.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-31.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-28.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-19.ec2.internal][__starpu_history_based_job_expected_perf] Warning: model kmeans_clean_model_mpi is not calibrated enough for cpu0_cores1_impl0 (Comb1) size 1004 footprint 42d81305 (only 6 measurements), forcing calibration for this run. Use the STARPU_CALIBRATE environment variable to control this. You probably need to run again to continue calibrating the model, until this warning disappears.
+[starpu][ip-10-0-0-41.ec2.internal][__starpu_history_based_job_expected_perf] Warning: model kmeans_clean_model_mpi is not calibrated enough for cpu0_cores1_impl0 (Comb1) size 1004 footprint 42d81305 (only 0 measurements), forcing calibration for this run. Use the STARPU_CALIBRATE environment variable to control this. You probably need to run again to continue calibrating the model, until this warning disappears.
+[starpu][ip-10-0-0-32.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[StarPU] Iteracao 1
+[starpu][ip-10-0-0-41.ec2.internal][_starpu_update_perfmodel_history] Too big deviation for model kmeans_clean_model_mpi on cpu0_cores1_impl0 (Comb1): 1.360000us vs average 5.060000us, 1 such errors against 1 samples (-73.122530%), flushing the performance model. Use the STARPU_HISTORY_MAX_ERROR environment variable to control the threshold (currently 50%)
+[starpu][ip-10-0-0-10.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from CUDA 0 to NUMA 0 took a very long time (0.495459 ms)
+For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[starpu][ip-10-0-0-30.ec2.internal][__starpu_history_based_job_expected_perf] Warning: model starpu_data_cpy is not calibrated enough for cpu0_cores1_impl0 (Comb1) size 8 footprint db3fb58f (only 8 measurements), forcing calibration for this run. Use the STARPU_CALIBRATE environment variable to control this. You probably need to run again to continue calibrating the model, until this warning disappears.
+[StarPU] Iteracao 2
+[StarPU] Iteracao 3
+[StarPU] Iteracao 4
+[StarPU] Iteracao 5
+[StarPU] Iteracao 6
+[StarPU] Iteracao 7
+[StarPU] Iteracao 8
+[StarPU] Iteracao 9
+[StarPU] Iteracao 10
+[StarPU] Iteracao 11
+[StarPU] Iteracao 12
+[StarPU] Iteracao 13
+[StarPU] Iteracao 14
+[StarPU] Iteracao 15
+[StarPU] Iteracao 16
+[StarPU] Iteracao 17
+[starpu][ip-10-0-0-19.ec2.internal][_starpu_update_perfmodel_history] Too big deviation for model kmeans_clean_model_mpi on cpu0_cores1_impl0 (Comb1): 0.920000us vs average 0.480833us, 12 such errors against 12 samples (+91.334489%), flushing the performance model. Use the STARPU_HISTORY_MAX_ERROR environment variable to control the threshold (currently 50%)
+[StarPU] Iteracao 18
+[StarPU] Iteracao 19
+[StarPU] Iteracao 20
+[StarPU] Iteracao 21
+[StarPU] Iteracao 22
+[StarPU] Iteracao 23
+[StarPU] Iteracao 24
+[StarPU] Iteracao 25
+[StarPU] Iteracao 26
+[StarPU] Iteracao 27
+[StarPU] Iteracao 28
+[StarPU] Iteracao 29
+[StarPU] Iteracao 30
+[INFO] Limite de iterações atingido sem convergência completa.
+[INFO] Salvando centróides finais...
+[INFO] Arquivo de centróides salvo com sucesso em: output_bench/exp_starpu_hybrid_np32_metricas1/50-clusters.txt
+============================================================
+METRICAS FINAIS — StarPU/MPI
+============================================================
+Workers (rank 0)          : 6 CPU  +  1 GPU CUDA
+Ranks MPI                 : 32
+
+Tempo do loop (max)       : 1013.70    ms  [min: 976.98]
+Tempo total (max, c/init) : 164873.92  ms  [min: 163874.25]
+T. medio/iter             : 33.79      ms
+Iteracoes                 : 30 / max 30
+SSE                       : 4.0072e+12
+
+Tempos por rank:
+  Rank 0: loop=1013.70    ms  avg/iter=33.79    ms  total=164873.92  ms
+  Rank 1: loop=980.48     ms  avg/iter=32.68    ms  total=163911.11  ms
+  Rank 2: loop=980.56     ms  avg/iter=32.69    ms  total=163955.26  ms
+  Rank 3: loop=980.56     ms  avg/iter=32.69    ms  total=163902.87  ms
+  Rank 4: loop=980.54     ms  avg/iter=32.68    ms  total=163927.85  ms
+  Rank 5: loop=980.50     ms  avg/iter=32.68    ms  total=163874.25  ms
+  Rank 6: loop=980.22     ms  avg/iter=32.67    ms  total=163925.16  ms
+  Rank 7: loop=980.44     ms  avg/iter=32.68    ms  total=163920.78  ms
+  Rank 8: loop=980.81     ms  avg/iter=32.69    ms  total=163905.73  ms
+  Rank 9: loop=980.70     ms  avg/iter=32.69    ms  total=163909.20  ms
+  Rank 10: loop=980.48     ms  avg/iter=32.68    ms  total=163941.54  ms
+  Rank 11: loop=980.69     ms  avg/iter=32.69    ms  total=163910.16  ms
+  Rank 12: loop=981.56     ms  avg/iter=32.72    ms  total=163917.35  ms
+  Rank 13: loop=981.39     ms  avg/iter=32.71    ms  total=163923.34  ms
+  Rank 14: loop=981.18     ms  avg/iter=32.71    ms  total=163943.69  ms
+  Rank 15: loop=981.00     ms  avg/iter=32.70    ms  total=163911.74  ms
+  Rank 16: loop=981.56     ms  avg/iter=32.72    ms  total=163939.09  ms
+  Rank 17: loop=981.51     ms  avg/iter=32.72    ms  total=163931.56  ms
+  Rank 18: loop=981.52     ms  avg/iter=32.72    ms  total=163904.57  ms
+  Rank 19: loop=981.68     ms  avg/iter=32.72    ms  total=163932.18  ms
+  Rank 20: loop=982.14     ms  avg/iter=32.74    ms  total=163911.76  ms
+  Rank 21: loop=981.55     ms  avg/iter=32.72    ms  total=163915.00  ms
+  Rank 22: loop=976.98     ms  avg/iter=32.57    ms  total=163905.57  ms
+  Rank 23: loop=981.66     ms  avg/iter=32.72    ms  total=163901.22  ms
+  Rank 24: loop=981.96     ms  avg/iter=32.73    ms  total=163928.74  ms
+  Rank 25: loop=982.02     ms  avg/iter=32.73    ms  total=163900.26  ms
+  Rank 26: loop=982.00     ms  avg/iter=32.73    ms  total=163973.61  ms
+  Rank 27: loop=981.94     ms  avg/iter=32.73    ms  total=163921.16  ms
+  Rank 28: loop=983.04     ms  avg/iter=32.77    ms  total=164034.47  ms
+  Rank 29: loop=982.20     ms  avg/iter=32.74    ms  total=163931.60  ms
+  Rank 30: loop=981.99     ms  avg/iter=32.73    ms  total=163940.47  ms
+  Rank 31: loop=982.60     ms  avg/iter=32.75    ms  total=163931.53  ms
+
+Distribuicao por kernel (CPU vs CUDA) — global:
+  Kernel        CPU (N / %)             GPU CUDA (N / %)        
+  ------------------------------------------------------------
+  Assign        0 (0%)                  30720 (100%)            
+  Calculate     27752 (90.3385%)        2968 (9.66146%)         
+  Clean         960 (100%)              0 (0%)                  
+  Update        5 (16.6667%)            25 (83.3333%)           
+  Accumulate    29509 (93.2354%)        2141 (6.76461%)         
+  ------------------------------------------------------------
+  TOTAL         58226 (61.8899%)        35854 (38.1101%)        
+
+Tarefas por rank MPI:
+  Rank 0: 1614 CPU + 2256 CUDA = 3870 total (4.1%)
+  Rank 1: 1830 CPU + 1080 CUDA = 2910 total (3.1%)
+  Rank 2: 1830 CPU + 1080 CUDA = 2910 total (3.1%)
+  Rank 3: 1830 CPU + 1080 CUDA = 2910 total (3.1%)
+  Rank 4: 1830 CPU + 1080 CUDA = 2910 total (3.1%)
+  Rank 5: 1830 CPU + 1080 CUDA = 2910 total (3.1%)
+  Rank 6: 1829 CPU + 1081 CUDA = 2910 total (3.1%)
+  Rank 7: 1830 CPU + 1080 CUDA = 2910 total (3.1%)
+  Rank 8: 1830 CPU + 1080 CUDA = 2910 total (3.1%)
+  Rank 9: 1830 CPU + 1080 CUDA = 2910 total (3.1%)
+  Rank 10: 1830 CPU + 1080 CUDA = 2910 total (3.1%)
+  Rank 11: 1830 CPU + 1080 CUDA = 2910 total (3.1%)
+  Rank 12: 1830 CPU + 1080 CUDA = 2910 total (3.1%)
+  Rank 13: 1830 CPU + 1080 CUDA = 2910 total (3.1%)
+  Rank 14: 1830 CPU + 1080 CUDA = 2910 total (3.1%)
+  Rank 15: 1830 CPU + 1080 CUDA = 2910 total (3.1%)
+  Rank 16: 1830 CPU + 1080 CUDA = 2910 total (3.1%)
+  Rank 17: 1830 CPU + 1080 CUDA = 2910 total (3.1%)
+  Rank 18: 1830 CPU + 1080 CUDA = 2910 total (3.1%)
+  Rank 19: 1830 CPU + 1080 CUDA = 2910 total (3.1%)
+  Rank 20: 1831 CPU + 1079 CUDA = 2910 total (3.1%)
+  Rank 21: 1830 CPU + 1080 CUDA = 2910 total (3.1%)
+  Rank 22: 1829 CPU + 1081 CUDA = 2910 total (3.1%)
+  Rank 23: 1830 CPU + 1080 CUDA = 2910 total (3.1%)
+  Rank 24: 1830 CPU + 1080 CUDA = 2910 total (3.1%)
+  Rank 25: 1830 CPU + 1080 CUDA = 2910 total (3.1%)
+  Rank 26: 1743 CPU + 1167 CUDA = 2910 total (3.1%)
+  Rank 27: 1830 CPU + 1080 CUDA = 2910 total (3.1%)
+  Rank 28: 1800 CPU + 1110 CUDA = 2910 total (3.1%)
+  Rank 29: 1830 CPU + 1080 CUDA = 2910 total (3.1%)
+  Rank 30: 1830 CPU + 1080 CUDA = 2910 total (3.1%)
+  Rank 31: 1830 CPU + 1080 CUDA = 2910 total (3.1%)
+============================================================
+Escalonador StarPU ativo: dmda

@@ -1,0 +1,15 @@
+\begin{table}[h]
+\centering
+\caption{Tempo de \textit{loop} e \textit{speedup} do StarPU+MPI híbrido.}
+\label{tab:starpu-escala}
+\begin{tabular}{rrrrr}
+\hline
+Nós & Tempo de \textit{loop} (s) & \textit{Speedup} vs. sequencial & \textit{Speedup} vs. 1 nó & Eficiência \\
+\hline
+1 & 15,431 $\pm$ 0,001 & 42,7$\times$ & 1,00$\times$ & 100\% \\
+2 & 7,765 $\pm$ 0,006 & 84,9$\times$ & 1,99$\times$ & 99\% \\
+4 & 3,965 $\pm$ 0,027 & 166,2$\times$ & 3,89$\times$ & 97\% \\
+32 & 1,102 $\pm$ 0,133 & 598,2$\times$ & 14,01$\times$ & 44\% \\
+\hline
+\end{tabular}
+\end{table}

@@ -1,0 +1,327 @@
+[run] launch host: 10.0.0.10
+[run] hostfile: /home/ec2-user/KMeans-StarPU-Heterogeneous-Analysis/cluster-config/.cluster/hostfile
+[run] np: 32
+[run] mpirun args: --bind-to none -x STARPU_SCHED=dmda -x STARPU_NOPENCL=1 -x STARPU_RESERVE_NCPU=1 -x STARPU_NCPUS=7 -x STARPU_NCUDA=1 -x STARPU_WORKERS_CPUID=0,1,2,3,4,5,6,7
+[run] preparing MPI SSH from launch host 10.0.0.10 ...
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.12' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.13' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.14' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.15' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.16' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.17' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.18' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.19' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.20' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.21' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.22' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.23' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.24' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.25' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.26' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.27' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.28' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.29' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.30' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.31' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.32' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.33' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.34' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.35' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.36' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.37' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.38' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.39' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.40' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.41' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+[ip-10-0-0-10.ec2.internal:16261] plm:ssh: Warning: setpgid(16286,16286) failed in parent with errno=Permission denied(13)
+[ip-10-0-0-10.ec2.internal:16261] plm:ssh: Warning: setpgid(16290,16290) failed in parent with errno=Permission denied(13)
+Warning: Permanently added '10.0.0.13' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.12' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.23' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.17' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.14' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.22' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.24' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.21' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.19' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.16' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.33' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.26' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.25' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.18' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.27' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.31' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.29' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.32' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.35' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.41' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.40' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.39' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.37' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.34' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.36' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.15' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.20' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.30' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.38' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.28' (ED25519) to the list of known hosts.
+[RANK 0/32] Host: ip-10-0-0-10.ec2.internal
+[RANK 15/32] Host: ip-10-0-0-25.ec2.internal
+[RANK 8/32] Host: ip-10-0-0-18.ec2.internal
+[RANK 19/32] Host: ip-10-0-0-29.ec2.internal
+[RANK 10/32] Host: ip-10-0-0-20.ec2.internal
+[RANK 9/32] Host: ip-10-0-0-19.ec2.internal
+[RANK 30/32] Host: ip-10-0-0-40.ec2.internal
+[RANK 3/32] Host: ip-10-0-0-13.ec2.internal
+[RANK 28/32] Host: ip-10-0-0-38.ec2.internal
+[RANK 4/32] Host: ip-10-0-0-14.ec2.internal
+[RANK 22/32] Host: ip-10-0-0-32.ec2.internal
+[RANK 18/32] Host: ip-10-0-0-28.ec2.internal
+[RANK 12/32] Host: ip-10-0-0-22.ec2.internal
+[RANK 24/32] Host: ip-10-0-0-34.ec2.internal
+[RANK 26/32] Host: ip-10-0-0-36.ec2.internal
+[RANK 13/32] Host: ip-10-0-0-23.ec2.internal
+[RANK 6/32] Host: ip-10-0-0-16.ec2.internal
+[RANK 17/32] Host: ip-10-0-0-27.ec2.internal
+[RANK 1/32] Host: ip-10-0-0-11.ec2.internal
+[RANK 7/32] Host: ip-10-0-0-17.ec2.internal
+[RANK 5/32] Host: ip-10-0-0-15.ec2.internal
+[RANK 16/32] Host: ip-10-0-0-26.ec2.internal
+[RANK 25/32] Host: ip-10-0-0-35.ec2.internal
+[RANK 27/32] Host: ip-10-0-0-37.ec2.internal
+[RANK 20/32] Host: ip-10-0-0-30.ec2.internal
+[RANK 14/32] Host: ip-10-0-0-24.ec2.internal
+[RANK 23/32] Host: ip-10-0-0-33.ec2.internal
+[RANK 31/32] Host: ip-10-0-0-41.ec2.internal
+[RANK 21/32] Host: ip-10-0-0-31.ec2.internal
+[RANK 2/32] Host: ip-10-0-0-12.ec2.internal
+[RANK 29/32] Host: ip-10-0-0-39.ec2.internal
+[RANK 11/32] Host: ip-10-0-0-21.ec2.internal
+[MODO] Escalonamento ESTATICO (Manual via EXECUTE_ON_NODE)
+[INFO] Centroides iniciais escolhidos aleatoriamente (Seed: 42)
+[INFO] Injetando max 30 iteracoes no DAG (Assíncrono)...
+[starpu][ip-10-0-0-10.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-11.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-34.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-13.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-22.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-30.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-29.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-14.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-26.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-18.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-20.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-21.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-16.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-24.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-36.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-28.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-35.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-32.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-37.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-33.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-19.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-31.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-12.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-25.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-15.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-23.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-41.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-17.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-39.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-40.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-15.ec2.internal][__starpu_history_based_job_expected_perf] Warning: model kmeans_clean_model_mpi is not calibrated enough for cuda0_cores1_impl0 (Comb0) size 1004 footprint 42d81305 (only 4 measurements), forcing calibration for this run. Use the STARPU_CALIBRATE environment variable to control this. You probably need to run again to continue calibrating the model, until this warning disappears.
+[starpu][ip-10-0-0-13.ec2.internal][__starpu_history_based_job_expected_perf] Warning: model kmeans_clean_model_mpi is not calibrated enough for cuda0_cores1_impl0 (Comb0) size 1004 footprint 42d81305 (only 6 measurements), forcing calibration for this run. Use the STARPU_CALIBRATE environment variable to control this. You probably need to run again to continue calibrating the model, until this warning disappears.
+[starpu][ip-10-0-0-19.ec2.internal][__starpu_history_based_job_expected_perf] Warning: model kmeans_clean_model_mpi is not calibrated enough for cuda0_cores1_impl0 (Comb0) size 1004 footprint 42d81305 (only 9 measurements), forcing calibration for this run. Use the STARPU_CALIBRATE environment variable to control this. You probably need to run again to continue calibrating the model, until this warning disappears.
+[starpu][ip-10-0-0-20.ec2.internal][__starpu_history_based_job_expected_perf] Warning: model kmeans_clean_model_mpi is not calibrated enough for cuda0_cores1_impl0 (Comb0) size 1004 footprint 42d81305 (only 6 measurements), forcing calibration for this run. Use the STARPU_CALIBRATE environment variable to control this. You probably need to run again to continue calibrating the model, until this warning disappears.
+[starpu][ip-10-0-0-25.ec2.internal][__starpu_history_based_job_expected_perf] Warning: model kmeans_clean_model_mpi is not calibrated enough for cuda0_cores1_impl0 (Comb0) size 1004 footprint 42d81305 (only 6 measurements), forcing calibration for this run. Use the STARPU_CALIBRATE environment variable to control this. You probably need to run again to continue calibrating the model, until this warning disappears.
+[starpu][ip-10-0-0-21.ec2.internal][__starpu_history_based_job_expected_perf] Warning: model kmeans_clean_model_mpi is not calibrated enough for cuda0_cores1_impl0 (Comb0) size 1004 footprint 42d81305 (only 2 measurements), forcing calibration for this run. Use the STARPU_CALIBRATE environment variable to control this. You probably need to run again to continue calibrating the model, until this warning disappears.
+[starpu][ip-10-0-0-30.ec2.internal][__starpu_history_based_job_expected_perf] Warning: model kmeans_clean_model_mpi is not calibrated enough for cuda0_cores1_impl0 (Comb0) size 1004 footprint 42d81305 (only 5 measurements), forcing calibration for this run. Use the STARPU_CALIBRATE environment variable to control this. You probably need to run again to continue calibrating the model, until this warning disappears.
+[starpu][ip-10-0-0-34.ec2.internal][__starpu_history_based_job_expected_perf] Warning: model kmeans_clean_model_mpi is not calibrated enough for cuda0_cores1_impl0 (Comb0) size 1004 footprint 42d81305 (only 5 measurements), forcing calibration for this run. Use the STARPU_CALIBRATE environment variable to control this. You probably need to run again to continue calibrating the model, until this warning disappears.
+[starpu][ip-10-0-0-33.ec2.internal][__starpu_history_based_job_expected_perf] Warning: model kmeans_clean_model_mpi is not calibrated enough for cuda0_cores1_impl0 (Comb0) size 1004 footprint 42d81305 (only 1 measurements), forcing calibration for this run. Use the STARPU_CALIBRATE environment variable to control this. You probably need to run again to continue calibrating the model, until this warning disappears.
+[starpu][ip-10-0-0-12.ec2.internal][__starpu_history_based_job_expected_perf] Warning: model kmeans_clean_model_mpi is not calibrated enough for cuda0_cores1_impl0 (Comb0) size 1004 footprint 42d81305 (only 8 measurements), forcing calibration for this run. Use the STARPU_CALIBRATE environment variable to control this. You probably need to run again to continue calibrating the model, until this warning disappears.
+[starpu][ip-10-0-0-27.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-35.ec2.internal][__starpu_history_based_job_expected_perf] Warning: model kmeans_clean_model_mpi is not calibrated enough for cuda0_cores1_impl0 (Comb0) size 1004 footprint 42d81305 (only 9 measurements), forcing calibration for this run. Use the STARPU_CALIBRATE environment variable to control this. You probably need to run again to continue calibrating the model, until this warning disappears.
+[starpu][ip-10-0-0-40.ec2.internal][__starpu_history_based_job_expected_perf] Warning: model kmeans_clean_model_mpi is not calibrated enough for cuda0_cores1_impl0 (Comb0) size 1004 footprint 42d81305 (only 8 measurements), forcing calibration for this run. Use the STARPU_CALIBRATE environment variable to control this. You probably need to run again to continue calibrating the model, until this warning disappears.
+[starpu][ip-10-0-0-41.ec2.internal][__starpu_history_based_job_expected_perf] Warning: model kmeans_clean_model_mpi is not calibrated enough for cuda0_cores1_impl0 (Comb0) size 1004 footprint 42d81305 (only 3 measurements), forcing calibration for this run. Use the STARPU_CALIBRATE environment variable to control this. You probably need to run again to continue calibrating the model, until this warning disappears.
+[starpu][ip-10-0-0-27.ec2.internal][__starpu_history_based_job_expected_perf] Warning: model kmeans_clean_model_mpi is not calibrated enough for cuda0_cores1_impl0 (Comb0) size 1004 footprint 42d81305 (only 0 measurements), forcing calibration for this run. Use the STARPU_CALIBRATE environment variable to control this. You probably need to run again to continue calibrating the model, until this warning disappears.
+[starpu][ip-10-0-0-38.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-39.ec2.internal][__starpu_history_based_job_expected_perf] Warning: model kmeans_clean_model_mpi is not calibrated enough for cuda0_cores1_impl0 (Comb0) size 1004 footprint 42d81305 (only 0 measurements), forcing calibration for this run. Use the STARPU_CALIBRATE environment variable to control this. You probably need to run again to continue calibrating the model, until this warning disappears.
+[starpu][ip-10-0-0-26.ec2.internal][__starpu_history_based_job_expected_perf] Warning: model kmeans_clean_model_mpi is not calibrated enough for cuda0_cores1_impl0 (Comb0) size 1004 footprint 42d81305 (only 1 measurements), forcing calibration for this run. Use the STARPU_CALIBRATE environment variable to control this. You probably need to run again to continue calibrating the model, until this warning disappears.
+[starpu][ip-10-0-0-32.ec2.internal][__starpu_history_based_job_expected_perf] Warning: model kmeans_clean_model_mpi is not calibrated enough for cuda0_cores1_impl0 (Comb0) size 1004 footprint 42d81305 (only 5 measurements), forcing calibration for this run. Use the STARPU_CALIBRATE environment variable to control this. You probably need to run again to continue calibrating the model, until this warning disappears.
+[starpu][ip-10-0-0-29.ec2.internal][__starpu_history_based_job_expected_perf] Warning: model kmeans_clean_model_mpi is not calibrated enough for cuda0_cores1_impl0 (Comb0) size 1004 footprint 42d81305 (only 2 measurements), forcing calibration for this run. Use the STARPU_CALIBRATE environment variable to control this. You probably need to run again to continue calibrating the model, until this warning disappears.
+[starpu][ip-10-0-0-26.ec2.internal][_starpu_update_perfmodel_history] Too big deviation for model kmeans_clean_model_mpi on cuda0_cores1_impl0 (Comb0): 17743.391000us vs average 21.671000us, 1 such errors against 1 samples (+81776.198606%), flushing the performance model. Use the STARPU_HISTORY_MAX_ERROR environment variable to control the threshold (currently 50%)
+[starpu][ip-10-0-0-33.ec2.internal][_starpu_update_perfmodel_history] Too big deviation for model kmeans_clean_model_mpi on cuda0_cores1_impl0 (Comb0): 17653.763000us vs average 18.850000us, 1 such errors against 1 samples (+93553.915119%), flushing the performance model. Use the STARPU_HISTORY_MAX_ERROR environment variable to control the threshold (currently 50%)
+[StarPU] Iteracao 1
+[starpu][ip-10-0-0-27.ec2.internal][_starpu_update_perfmodel_history] Too big deviation for model kmeans_clean_model_mpi on cuda0_cores1_impl0 (Comb0): 35.151000us vs average 27453.360000us, 1 such errors against 1 samples (-99.871961%), flushing the performance model. Use the STARPU_HISTORY_MAX_ERROR environment variable to control the threshold (currently 50%)
+[StarPU] Iteracao 2
+[StarPU] Iteracao 3
+[StarPU] Iteracao 4
+[StarPU] Iteracao 5
+[StarPU] Iteracao 6
+[StarPU] Iteracao 7
+[StarPU] Iteracao 8
+[StarPU] Iteracao 9
+[StarPU] Iteracao 10
+[StarPU] Iteracao 11
+[StarPU] Iteracao 12
+[StarPU] Iteracao 13
+[StarPU] Iteracao 14
+[StarPU] Iteracao 15
+[starpu][ip-10-0-0-25.ec2.internal][_starpu_update_perfmodel_history] Too big deviation for model kmeans_clean_model_mpi on cpu0_cores1_impl0 (Comb1): 1.209000us vs average 0.522100us, 10 such errors against 10 samples (+131.564834%), flushing the performance model. Use the STARPU_HISTORY_MAX_ERROR environment variable to control the threshold (currently 50%)
+[starpu][ip-10-0-0-35.ec2.internal][_starpu_update_perfmodel_history] Too big deviation for model kmeans_clean_model_mpi on cpu0_cores1_impl0 (Comb1): 0.920000us vs average 0.421667us, 12 such errors against 12 samples (+118.181818%), flushing the performance model. Use the STARPU_HISTORY_MAX_ERROR environment variable to control the threshold (currently 50%)
+[starpu][ip-10-0-0-21.ec2.internal][_starpu_update_perfmodel_history] Too big deviation for model starpu_data_cpy on cpu0_cores1_impl0 (Comb1): 0.751000us vs average 1.420000us, 15 such errors against 15 samples (-47.112676%), flushing the performance model. Use the STARPU_HISTORY_MAX_ERROR environment variable to control the threshold (currently 50%)
+[StarPU] Iteracao 16
+[StarPU] Iteracao 17
+[StarPU] Iteracao 18
+[starpu][ip-10-0-0-32.ec2.internal][_starpu_update_perfmodel_history] Too big deviation for model kmeans_clean_model_mpi on cpu0_cores1_impl0 (Comb1): 0.870000us vs average 0.451000us, 11 such errors against 11 samples (+92.904656%), flushing the performance model. Use the STARPU_HISTORY_MAX_ERROR environment variable to control the threshold (currently 50%)
+[StarPU] Iteracao 19
+[StarPU] Iteracao 20
+[StarPU] Iteracao 21
+[starpu][ip-10-0-0-30.ec2.internal][_starpu_update_perfmodel_history] Too big deviation for model starpu_data_cpy on cpu0_cores1_impl0 (Comb1): 0.600000us vs average 1.131824us, 17 such errors against 17 samples (-46.988202%), flushing the performance model. Use the STARPU_HISTORY_MAX_ERROR environment variable to control the threshold (currently 50%)
+[StarPU] Iteracao 22
+[starpu][ip-10-0-0-19.ec2.internal][_starpu_update_perfmodel_history] Too big deviation for model kmeans_clean_model_mpi on cpu0_cores1_impl0 (Comb1): 0.990000us vs average 0.466667us, 15 such errors against 15 samples (+112.142857%), flushing the performance model. Use the STARPU_HISTORY_MAX_ERROR environment variable to control the threshold (currently 50%)
+[StarPU] Iteracao 23
+[StarPU] Iteracao 24
+[StarPU] Iteracao 25
+[StarPU] Iteracao 26
+[StarPU] Iteracao 27
+[StarPU] Iteracao 28
+[StarPU] Iteracao 29
+[starpu][ip-10-0-0-41.ec2.internal][_starpu_update_perfmodel_history] Too big deviation for model kmeans_clean_model_mpi on cpu0_cores1_impl0 (Comb1): 0.950000us vs average 0.553250us, 16 such errors against 16 samples (+71.712607%), flushing the performance model. Use the STARPU_HISTORY_MAX_ERROR environment variable to control the threshold (currently 50%)
+[StarPU] Iteracao 30
+[INFO] Limite de iterações atingido sem convergência completa.
+[INFO] Salvando centróides finais...
+[INFO] Arquivo de centróides salvo com sucesso em: output_bench/exp_starpu_hybrid_np32_calibracao2/50-clusters.txt
+============================================================
+METRICAS FINAIS — StarPU/MPI
+============================================================
+Workers (rank 0)          : 6 CPU  +  1 GPU CUDA
+Ranks MPI                 : 32
+
+Tempo do loop (max)       : 1210.18    ms  [min: 1170.17]
+Tempo total (max, c/init) : 166156.20  ms  [min: 165168.51]
+T. medio/iter             : 40.34      ms
+Iteracoes                 : 30 / max 30
+SSE                       : 4.0072e+12
+
+Tempos por rank:
+  Rank 0: loop=1210.18    ms  avg/iter=40.34    ms  total=166156.20  ms
+  Rank 1: loop=1175.03    ms  avg/iter=39.17    ms  total=165220.53  ms
+  Rank 2: loop=1175.03    ms  avg/iter=39.17    ms  total=165242.20  ms
+  Rank 3: loop=1181.94    ms  avg/iter=39.40    ms  total=165223.07  ms
+  Rank 4: loop=1175.02    ms  avg/iter=39.17    ms  total=165192.18  ms
+  Rank 5: loop=1174.84    ms  avg/iter=39.16    ms  total=165210.77  ms
+  Rank 6: loop=1174.78    ms  avg/iter=39.16    ms  total=165224.73  ms
+  Rank 7: loop=1174.81    ms  avg/iter=39.16    ms  total=165198.76  ms
+  Rank 8: loop=1175.14    ms  avg/iter=39.17    ms  total=165202.14  ms
+  Rank 9: loop=1175.05    ms  avg/iter=39.17    ms  total=165230.24  ms
+  Rank 10: loop=1174.87    ms  avg/iter=39.16    ms  total=165168.51  ms
+  Rank 11: loop=1175.78    ms  avg/iter=39.19    ms  total=165245.46  ms
+  Rank 12: loop=1175.78    ms  avg/iter=39.19    ms  total=165252.59  ms
+  Rank 13: loop=1175.10    ms  avg/iter=39.17    ms  total=165194.99  ms
+  Rank 14: loop=1175.10    ms  avg/iter=39.17    ms  total=165240.09  ms
+  Rank 15: loop=1174.89    ms  avg/iter=39.16    ms  total=165253.66  ms
+  Rank 16: loop=1175.52    ms  avg/iter=39.18    ms  total=165255.91  ms
+  Rank 17: loop=1171.15    ms  avg/iter=39.04    ms  total=165246.67  ms
+  Rank 18: loop=1175.19    ms  avg/iter=39.17    ms  total=165195.03  ms
+  Rank 19: loop=1175.43    ms  avg/iter=39.18    ms  total=165211.34  ms
+  Rank 20: loop=1176.26    ms  avg/iter=39.21    ms  total=165225.19  ms
+  Rank 21: loop=1175.27    ms  avg/iter=39.18    ms  total=165235.82  ms
+  Rank 22: loop=1175.33    ms  avg/iter=39.18    ms  total=165230.93  ms
+  Rank 23: loop=1175.29    ms  avg/iter=39.18    ms  total=165228.88  ms
+  Rank 24: loop=1175.68    ms  avg/iter=39.19    ms  total=165179.94  ms
+  Rank 25: loop=1175.54    ms  avg/iter=39.18    ms  total=165227.60  ms
+  Rank 26: loop=1175.36    ms  avg/iter=39.18    ms  total=165233.86  ms
+  Rank 27: loop=1175.32    ms  avg/iter=39.18    ms  total=165218.76  ms
+  Rank 28: loop=1170.17    ms  avg/iter=39.01    ms  total=165330.48  ms
+  Rank 29: loop=1175.37    ms  avg/iter=39.18    ms  total=165246.43  ms
+  Rank 30: loop=1175.32    ms  avg/iter=39.18    ms  total=165259.70  ms
+  Rank 31: loop=1175.17    ms  avg/iter=39.17    ms  total=165225.10  ms
+
+Distribuicao por kernel (CPU vs CUDA) — global:
+  Kernel        CPU (N / %)             GPU CUDA (N / %)        
+  ------------------------------------------------------------
+  Assign        0 (0%)                  30720 (100%)            
+  Calculate     27753 (90.3418%)        2967 (9.6582%)          
+  Clean         835 (86.9792%)          125 (13.0208%)          
+  Update        3 (10%)                 27 (90%)                
+  Accumulate    28343 (89.5513%)        3307 (10.4487%)         
+  ------------------------------------------------------------
+  TOTAL         56934 (60.5166%)        37146 (39.4834%)        
+
+Tarefas por rank MPI:
+  Rank 0: 1588 CPU + 2282 CUDA = 3870 total (4.1%)
+  Rank 1: 1830 CPU + 1080 CUDA = 2910 total (3.1%)
+  Rank 2: 1781 CPU + 1129 CUDA = 2910 total (3.1%)
+  Rank 3: 1774 CPU + 1136 CUDA = 2910 total (3.1%)
+  Rank 4: 1830 CPU + 1080 CUDA = 2910 total (3.1%)
+  Rank 5: 1788 CPU + 1122 CUDA = 2910 total (3.1%)
+  Rank 6: 1830 CPU + 1080 CUDA = 2910 total (3.1%)
+  Rank 7: 1830 CPU + 1080 CUDA = 2910 total (3.1%)
+  Rank 8: 1829 CPU + 1081 CUDA = 2910 total (3.1%)
+  Rank 9: 1783 CPU + 1127 CUDA = 2910 total (3.1%)
+  Rank 10: 1784 CPU + 1126 CUDA = 2910 total (3.1%)
+  Rank 11: 1581 CPU + 1329 CUDA = 2910 total (3.1%)
+  Rank 12: 1831 CPU + 1079 CUDA = 2910 total (3.1%)
+  Rank 13: 1830 CPU + 1080 CUDA = 2910 total (3.1%)
+  Rank 14: 1830 CPU + 1080 CUDA = 2910 total (3.1%)
+  Rank 15: 1763 CPU + 1147 CUDA = 2910 total (3.1%)
+  Rank 16: 1770 CPU + 1140 CUDA = 2910 total (3.1%)
+  Rank 17: 1681 CPU + 1229 CUDA = 2910 total (3.1%)
+  Rank 18: 1830 CPU + 1080 CUDA = 2910 total (3.1%)
+  Rank 19: 1770 CPU + 1140 CUDA = 2910 total (3.1%)
+  Rank 20: 1713 CPU + 1197 CUDA = 2910 total (3.1%)
+  Rank 21: 1830 CPU + 1080 CUDA = 2910 total (3.1%)
+  Rank 22: 1751 CPU + 1159 CUDA = 2910 total (3.1%)
+  Rank 23: 1720 CPU + 1190 CUDA = 2910 total (3.1%)
+  Rank 24: 1788 CPU + 1122 CUDA = 2910 total (3.1%)
+  Rank 25: 1803 CPU + 1107 CUDA = 2910 total (3.1%)
+  Rank 26: 1830 CPU + 1080 CUDA = 2910 total (3.1%)
+  Rank 27: 1830 CPU + 1080 CUDA = 2910 total (3.1%)
+  Rank 28: 1803 CPU + 1107 CUDA = 2910 total (3.1%)
+  Rank 29: 1768 CPU + 1142 CUDA = 2910 total (3.1%)
+  Rank 30: 1802 CPU + 1108 CUDA = 2910 total (3.1%)
+  Rank 31: 1763 CPU + 1147 CUDA = 2910 total (3.1%)
+============================================================
+Escalonador StarPU ativo: dmda

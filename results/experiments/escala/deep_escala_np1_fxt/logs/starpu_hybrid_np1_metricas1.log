@@ -1,0 +1,127 @@
+[run] launch host: 10.0.0.10
+[run] hostfile: /home/ec2-user/KMeans-StarPU-Heterogeneous-Analysis/cluster-config/.cluster/hostfile
+[run] np: 1
+[run] mpirun args: --bind-to none -x STARPU_FXT_TRACE=1 -x STARPU_FXT_PREFIX=/tmp/fxt/ -x STARPU_WORKER_STATS=1 -x STARPU_PROFILING=1 -x STARPU_MPI_STATS=1 -x STARPU_SCHED=dmda -x STARPU_NOPENCL=1 -x STARPU_RESERVE_NCPU=1 -x STARPU_HOSTNAME=g6.4xlarge -x STARPU_CALIBRATE=0 -x STARPU_NCPUS=7 -x STARPU_NCUDA=1 -x STARPU_WORKERS_CPUID=0,1,2,3,4,5,6,7
+[run] preparing MPI SSH from launch host 10.0.0.10 ...
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+[RANK 0/1] Host: ip-10-0-0-10.ec2.internal
+[COMPILADOR] nvc++ 26.3
+[MODO] Escalonamento ESTATICO (Manual via EXECUTE_ON_NODE)
+[starpu][ip-10-0-0-10.ec2.internal][starpu_initialize] Warning: FxT is enabled, which slows down a bit, limits scalability and makes worker initialization sequential
+[starpu][ip-10-0-0-10.ec2.internal][_starpu_mpi_comm_amounts_init] Warning: StarPU is executed with STARPU_MPI_STATS=1, which slows down a bit
+[INFO] Centroides iniciais escolhidos aleatoriamente (Seed: 42)
+[INFO] Injetando max 30 iteracoes no DAG (Assíncrono)...
+[starpu][ip-10-0-0-10.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-10.ec2.internal][_starpu_fxt_flush_callback] FxT is flushing trace to disk ! This can impact performance.
+[starpu][ip-10-0-0-10.ec2.internal][_starpu_fxt_flush_callback] Maybe you should increase the value of STARPU_TRACE_BUFFER_SIZE ?
+[StarPU] Iteracao 1
+[StarPU] Iteracao 2
+[StarPU] Iteracao 3
+[StarPU] Iteracao 4
+[StarPU] Iteracao 5
+[starpu][ip-10-0-0-10.ec2.internal][_starpu_fxt_flush_callback] FxT is flushing trace to disk ! This can impact performance.
+[starpu][ip-10-0-0-10.ec2.internal][_starpu_fxt_flush_callback] Maybe you should increase the value of STARPU_TRACE_BUFFER_SIZE ?
+[StarPU] Iteracao 6
+[StarPU] Iteracao 7
+[StarPU] Iteracao 8
+[StarPU] Iteracao 9
+[StarPU] Iteracao 10
+[StarPU] Iteracao 11
+[StarPU] Iteracao 12
+[StarPU] Iteracao 13
+[StarPU] Iteracao 14
+[starpu][ip-10-0-0-10.ec2.internal][_starpu_fxt_flush_callback] FxT is flushing trace to disk ! This can impact performance.
+[starpu][ip-10-0-0-10.ec2.internal][_starpu_fxt_flush_callback] Maybe you should increase the value of STARPU_TRACE_BUFFER_SIZE ?
+[starpu][ip-10-0-0-10.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from CUDA 0 to NUMA 0 took a very long time (22.706681 ms)
+For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[StarPU] Iteracao 15
+[StarPU] Iteracao 16
+[StarPU] Iteracao 17
+[StarPU] Iteracao 18
+[StarPU] Iteracao 19
+[StarPU] Iteracao 20
+[StarPU] Iteracao 21
+[StarPU] Iteracao 22
+[StarPU] Iteracao 23
+[starpu][ip-10-0-0-10.ec2.internal][_starpu_fxt_flush_callback] FxT is flushing trace to disk ! This can impact performance.
+[starpu][ip-10-0-0-10.ec2.internal][_starpu_fxt_flush_callback] Maybe you should increase the value of STARPU_TRACE_BUFFER_SIZE ?
+[StarPU] Iteracao 24
+[StarPU] Iteracao 25
+[StarPU] Iteracao 26
+[StarPU] Iteracao 27
+[StarPU] Iteracao 28
+[StarPU] Iteracao 29
+[StarPU] Iteracao 30
+[INFO] Limite de iterações atingido sem convergência completa.
+[INFO] Salvando centróides finais...
+[INFO] Arquivo de centróides salvo com sucesso em: output_bench/exp_starpu_hybrid_np1_metricas1/256-clusters.txt
+============================================================
+METRICAS FINAIS — StarPU/MPI
+============================================================
+Workers (rank 0)          : 6 CPU  +  1 GPU CUDA
+Ranks MPI                 : 1
+
+Tempo do loop             : 117555.37  ms
+Tempo total (c/init)      : 145966.95  ms
+T. medio/iter             : 3918.51    ms
+Iteracoes                 : 30 / max 30
+SSE                       : 6.0084e+14
+
+Distribuicao por kernel (CPU vs CUDA) — global:
+  Kernel        CPU (N / %)             GPU CUDA (N / %)        
+  ------------------------------------------------------------
+  Assign        9000 (29.2969%)         21720 (70.7031%)        
+  Calculate     11716 (38.138%)         19004 (61.862%)         
+  Clean         30 (100%)               0 (0%)                  
+  Update        6 (20%)                 24 (80%)                
+  Accumulate    6138 (19.9805%)         24582 (80.0195%)        
+  ------------------------------------------------------------
+  TOTAL         26890 (29.1585%)        65330 (70.8415%)        
+============================================================
+
+[starpu_comm_stats][0] TOTAL:	0.000000 B	0.000000 MB	 0.000000 B/s	 0.000000 MB/s
+[starpu_comm_stats][0] nb_sends: 0
+[starpu_comm_stats][0] max_sent_size: 0
+[starpu_comm_stats][0] average sent size: 0
+[starpu_comm_stats][0] NB_COOP: 0
+
+#---------------------
+Worker stats:
+CUDA 0.0 (NVIDIA L4 19.8 GiB 35:00.0)
+	65498 task(s)
+	time split: total 129893.19 ms = executing: 115986.45 ms + callback: 0.39 ms + waiting: 234.36 ms + sleeping: 13137.99 ms + scheduling: 0.00 ms + overhead 534.00 ms
+	all time: executing: 115986.45 ms callback: 0.39 ms waiting: 355.08 ms sleeping: 14684.96 ms scheduling: 14773.53 ms
+CPU 0                           
+	5171 task(s)
+	time split: total 129893.20 ms = executing: 114451.00 ms + callback: 0.11 ms + waiting: 185.84 ms + sleeping: 15117.69 ms + scheduling: 10.53 ms + overhead 128.04 ms
+	all time: executing: 114451.00 ms callback: 0.11 ms waiting: 185.84 ms sleeping: 15117.69 ms scheduling: 2928.75 ms
+CPU 1                           
+	3701 task(s)
+	time split: total 129893.21 ms = executing: 114420.24 ms + callback: 0.00 ms + waiting: 163.11 ms + sleeping: 15231.60 ms + scheduling: 9.48 ms + overhead 68.78 ms
+	all time: executing: 114420.24 ms callback: 0.00 ms waiting: 163.11 ms sleeping: 15231.60 ms scheduling: 2974.80 ms
+CPU 2                           
+	5473 task(s)
+	time split: total 129893.21 ms = executing: 114469.27 ms + callback: 0.00 ms + waiting: 186.86 ms + sleeping: 15128.98 ms + scheduling: 11.13 ms + overhead 96.97 ms
+	all time: executing: 114469.27 ms callback: 0.00 ms waiting: 186.86 ms sleeping: 15128.98 ms scheduling: 2635.62 ms
+CPU 3                           
+	3523 task(s)
+	time split: total 129893.22 ms = executing: 114424.29 ms + callback: 0.00 ms + waiting: 162.26 ms + sleeping: 15230.06 ms + scheduling: 8.94 ms + overhead 67.66 ms
+	all time: executing: 114424.29 ms callback: 0.00 ms waiting: 162.26 ms sleeping: 15230.06 ms scheduling: 2425.37 ms
+CPU 4                           
+	5594 task(s)
+	time split: total 129893.22 ms = executing: 114469.71 ms + callback: 0.00 ms + waiting: 170.50 ms + sleeping: 15142.86 ms + scheduling: 11.67 ms + overhead 98.48 ms
+	all time: executing: 114469.71 ms callback: 0.00 ms waiting: 170.50 ms sleeping: 15142.86 ms scheduling: 2895.22 ms
+CPU 5                           
+	3470 task(s)
+	time split: total 129893.23 ms = executing: 114431.20 ms + callback: 0.00 ms + waiting: 146.10 ms + sleeping: 15238.36 ms + scheduling: 8.78 ms + overhead 68.79 ms
+	all time: executing: 114431.20 ms callback: 0.00 ms waiting: 146.10 ms sleeping: 15238.36 ms scheduling: 2673.65 ms
+
+Global time split: total 909252.47 ms = executing: 802652.17 ms (88.28%) + callback: 0.50 ms (0.00%) + waiting: 1249.02 ms (0.14%) + sleeping: 104227.54 ms (11.46%) + scheduling: 60.52 ms (0.01%) + overhead 1062.73 ms (0.12%)
+#---------------------
+Escalonador StarPU ativo: dmda

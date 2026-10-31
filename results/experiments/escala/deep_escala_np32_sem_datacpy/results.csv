@@ -1,0 +1,3 @@
+timestamp,mode,nodes,N,K,chunks,rep_kind,rep_idx,loop_ms,sse,run_ok,assign_cpu,assign_gpu,calculate_cpu,calculate_gpu,clean_cpu,clean_gpu,update_cpu,update_gpu,accumulate_cpu,accumulate_gpu,calib_md5,calib_warn
+2026-10-30T04:25:37Z,starpu_hybrid,32,20480000,256,1024,metricas,4,4838.07,6.0084e+14,1,5789,24929,29747,973,960,0,1,29,772,30878,1b10dc33cf71e564c377c75c7372e1bb,0
+2026-10-30T04:29:19Z,starpu_hybrid,32,20480000,256,1024,metricas,5,4738.54,6.0084e+14,1,5801,24919,29743,977,960,0,0,30,903,30747,1b10dc33cf71e564c377c75c7372e1bb,0

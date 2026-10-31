@@ -1,0 +1,72 @@
+No MPI IPs provided; will auto-resolve private MPI IPs from control public IPs.
+Saved control IPs to /home/ec2-user/KMeans-StarPU-Heterogeneous-Analysis/cluster-config/.cluster/control_ips.txt
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+Control IPs (2):
+  - 10.0.0.10
+  - 10.0.0.11
+MPI IPs (2):
+  - 10.0.0.10
+  - 10.0.0.11
+MPI IP source: auto-resolved-private
+Launch host (where mpirun runs): 10.0.0.10
+Rank0 preferred hostfile entry: 10.0.0.10
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+[disable-ht] 10.0.0.10
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+off
+HT disabled. CPUs: 16
+[disable-ht] 10.0.0.11
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+off
+HT disabled. CPUs: 8
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+CPUs visiveis por no: 8 8
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+[sync] 10.0.0.10
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+[sync] 10.0.0.11
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+compiladores: KMEANS_COMPILER=nvc++ 26.3 KMEANS_COMPILER=nvc++ 26.3
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+[generate-input] Gerando 20480000 pontos no nó mestre 10.0.0.10...
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Usando 8 processo(s) de 8 disponivel(is), seed=42, formato=binario
+Concatenando chunks...
+Arquivo 'input_deep.bin' criado com 20480000 pontos.
+[generate-input] Concluido: input_deep.bin
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+[generate-input] Gerando 102400000 pontos no nó mestre 10.0.0.10...
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Usando 8 processo(s) de 8 disponivel(is), seed=42, formato=binario
+Concatenando chunks...
+Arquivo 'input_pq.bin' criado com 102400000 pontos.
+[generate-input] Concluido: input_pq.bin
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+[generate-input] Gerando 10240000 pontos no nó mestre 10.0.0.10...
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Usando 8 processo(s) de 8 disponivel(is), seed=42, formato=binario
+Concatenando chunks...
+Arquivo 'input_sift.bin' criado com 10240000 pontos.
+[generate-input] Concluido: input_sift.bin
+===== 07:42:52 OMP pq np2
+pq: loop 52491.57 ms, SSE 2.9768e+14
+===== 07:44:23 OMP deep np2
+deep: loop 61056.21 ms, SSE 6.0084e+14
+===== 07:45:55 OMP sift np2
+sift: loop 40674.71 ms, SSE 4.0941e+14
+===== OMP NP2 CONCLUIDO

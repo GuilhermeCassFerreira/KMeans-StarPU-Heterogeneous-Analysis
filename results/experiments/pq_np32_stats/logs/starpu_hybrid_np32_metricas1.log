@@ -1,0 +1,1790 @@
+[run] launch host: 10.0.0.10
+[run] hostfile: /home/ec2-user/KMeans-StarPU-Heterogeneous-Analysis/cluster-config/.cluster/hostfile
+[run] np: 32
+[run] mpirun args: --bind-to none -x STARPU_WORKER_STATS=1 -x STARPU_PROFILING=1 -x STARPU_MPI_STATS=1 -x STARPU_SCHED=dmda -x STARPU_NOPENCL=1 -x STARPU_RESERVE_NCPU=1 -x STARPU_HOSTNAME=g6.4xlarge -x STARPU_NCPUS=7 -x STARPU_NCUDA=1 -x STARPU_WORKERS_CPUID=0,1,2,3,4,5,6,7
+[run] preparing MPI SSH from launch host 10.0.0.10 ...
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.12' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.13' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.14' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.15' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.16' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.17' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.18' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.19' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.20' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.21' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.22' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.23' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.24' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.25' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.26' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.27' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.28' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.29' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.30' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.31' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.32' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.33' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.34' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.35' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.36' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.37' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.38' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.39' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.40' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.41' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+[ip-10-0-0-10.ec2.internal:17503] plm:ssh: Warning: setpgid(17528,17528) failed in parent with errno=Permission denied(13)
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.17' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.28' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.27' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.16' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.29' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.23' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.22' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.12' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.14' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.13' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.15' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.24' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.25' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.26' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.35' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.37' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.38' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.34' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.39' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.33' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.30' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.41' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.36' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.40' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.32' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.19' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.31' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.21' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.18' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.20' (ED25519) to the list of known hosts.
+[RANK 0/32] Host: ip-10-0-0-10.ec2.internal
+[RANK 25/32] Host: ip-10-0-0-35.ec2.internal
+[RANK 23/32] Host: ip-10-0-0-33.ec2.internal
+[RANK 1/32] Host: ip-10-0-0-11.ec2.internal
+[RANK 4/32] Host: ip-10-0-0-14.ec2.internal
+[RANK 8/32] Host: ip-10-0-0-18.ec2.internal
+[RANK 6/32] Host: ip-10-0-0-16.ec2.internal
+[RANK 18/32] Host: ip-10-0-0-28.ec2.internal
+[RANK 19/32] Host: ip-10-0-0-29.ec2.internal
+[RANK 9/32] Host: ip-10-0-0-19.ec2.internal
+[RANK 12/32] Host: ip-10-0-0-22.ec2.internal
+[RANK 13/32] Host: ip-10-0-0-23.ec2.internal
+[RANK 16/32] Host: ip-10-0-0-26.ec2.internal
+[RANK 5/32] Host: ip-10-0-0-15.ec2.internal
+[RANK 17/32] Host: ip-10-0-0-27.ec2.internal
+[RANK 3/32] Host: ip-10-0-0-13.ec2.internal
+[RANK 21/32] Host: ip-10-0-0-31.ec2.internal
+[RANK 20/32] Host: ip-10-0-0-30.ec2.internal
+[RANK 22/32] Host: ip-10-0-0-32.ec2.internal
+[RANK 7/32] Host: ip-10-0-0-17.ec2.internal
+[RANK 11/32] Host: ip-10-0-0-21.ec2.internal
+[RANK 14/32] Host: ip-10-0-0-24.ec2.internal
+[RANK 24/32] Host: ip-10-0-0-34.ec2.internal
+[RANK 15/32] Host: ip-10-0-0-25.ec2.internal
+[RANK 27/32] Host: ip-10-0-0-37.ec2.internal
+[RANK 28/32] Host: ip-10-0-0-38.ec2.internal
+[RANK 31/32] Host: ip-10-0-0-41.ec2.internal
+[RANK 10/32] Host: ip-10-0-0-20.ec2.internal
+[RANK 30/32] Host: ip-10-0-0-40.ec2.internal
+[RANK 26/32] Host: ip-10-0-0-36.ec2.internal
+[RANK 2/32] Host: ip-10-0-0-12.ec2.internal
+[RANK 29/32] Host: ip-10-0-0-39.ec2.internal
+[COMPILADOR] nvc++ 26.3
+[MODO] Escalonamento ESTATICO (Manual via EXECUTE_ON_NODE)
+[starpu][ip-10-0-0-17.ec2.internal][_starpu_mpi_comm_amounts_init] Warning: StarPU is executed with STARPU_MPI_STATS=1, which slows down a bit
+[starpu][ip-10-0-0-33.ec2.internal][_starpu_mpi_comm_amounts_init] Warning: StarPU is executed with STARPU_MPI_STATS=1, which slows down a bit
+[starpu][ip-10-0-0-30.ec2.internal][_starpu_mpi_comm_amounts_init] Warning: StarPU is executed with STARPU_MPI_STATS=1, which slows down a bit
+[starpu][ip-10-0-0-40.ec2.internal][_starpu_mpi_comm_amounts_init] Warning: StarPU is executed with STARPU_MPI_STATS=1, which slows down a bit
+[starpu][ip-10-0-0-11.ec2.internal][_starpu_mpi_comm_amounts_init] Warning: StarPU is executed with STARPU_MPI_STATS=1, which slows down a bit
+[starpu][ip-10-0-0-22.ec2.internal][_starpu_mpi_comm_amounts_init] Warning: StarPU is executed with STARPU_MPI_STATS=1, which slows down a bit
+[starpu][ip-10-0-0-10.ec2.internal][_starpu_mpi_comm_amounts_init] Warning: StarPU is executed with STARPU_MPI_STATS=1, which slows down a bit
+[starpu][ip-10-0-0-37.ec2.internal][_starpu_mpi_comm_amounts_init] Warning: StarPU is executed with STARPU_MPI_STATS=1, which slows down a bit
+[starpu][ip-10-0-0-25.ec2.internal][_starpu_mpi_comm_amounts_init] Warning: StarPU is executed with STARPU_MPI_STATS=1, which slows down a bit
+[starpu][ip-10-0-0-36.ec2.internal][_starpu_mpi_comm_amounts_init] Warning: StarPU is executed with STARPU_MPI_STATS=1, which slows down a bit
+[starpu][ip-10-0-0-31.ec2.internal][_starpu_mpi_comm_amounts_init] Warning: StarPU is executed with STARPU_MPI_STATS=1, which slows down a bit
+[starpu][ip-10-0-0-27.ec2.internal][_starpu_mpi_comm_amounts_init] Warning: StarPU is executed with STARPU_MPI_STATS=1, which slows down a bit
+[starpu][ip-10-0-0-41.ec2.internal][_starpu_mpi_comm_amounts_init] Warning: StarPU is executed with STARPU_MPI_STATS=1, which slows down a bit
+[starpu][ip-10-0-0-38.ec2.internal][_starpu_mpi_comm_amounts_init] Warning: StarPU is executed with STARPU_MPI_STATS=1, which slows down a bit
+[starpu][ip-10-0-0-21.ec2.internal][_starpu_mpi_comm_amounts_init] Warning: StarPU is executed with STARPU_MPI_STATS=1, which slows down a bit
+[starpu][ip-10-0-0-32.ec2.internal][_starpu_mpi_comm_amounts_init] Warning: StarPU is executed with STARPU_MPI_STATS=1, which slows down a bit
+[starpu][ip-10-0-0-14.ec2.internal][_starpu_mpi_comm_amounts_init] Warning: StarPU is executed with STARPU_MPI_STATS=1, which slows down a bit
+[starpu][ip-10-0-0-15.ec2.internal][_starpu_mpi_comm_amounts_init] Warning: StarPU is executed with STARPU_MPI_STATS=1, which slows down a bit
+[starpu][ip-10-0-0-39.ec2.internal][_starpu_mpi_comm_amounts_init] Warning: StarPU is executed with STARPU_MPI_STATS=1, which slows down a bit
+[starpu][ip-10-0-0-18.ec2.internal][_starpu_mpi_comm_amounts_init] Warning: StarPU is executed with STARPU_MPI_STATS=1, which slows down a bit
+[starpu][ip-10-0-0-19.ec2.internal][_starpu_mpi_comm_amounts_init] Warning: StarPU is executed with STARPU_MPI_STATS=1, which slows down a bit
+[starpu][ip-10-0-0-16.ec2.internal][_starpu_mpi_comm_amounts_init] Warning: StarPU is executed with STARPU_MPI_STATS=1, which slows down a bit
+[starpu][ip-10-0-0-35.ec2.internal][_starpu_mpi_comm_amounts_init] Warning: StarPU is executed with STARPU_MPI_STATS=1, which slows down a bit
+[starpu][ip-10-0-0-28.ec2.internal][_starpu_mpi_comm_amounts_init] Warning: StarPU is executed with STARPU_MPI_STATS=1, which slows down a bit
+[starpu][ip-10-0-0-26.ec2.internal][_starpu_mpi_comm_amounts_init] Warning: StarPU is executed with STARPU_MPI_STATS=1, which slows down a bit
+[starpu][ip-10-0-0-29.ec2.internal][_starpu_mpi_comm_amounts_init] Warning: StarPU is executed with STARPU_MPI_STATS=1, which slows down a bit
+[starpu][ip-10-0-0-20.ec2.internal][_starpu_mpi_comm_amounts_init] Warning: StarPU is executed with STARPU_MPI_STATS=1, which slows down a bit
+[starpu][ip-10-0-0-12.ec2.internal][_starpu_mpi_comm_amounts_init] Warning: StarPU is executed with STARPU_MPI_STATS=1, which slows down a bit
+[starpu][ip-10-0-0-34.ec2.internal][_starpu_mpi_comm_amounts_init] Warning: StarPU is executed with STARPU_MPI_STATS=1, which slows down a bit
+[starpu][ip-10-0-0-13.ec2.internal][_starpu_mpi_comm_amounts_init] Warning: StarPU is executed with STARPU_MPI_STATS=1, which slows down a bit
+[starpu][ip-10-0-0-24.ec2.internal][_starpu_mpi_comm_amounts_init] Warning: StarPU is executed with STARPU_MPI_STATS=1, which slows down a bit
+[starpu][ip-10-0-0-23.ec2.internal][_starpu_mpi_comm_amounts_init] Warning: StarPU is executed with STARPU_MPI_STATS=1, which slows down a bit
+[INFO] Centroides iniciais escolhidos aleatoriamente (Seed: 42)
+[INFO] Injetando max 30 iteracoes no DAG (Assíncrono)...
+[starpu][ip-10-0-0-10.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-15.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-20.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-19.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-11.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-16.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-13.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-35.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-31.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-24.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-12.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-23.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-32.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-27.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-28.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-30.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-34.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-37.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-33.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-22.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-36.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-25.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-14.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-17.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-18.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-21.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-29.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-26.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-40.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-39.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-38.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-41.ec2.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-10.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from NUMA 0 to CUDA 0 took a very long time (16.426078 ms)
+For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[starpu][ip-10-0-0-11.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from NUMA 0 to CUDA 0 took a very long time (16.158560 ms)
+For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[starpu][ip-10-0-0-14.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from NUMA 0 to CUDA 0 took a very long time (16.045370 ms)
+For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[starpu][ip-10-0-0-12.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from NUMA 0 to CUDA 0 took a very long time (16.192272 ms)
+For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[starpu][ip-10-0-0-16.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from NUMA 0 to CUDA 0 took a very long time (16.111679 ms)
+For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[starpu][ip-10-0-0-19.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from NUMA 0 to CUDA 0 took a very long time (16.208700 ms)
+For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[starpu][ip-10-0-0-21.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from NUMA 0 to CUDA 0 took a very long time (16.029026 ms)
+For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[starpu][ip-10-0-0-27.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from NUMA 0 to CUDA 0 took a very long time (15.768851 ms)
+For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[starpu][ip-10-0-0-23.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from NUMA 0 to CUDA 0 took a very long time (16.323046 ms)
+For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[starpu][ip-10-0-0-28.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from NUMA 0 to CUDA 0 took a very long time (15.934015 ms)
+For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[starpu][ip-10-0-0-35.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from NUMA 0 to CUDA 0 took a very long time (15.937019 ms)
+For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[starpu][ip-10-0-0-34.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from NUMA 0 to CUDA 0 took a very long time (16.495458 ms)
+For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[starpu][ip-10-0-0-40.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from NUMA 0 to CUDA 0 took a very long time (16.306700 ms)
+For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[starpu][ip-10-0-0-29.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from NUMA 0 to CUDA 0 took a very long time (16.142119 ms)
+For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[starpu][ip-10-0-0-38.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from NUMA 0 to CUDA 0 took a very long time (16.261950 ms)
+For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[starpu][ip-10-0-0-15.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from NUMA 0 to CUDA 0 took a very long time (16.226887 ms)
+For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[starpu][ip-10-0-0-39.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from NUMA 0 to CUDA 0 took a very long time (15.689681 ms)
+For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[starpu][ip-10-0-0-18.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from NUMA 0 to CUDA 0 took a very long time (15.899203 ms)
+For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[starpu][ip-10-0-0-37.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from NUMA 0 to CUDA 0 took a very long time (16.060575 ms)
+For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[starpu][ip-10-0-0-25.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from NUMA 0 to CUDA 0 took a very long time (15.992727 ms)
+For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[starpu][ip-10-0-0-26.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from NUMA 0 to CUDA 0 took a very long time (16.271706 ms)
+For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[starpu][ip-10-0-0-36.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from NUMA 0 to CUDA 0 took a very long time (15.655212 ms)
+For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[starpu][ip-10-0-0-17.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from NUMA 0 to CUDA 0 took a very long time (15.920116 ms)
+For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[starpu][ip-10-0-0-41.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from NUMA 0 to CUDA 0 took a very long time (16.391691 ms)
+For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[starpu][ip-10-0-0-13.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from NUMA 0 to CUDA 0 took a very long time (15.986042 ms)
+For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[starpu][ip-10-0-0-24.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from NUMA 0 to CUDA 0 took a very long time (16.087736 ms)
+For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[starpu][ip-10-0-0-22.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from NUMA 0 to CUDA 0 took a very long time (16.337619 ms)
+For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[starpu][ip-10-0-0-20.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from NUMA 0 to CUDA 0 took a very long time (16.205434 ms)
+For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[starpu][ip-10-0-0-32.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from NUMA 0 to CUDA 0 took a very long time (15.830459 ms)
+For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[starpu][ip-10-0-0-31.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from NUMA 0 to CUDA 0 took a very long time (16.222547 ms)
+For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[starpu][ip-10-0-0-30.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from NUMA 0 to CUDA 0 took a very long time (15.971189 ms)
+For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[starpu][ip-10-0-0-33.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from NUMA 0 to CUDA 0 took a very long time (15.813764 ms)
+For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[StarPU] Iteracao 1
+[StarPU] Iteracao 2
+[StarPU] Iteracao 3
+[StarPU] Iteracao 4
+[StarPU] Iteracao 5
+[StarPU] Iteracao 6
+[StarPU] Iteracao 7
+[StarPU] Iteracao 8
+[StarPU] Iteracao 9
+[StarPU] Iteracao 10
+[StarPU] Iteracao 11
+[StarPU] Iteracao 12
+[StarPU] Iteracao 13
+[StarPU] Iteracao 14
+[StarPU] Iteracao 15
+[StarPU] Iteracao 16
+[StarPU] Iteracao 17
+[StarPU] Iteracao 18
+[StarPU] Iteracao 19
+[StarPU] Iteracao 20
+[StarPU] Iteracao 21
+[StarPU] Iteracao 22
+[StarPU] Iteracao 23
+[StarPU] Iteracao 24
+[StarPU] Iteracao 25
+[StarPU] Iteracao 26
+[StarPU] Iteracao 27
+[StarPU] Iteracao 28
+[StarPU] Iteracao 29
+[StarPU] Iteracao 30
+[INFO] Limite de iterações atingido sem convergência completa.
+[INFO] Salvando centróides finais...
+[INFO] Arquivo de centróides salvo com sucesso em: output_bench/exp_starpu_hybrid_np32_metricas1/256-clusters.txt
+
+[starpu_comm_stats][9] TOTAL:	13813880.000000 B	13.173943 MB	 0.772720 B/s	 0.000001 MB/s
+[starpu_comm_stats][9] nb_sends: 122
+[starpu_comm_stats][9] max_sent_size: 400000
+[starpu_comm_stats][9] average sent size: 113228
+[starpu_comm_stats][9:0]	13813760.000000 B	13.173828 MB	 0.772713 B/s	 0.000001 MB/s
+[starpu_comm_stats][9:12]	120.000000 B	0.000114 MB	 0.000007 B/s	 0.000000 MB/s
+[starpu_comm_stats_memnode][9:NUMA 0]	13813880.000000 B	13.173943 MB	 0.772720 B/s	 0.000001 MB/s
+[starpu_comm_stats][9] NB_COOP: 0
+
+#---------------------
+Worker stats:
+CUDA 0.0 (NVIDIA L4 19.8 GiB 35:00.0)
+	1868 task(s)
+	time split: total 17877.75 ms = executing: 3205.58 ms + callback: 4.22 ms + waiting: 10.65 ms + sleeping: 14648.40 ms + scheduling: 0.00 ms + overhead 8.91 ms
+	all time: executing: 3205.58 ms callback: 4.22 ms waiting: 11.15 ms sleeping: 14661.00 ms scheduling: 14661.68 ms
+CPU 0                           
+	398 task(s)
+	time split: total 17877.87 ms = executing: 2511.80 ms + callback: 0.13 ms + waiting: 28.51 ms + sleeping: 15329.99 ms + scheduling: 0.22 ms + overhead 7.22 ms
+	all time: executing: 2511.80 ms callback: 0.13 ms waiting: 28.51 ms sleeping: 15329.99 ms scheduling: 2823.12 ms
+CPU 1                           
+	174 task(s)
+	time split: total 17878.01 ms = executing: 2450.32 ms + callback: 0.05 ms + waiting: 18.46 ms + sleeping: 15406.97 ms + scheduling: 0.17 ms + overhead 2.03 ms
+	all time: executing: 2450.32 ms callback: 0.05 ms waiting: 18.46 ms sleeping: 15406.97 ms scheduling: 2625.48 ms
+CPU 2                           
+	171 task(s)
+	time split: total 17878.11 ms = executing: 2386.82 ms + callback: 0.00 ms + waiting: 16.41 ms + sleeping: 15472.66 ms + scheduling: 0.17 ms + overhead 2.06 ms
+	all time: executing: 2386.82 ms callback: 0.00 ms waiting: 16.41 ms sleeping: 15472.66 ms scheduling: 2427.44 ms
+CPU 3                           
+	163 task(s)
+	time split: total 17878.22 ms = executing: 2386.79 ms + callback: 0.00 ms + waiting: 16.50 ms + sleeping: 15472.88 ms + scheduling: 0.16 ms + overhead 1.88 ms
+	all time: executing: 2386.79 ms callback: 0.00 ms waiting: 16.50 ms sleeping: 15472.88 ms scheduling: 2904.58 ms
+CPU 4                           
+	187 task(s)
+	time split: total 17878.32 ms = executing: 2389.49 ms + callback: 0.00 ms + waiting: 16.41 ms + sleeping: 15470.33 ms + scheduling: 0.17 ms + overhead 1.92 ms
+	all time: executing: 2389.49 ms callback: 0.00 ms waiting: 16.41 ms sleeping: 15470.33 ms scheduling: 2960.66 ms
+CPU 5                           
+	159 task(s)
+	time split: total 17878.43 ms = executing: 2383.42 ms + callback: 0.00 ms + waiting: 16.49 ms + sleeping: 15476.52 ms + scheduling: 0.16 ms + overhead 1.84 ms
+	all time: executing: 2383.42 ms callback: 0.00 ms waiting: 16.49 ms sleeping: 15476.52 ms scheduling: 2696.99 ms
+
+Global time split: total 125146.71 ms = executing: 17714.21 ms (14.15%) + callback: 4.40 ms (0.00%) + waiting: 123.42 ms (0.10%) + sleeping: 107277.76 ms (85.72%) + scheduling: 1.06 ms (0.00%) + overhead 25.85 ms (0.02%)
+#---------------------
+
+[starpu_comm_stats][11] TOTAL:	13813880.000000 B	13.173943 MB	 0.772462 B/s	 0.000001 MB/s
+[starpu_comm_stats][11] nb_sends: 122
+[starpu_comm_stats][11] max_sent_size: 400000
+[starpu_comm_stats][11] average sent size: 113228
+[starpu_comm_stats][11:0]	13813760.000000 B	13.173828 MB	 0.772455 B/s	 0.000001 MB/s
+[starpu_comm_stats][11:12]	120.000000 B	0.000114 MB	 0.000007 B/s	 0.000000 MB/s
+[starpu_comm_stats_memnode][11:NUMA 0]	13813880.000000 B	13.173943 MB	 0.772462 B/s	 0.000001 MB/s
+[starpu_comm_stats][11] NB_COOP: 0
+
+#---------------------
+Worker stats:
+
+[starpu_comm_stats][13] TOTAL:	13813880.000000 B	13.173943 MB	 0.773153 B/s	 0.000001 MB/s
+[starpu_comm_stats][13] nb_sends: 122
+[starpu_comm_stats][13] max_sent_size: 400000
+[starpu_comm_stats][13] average sent size: 113228
+[starpu_comm_stats][13:0]	13813760.000000 B	13.173828 MB	 0.773146 B/s	 0.000001 MB/s
+[starpu_comm_stats][13:12]	120.000000 B	0.000114 MB	 0.000007 B/s	 0.000000 MB/s
+[starpu_comm_stats_memnode][13:NUMA 0]	13813880.000000 B	13.173943 MB	 0.773153 B/s	 0.000001 MB/s
+[starpu_comm_stats][13] NB_COOP: 0
+
+#---------------------
+Worker stats:
+CUDA 0.0 (NVIDIA L4 19.8 GiB 35:00.0)
+	1889 task(s)
+	time split: total 17867.28 ms = executing: 3210.19 ms + callback: 3.59 ms + waiting: 10.94 ms + sleeping: 14633.92 ms + scheduling: 0.00 ms + overhead 8.65 ms
+	all time: executing: 3210.19 ms callback: 3.59 ms waiting: 11.48 ms sleeping: 14645.77 ms scheduling: 14646.29 ms
+CPU 0                           
+	368 task(s)
+	time split: total 17867.29 ms = executing: 2504.54 ms + callback: 0.00 ms + waiting: 30.83 ms + sleeping: 15325.92 ms + scheduling: 0.22 ms + overhead 5.79 ms
+	all time: executing: 2504.54 ms callback: 0.00 ms waiting: 30.83 ms sleeping: 15325.92 ms scheduling: 2867.07 ms
+CPU 1                           
+	184 task(s)
+	time split: total 17867.30 ms = executing: 2382.80 ms + callback: 0.00 ms + waiting: 16.75 ms + sleeping: 15465.24 ms + scheduling: 0.18 ms + overhead 2.33 ms
+	all time: executing: 2382.80 ms callback: 0.00 ms waiting: 16.75 ms sleeping: 15465.24 ms scheduling: 2931.81 ms
+CPU 2                           
+	164 task(s)
+	time split: total 17867.30 ms = executing: 2378.97 ms + callback: 0.00 ms + waiting: 0.24 ms + sleeping: 15485.92 ms + scheduling: 0.17 ms + overhead 2.01 ms
+	all time: executing: 2378.97 ms callback: 0.00 ms waiting: 0.24 ms sleeping: 15485.92 ms scheduling: 2679.17 ms
+CPU 3                           
+	157 task(s)
+	time split: total 17867.31 ms = executing: 2378.00 ms + callback: 0.00 ms + waiting: 16.80 ms + sleeping: 15470.48 ms + scheduling: 0.15 ms + overhead 1.87 ms
+	all time: executing: 2378.00 ms callback: 0.00 ms waiting: 16.80 ms sleeping: 15470.48 ms scheduling: 2436.15 ms
+CPU 4                           
+
+[starpu_comm_stats][10] TOTAL:	13813880.000000 B	13.173943 MB	 0.772671 B/s	 0.000001 MB/s
+[starpu_comm_stats][10] nb_sends: 122
+[starpu_comm_stats][10] max_sent_size: 400000
+[starpu_comm_stats][10] average sent size: 113228
+[starpu_comm_stats][10:0]	13813760.000000 B	13.173828 MB	 0.772664 B/s	 0.000001 MB/s
+[starpu_comm_stats][10:12]	120.000000 B	0.000114 MB	 0.000007 B/s	 0.000000 MB/s
+[starpu_comm_stats_memnode][10:NUMA 0]	13813880.000000 B	13.173943 MB	 0.772671 B/s	 0.000001 MB/s
+[starpu_comm_stats][10] NB_COOP: 0
+
+#---------------------
+Worker stats:
+CUDA 0.0 (NVIDIA L4 19.8 GiB 35:00.0)
+	1894 task(s)
+	time split: total 17878.46 ms = executing: 3209.17 ms + callback: 3.71 ms + waiting: 10.37 ms + sleeping: 14644.99 ms + scheduling: 0.00 ms + overhead 10.22 ms
+	all time: executing: 3209.17 ms callback: 3.71 ms waiting: 10.92 ms sleeping: 14656.83 ms scheduling: 14657.63 ms
+CPU 0                           
+	404 task(s)
+	time split: total 17878.46 ms = executing: 2518.14 ms + callback: 0.00 ms + waiting: 33.32 ms + sleeping: 15291.47 ms + scheduling: 0.27 ms + overhead 35.26 ms
+	all time: executing: 2518.14 ms callback: 0.00 ms waiting: 33.32 ms sleeping: 15291.47 ms scheduling: 2729.14 ms
+CPU 1                           
+	171 task(s)
+	time split: total 17878.47 ms = executing: 2386.56 ms + callback: 0.00 ms + waiting: 18.58 ms + sleeping: 15470.44 ms + scheduling: 0.22 ms + overhead 2.67 ms
+	all time: executing: 2386.56 ms callback: 0.00 ms waiting: 18.58 ms sleeping: 15470.44 ms scheduling: 2628.42 ms
+CPU 2                           
+	164 task(s)
+	time split: total 17878.48 ms = executing: 2388.15 ms + callback: 0.00 ms + waiting: 16.75 ms + sleeping: 15470.84 ms + scheduling: 0.21 ms + overhead 2.52 ms
+	all time: executing: 2388.15 ms callback: 0.00 ms waiting: 16.75 ms sleeping: 15470.84 ms scheduling: 2429.55 ms
+CPU 3                           
+	166 task(s)
+	time split: total 17878.48 ms = executing: 2392.40 ms + callback: 0.00 ms + waiting: 16.56 ms + sleeping: 15467.03 ms + scheduling: 0.21 ms + overhead 2.28 ms
+	all time: executing: 2392.40 ms callback: 0.00 ms waiting: 16.56 ms sleeping: 15467.03 ms scheduling: 2902.25 ms
+CPU 4                           
+	159 task(s)
+	time split: total 17878.49 ms = executing: 2388.57 ms + callback: 0.00 ms + waiting: 0.48 ms + sleeping: 15486.99 ms + scheduling: 0.20 ms + overhead 2.24 ms
+	all time: executing: 2388.57 ms callback: 0.00 ms waiting: 0.48 ms sleeping: 15486.99 ms scheduling: 2927.15 ms
+CPU 5                           
+	162 task(s)
+	170 task(s)
+	time split: total 17867.31 ms = executing: 2384.53 ms + callback: 0.00 ms + waiting: 16.74 ms + sleeping: 15463.91 ms + scheduling: 0.19 ms + overhead 1.95 ms
+	all time: executing: 2384.53 ms callback: 0.00 ms waiting: 16.74 ms sleeping: 15463.91 ms scheduling: 2974.57 ms
+CPU 5                           
+	188 task(s)
+	time split: total 17867.33 ms = executing: 2376.91 ms + callback: 0.14 ms + waiting: 17.11 ms + sleeping: 15470.94 ms + scheduling: 0.19 ms + overhead 2.04 ms
+	all time: executing: 2376.91 ms callback: 0.14 ms waiting: 17.11 ms sleeping: 15470.94 ms scheduling: 2686.17 ms
+
+Global time split: total 125071.13 ms = executing: 17615.93 ms (14.08%) + callback: 3.72 ms (0.00%) + waiting: 109.40 ms (0.09%) + sleeping: 107316.32 ms (85.80%) + scheduling: 1.10 ms (0.00%) + overhead 24.65 ms (0.02%)
+#---------------------
+	time split: total 17878.49 ms = executing: 2389.02 ms + callback: 0.00 ms + waiting: 16.50 ms + sleeping: 15470.48 ms + scheduling: 0.21 ms + overhead 2.28 ms
+	all time: executing: 2389.02 ms callback: 0.00 ms waiting: 16.50 ms sleeping: 15470.48 ms scheduling: 2616.81 ms
+
+Global time split: total 125149.32 ms = executing: 17672.02 ms (14.12%) + callback: 3.71 ms (0.00%) + waiting: 112.56 ms (0.09%) + sleeping: 107302.25 ms (85.74%) + scheduling: 1.33 ms (0.00%) + overhead 57.46 ms (0.05%)
+#---------------------
+CUDA 0.0 (NVIDIA L4 19.8 GiB 35:00.0)
+	1889 task(s)
+
+[starpu_comm_stats][23] TOTAL:	13813880.000000 B	13.173943 MB	 0.771996 B/s	 0.000001 MB/s
+[starpu_comm_stats][23] nb_sends: 122
+[starpu_comm_stats][23] max_sent_size: 400000
+[starpu_comm_stats][23] average sent size: 113228
+[starpu_comm_stats][23:0]	13813760.000000 B	13.173828 MB	 0.771989 B/s	 0.000001 MB/s
+[starpu_comm_stats][23:20]	120.000000 B	0.000114 MB	 0.000007 B/s	 0.000000 MB/s
+[starpu_comm_stats_memnode][23:NUMA 0]	13813880.000000 B	13.173943 MB	 0.771996 B/s	 0.000001 MB/s
+[starpu_comm_stats][23] NB_COOP: 0
+
+#---------------------
+Worker stats:
+CUDA 0.0 (NVIDIA L4 19.8 GiB 35:00.0)
+	1889 task(s)
+	time split: total 17894.07 ms = executing: 3210.17 ms + callback: 1.93 ms + waiting: 11.43 ms + sleeping: 14661.89 ms + scheduling: 0.00 ms + overhead 8.65 ms
+	all time: executing: 3210.17 ms callback: 1.93 ms waiting: 11.99 ms sleeping: 14672.35 ms scheduling: 14672.95 ms
+CPU 0                           
+	402 task(s)
+	time split: total 17894.07 ms = executing: 2502.12 ms + callback: 0.57 ms + waiting: 28.42 ms + sleeping: 15356.65 ms + scheduling: 0.22 ms + overhead 6.09 ms
+	all time: executing: 2502.12 ms callback: 0.57 ms waiting: 28.42 ms sleeping: 15356.65 ms scheduling: 2440.53 ms
+CPU 1                           
+	175 task(s)
+	time split: total 17894.08 ms = executing: 2379.75 ms + callback: 0.00 ms + waiting: 2.23 ms + sleeping: 15509.83 ms + scheduling: 0.18 ms + overhead 2.09 ms
+	all time: executing: 2379.75 ms callback: 0.00 ms waiting: 2.23 ms sleeping: 15509.83 ms scheduling: 2930.46 ms
+CPU 2                           
+	167 task(s)
+	time split: total 17894.09 ms = executing: 2380.55 ms + callback: 0.00 ms + waiting: 16.17 ms + sleeping: 15495.25 ms + scheduling: 0.18 ms + overhead 1.93 ms
+	all time: executing: 2380.55 ms callback: 0.00 ms waiting: 16.17 ms sleeping: 15495.25 ms scheduling: 2975.93 ms
+CPU 3                           
+	163 task(s)
+	time split: total 17894.09 ms = executing: 2382.64 ms + callback: 0.00 ms + waiting: 16.36 ms + sleeping: 15493.03 ms + scheduling: 0.17 ms + overhead 1.89 ms
+	all time: executing: 2382.64 ms callback: 0.00 ms waiting: 16.36 ms sleeping: 15493.03 ms scheduling: 2676.94 ms
+CPU 4                           
+	163 task(s)
+	time split: total 17894.09 ms = executing: 2382.10 ms + callback: 0.00 ms + waiting: 16.29 ms + sleeping: 15493.64 ms + scheduling: 0.17 ms + overhead 1.89 ms
+	all time: executing: 2382.10 ms callback: 0.00 ms waiting: 16.29 ms sleeping: 15493.64 ms scheduling: 2469.79 ms
+	time split: total 17883.62 ms = executing: 3203.05 ms + callback: 3.18 ms + waiting: 11.14 ms + sleeping: 14657.62 ms + scheduling: 0.00 ms + overhead 8.63 ms
+	all time: executing: 3203.05 ms callback: 3.18 ms waiting: 11.68 ms sleeping: 14669.43 ms scheduling: 14670.10 ms
+CPU 0                           
+	368 task(s)
+	time split: total 17883.72 ms = executing: 2576.22 ms + callback: 0.06 ms + waiting: 25.84 ms + sleeping: 15275.77 ms + scheduling: 0.23 ms + overhead 5.60 ms
+	all time: executing: 2576.22 ms callback: 0.06 ms waiting: 25.84 ms sleeping: 15275.77 ms scheduling: 2555.97 ms
+CPU 1                           
+	183 task(s)
+	time split: total 17883.81 ms = executing: 2392.50 ms + callback: 0.00 ms + waiting: 16.69 ms + sleeping: 15472.27 ms + scheduling: 0.19 ms + overhead 2.15 ms
+	all time: executing: 2392.50 ms callback: 0.00 ms waiting: 16.69 ms sleeping: 15472.27 ms scheduling: 2459.86 ms
+CPU 2                           
+	162 task(s)
+	time split: total 17883.89 ms = executing: 2447.86 ms + callback: 0.09 ms + waiting: 16.39 ms + sleeping: 15417.16 ms + scheduling: 0.17 ms + overhead 2.23 ms
+	all time: executing: 2447.86 ms callback: 0.09 ms waiting: 16.39 ms sleeping: 15417.16 ms scheduling: 2901.69 ms
+CPU 3                           
+	165 task(s)
+	time split: total 17883.97 ms = executing: 2387.38 ms + callback: 0.00 ms + waiting: 0.17 ms + sleeping: 15494.36 ms + scheduling: 0.17 ms + overhead 1.89 ms
+	all time: executing: 2387.38 ms callback: 0.00 ms waiting: 0.17 ms sleeping: 15494.36 ms scheduling: 2915.73 ms
+CPU 4                           
+	163 task(s)
+	time split: total 17884.05 ms = executing: 2386.17 ms + callback: 0.00 ms + waiting: 16.38 ms + sleeping: 15479.48 ms + scheduling: 0.19 ms + overhead 1.84 ms
+	all time: executing: 2386.17 ms callback: 0.00 ms waiting: 16.38 ms sleeping: 15479.48 ms scheduling: 2698.44 ms
+CPU 5                           
+	190 task(s)
+	time split: total 17884.13 ms = executing: 2384.88 ms + callback: 2.90 ms + waiting: 0.38 ms + sleeping: 15493.80 ms + scheduling: 0.17 ms + overhead 1.99 ms
+	all time: executing: 2384.88 ms callback: 2.90 ms waiting: 0.38 ms sleeping: 15493.80 ms scheduling: 2460.92 ms
+CPU 5                           
+	161 task(s)
+	time split: total 17894.10 ms = executing: 2379.55 ms + callback: 0.00 ms + waiting: 16.57 ms + sleeping: 15495.97 ms + scheduling: 0.16 ms + overhead 1.86 ms
+	all time: executing: 2379.55 ms callback: 0.00 ms waiting: 16.57 ms sleeping: 15495.97 ms scheduling: 2474.71 ms
+
+Global time split: total 125258.59 ms = executing: 17616.90 ms (14.06%) + callback: 2.50 ms (0.00%) + waiting: 107.46 ms (0.09%) + sleeping: 107506.26 ms (85.83%) + scheduling: 1.10 ms (0.00%) + overhead 24.38 ms (0.02%)
+#---------------------
+
+Global time split: total 125187.19 ms = executing: 17778.05 ms (14.20%) + callback: 6.23 ms (0.00%) + waiting: 86.98 ms (0.07%) + sleeping: 107290.47 ms (85.70%) + scheduling: 1.13 ms (0.00%) + overhead 24.33 ms (0.02%)
+#---------------------
+
+[starpu_comm_stats][15] TOTAL:	13813880.000000 B	13.173943 MB	 0.772188 B/s	 0.000001 MB/s
+[starpu_comm_stats][15] nb_sends: 122
+[starpu_comm_stats][15] max_sent_size: 400000
+[starpu_comm_stats][15] average sent size: 113228
+[starpu_comm_stats][15:0]	13813760.000000 B	13.173828 MB	 0.772181 B/s	 0.000001 MB/s
+[starpu_comm_stats][15:12]	120.000000 B	0.000114 MB	 0.000007 B/s	 0.000000 MB/s
+[starpu_comm_stats_memnode][15:NUMA 0]	13813880.000000 B	13.173943 MB	 0.772188 B/s	 0.000001 MB/s
+[starpu_comm_stats][15] NB_COOP: 0
+
+#---------------------
+
+[starpu_comm_stats][27] TOTAL:	13813880.000000 B	13.173943 MB	 0.772165 B/s	 0.000001 MB/s
+[starpu_comm_stats][27] nb_sends: 122
+Worker stats:
+CUDA 0.0 (NVIDIA L4 19.8 GiB 35:00.0)
+[starpu_comm_stats][27] max_sent_size: 400000
+[starpu_comm_stats][27] average sent size: 113228
+	1891 task(s)
+[starpu_comm_stats][27:0]	13813760.000000 B	13.173828 MB	 0.772159 B/s	 0.000001 MB/s
+	time split: total 17890.12 ms = executing: 3210.54 ms + callback: 3.67 ms + waiting: 11.07 ms + sleeping: 14655.79 ms + scheduling: 0.00 ms + overhead 9.05 ms
+	all time: executing: 3210.54 ms callback: 3.67 ms waiting: 11.63 ms sleeping: 14667.57 ms scheduling: 14668.29 ms
+CPU 0                           
+[starpu_comm_stats][27:28]	120.000000 B	0.000114 MB	 0.000007 B/s	 0.000000 MB/s
+	364 task(s)
+[starpu_comm_stats_memnode][27:NUMA 0]	13813880.000000 B	13.173943 MB	 0.772165 B/s	 0.000001 MB/s
+	time split: total 17890.28 ms = executing: 2551.84 ms + callback: 0.00 ms + waiting: 29.79 ms + sleeping: 15303.70 ms + scheduling: 0.21 ms + overhead 4.73 ms
+	all time: executing: 2551.84 ms callback: 0.00 ms waiting: 29.79 ms sleeping: 15303.70 ms scheduling: 2535.65 ms
+[starpu_comm_stats][27] NB_COOP: 0
+CPU 1                           
+
+#---------------------
+	188 task(s)
+Worker stats:
+	time split: total 17890.42 ms = executing: 2432.99 ms + callback: 0.00 ms + waiting: 16.90 ms + sleeping: 15438.23 ms + scheduling: 0.19 ms + overhead 2.11 ms
+	all time: executing: 2432.99 ms callback: 0.00 ms waiting: 16.90 ms sleeping: 15438.23 ms scheduling: 2425.01 ms
+CUDA 0.0 (NVIDIA L4 19.8 GiB 35:00.0)
+CPU 2                           
+	1889 task(s)
+	165 task(s)
+	time split: total 17890.59 ms = executing: 3209.69 ms + callback: 2.67 ms + waiting: 10.44 ms + sleeping: 14658.19 ms + scheduling: 0.00 ms + overhead 9.61 ms
+	all time: executing: 3209.69 ms callback: 2.67 ms waiting: 11.00 ms sleeping: 14668.94 ms scheduling: 14669.68 ms
+
+[starpu_comm_stats][14] TOTAL:	13813880.000000 B	13.173943 MB	 0.772827 B/s	 0.000001 MB/s
+	time split: total 17890.55 ms = executing: 2425.25 ms + callback: 0.00 ms + waiting: 16.23 ms + sleeping: 15446.95 ms + scheduling: 0.18 ms + overhead 1.95 ms
+	all time: executing: 2425.25 ms callback: 0.00 ms waiting: 16.23 ms sleeping: 15446.95 ms scheduling: 2912.83 ms
+CPU 0                           
+[starpu_comm_stats][14] nb_sends: 122
+CPU 3                           
+	401 task(s)
+[starpu_comm_stats][14] max_sent_size: 400000
+
+[starpu_comm_stats][12] TOTAL:	13813880.000000 B	13.173943 MB	 0.772103 B/s	 0.000001 MB/s
+	168 task(s)
+	time split: total 17890.71 ms = executing: 2506.75 ms + callback: 5.76 ms + waiting: 28.79 ms + sleeping: 15343.75 ms + scheduling: 0.26 ms + overhead 5.40 ms
+	all time: executing: 2506.75 ms callback: 5.76 ms waiting: 28.79 ms sleeping: 15343.75 ms scheduling: 2824.01 ms
+[starpu_comm_stats][14] average sent size: 113228
+[starpu_comm_stats][12] nb_sends: 122
+
+[starpu_comm_stats][8] TOTAL:	13813880.000000 B	13.173943 MB	 0.772516 B/s	 0.000001 MB/s
+	time split: total 17890.69 ms = executing: 2428.63 ms + callback: 0.00 ms + waiting: 16.03 ms + sleeping: 15444.06 ms + scheduling: 0.17 ms + overhead 1.78 ms
+	all time: executing: 2428.63 ms callback: 0.00 ms waiting: 16.03 ms sleeping: 15444.06 ms scheduling: 2904.28 ms
+CPU 1                           
+[starpu_comm_stats][14:0]	13813760.000000 B	13.173828 MB	 0.772820 B/s	 0.000001 MB/s
+[starpu_comm_stats][12] max_sent_size: 400000
+[starpu_comm_stats][8] nb_sends: 122
+CPU 4                           
+	182 task(s)
+[starpu_comm_stats][14:12]	120.000000 B	0.000114 MB	 0.000007 B/s	 0.000000 MB/s
+[starpu_comm_stats][12] average sent size: 113228
+[starpu_comm_stats][8] max_sent_size: 400000
+	160 task(s)
+	time split: total 17890.83 ms = executing: 2388.29 ms + callback: 0.00 ms + waiting: 18.44 ms + sleeping: 15481.53 ms + scheduling: 0.21 ms + overhead 2.36 ms
+	all time: executing: 2388.29 ms callback: 0.00 ms waiting: 18.44 ms sleeping: 15481.53 ms scheduling: 2855.74 ms
+[starpu_comm_stats_memnode][14:NUMA 0]	13813880.000000 B	13.173943 MB	 0.772827 B/s	 0.000001 MB/s
+[starpu_comm_stats][12:0]	13813880.000000 B	13.173943 MB	 0.772103 B/s	 0.000001 MB/s
+[starpu_comm_stats][8] average sent size: 113228
+	time split: total 17890.82 ms = executing: 2425.98 ms + callback: 0.00 ms + waiting: 0.25 ms + sleeping: 15462.68 ms + scheduling: 0.16 ms + overhead 1.74 ms
+	all time: executing: 2425.98 ms callback: 0.00 ms waiting: 0.25 ms sleeping: 15462.68 ms scheduling: 2659.32 ms
+CPU 2                           
+[starpu_comm_stats][14] NB_COOP: 0
+[starpu_comm_stats_memnode][12:NUMA 0]	13813880.000000 B	13.173943 MB	 0.772103 B/s	 0.000001 MB/s
+[starpu_comm_stats][8:0]	13813760.000000 B	13.173828 MB	 0.772509 B/s	 0.000001 MB/s
+CPU 5                           
+	164 task(s)
+
+#---------------------
+[starpu_comm_stats][12] NB_COOP: 0
+[starpu_comm_stats][8:12]	120.000000 B	0.000114 MB	 0.000007 B/s	 0.000000 MB/s
+	184 task(s)
+	time split: total 17890.94 ms = executing: 2384.49 ms + callback: 0.00 ms + waiting: 16.33 ms + sleeping: 15487.86 ms + scheduling: 0.20 ms + overhead 2.06 ms
+	all time: executing: 2384.49 ms callback: 0.00 ms waiting: 16.33 ms sleeping: 15487.86 ms scheduling: 2649.97 ms
+Worker stats:
+
+#---------------------
+[starpu_comm_stats_memnode][8:NUMA 0]	13813880.000000 B	13.173943 MB	 0.772516 B/s	 0.000001 MB/s
+	time split: total 17890.94 ms = executing: 2422.18 ms + callback: 0.00 ms + waiting: 16.34 ms + sleeping: 15450.21 ms + scheduling: 0.17 ms + overhead 2.04 ms
+	all time: executing: 2422.18 ms callback: 0.00 ms waiting: 16.34 ms sleeping: 15450.21 ms scheduling: 2432.81 ms
+CPU 3                           
+CUDA 0.0 (NVIDIA L4 19.8 GiB 35:00.0)
+Worker stats:
+[starpu_comm_stats][8] NB_COOP: 0
+
+Global time split: total 125233.82 ms = executing: 17897.41 ms (14.29%) + callback: 3.67 ms (0.00%) + waiting: 106.62 ms (0.09%) + sleeping: 107201.62 ms (85.60%) + scheduling: 1.08 ms (0.00%) + overhead 23.42 ms (0.02%)
+	162 task(s)
+	1889 task(s)
+CUDA 0.0 (NVIDIA L4 19.8 GiB 35:00.0)
+
+#---------------------
+#---------------------
+	time split: total 17891.05 ms = executing: 2384.26 ms + callback: 0.00 ms + waiting: 16.25 ms + sleeping: 15488.26 ms + scheduling: 0.19 ms + overhead 2.08 ms
+	all time: executing: 2384.26 ms callback: 0.00 ms waiting: 16.25 ms sleeping: 15488.26 ms scheduling: 2441.10 ms
+	time split: total 17875.31 ms = executing: 3206.62 ms + callback: 2.01 ms + waiting: 8.40 ms + sleeping: 14649.23 ms + scheduling: 0.00 ms + overhead 9.04 ms
+	all time: executing: 3206.62 ms callback: 2.01 ms waiting: 8.94 ms sleeping: 14659.65 ms scheduling: 14660.36 ms
+	2076 task(s)
+Worker stats:
+
+[starpu_comm_stats][3] TOTAL:	13813880.000000 B	13.173943 MB	 0.772787 B/s	 0.000001 MB/s
+CPU 4                           
+CPU 0                           
+	time split: total 17892.04 ms = executing: 3226.72 ms + callback: 15.46 ms + waiting: 12.06 ms + sleeping: 14626.93 ms + scheduling: 0.00 ms + overhead 10.88 ms
+	all time: executing: 3226.72 ms callback: 15.46 ms waiting: 17.07 ms sleeping: 14644.77 ms scheduling: 14645.66 ms
+CUDA 0.0 (NVIDIA L4 19.8 GiB 35:00.0)
+[starpu_comm_stats][3] nb_sends: 122
+	162 task(s)
+	386 task(s)
+CPU 0                           
+
+[starpu_comm_stats][21] TOTAL:	13813880.000000 B	13.173943 MB	 0.772152 B/s	 0.000001 MB/s
+[starpu_comm_stats][21] nb_sends: 122
+[starpu_comm_stats][21] max_sent_size: 400000
+[starpu_comm_stats][21] average sent size: 113228
+[starpu_comm_stats][21:0]	13813760.000000 B	13.173828 MB	 0.772145 B/s	 0.000001 MB/s
+[starpu_comm_stats][21:20]	120.000000 B	0.000114 MB	 0.000007 B/s	 0.000000 MB/s
+[starpu_comm_stats_memnode][21:NUMA 0]	13813880.000000 B	13.173943 MB	 0.772152 B/s	 0.000001 MB/s
+[starpu_comm_stats][21] NB_COOP: 0
+
+#---------------------
+Worker stats:
+CUDA 0.0 (NVIDIA L4 19.8 GiB 35:00.0)
+	1895 task(s)
+	time split: total 17890.51 ms = executing: 3209.29 ms + callback: 2.16 ms + waiting: 9.99 ms + sleeping: 14659.16 ms + scheduling: 0.00 ms + overhead 9.91 ms
+	all time: executing: 3209.29 ms callback: 2.16 ms waiting: 10.53 ms sleeping: 14669.45 ms scheduling: 14670.12 ms
+CPU 0                           
+	374 task(s)
+	time split: total 17890.52 ms = executing: 2515.75 ms + callback: 0.00 ms + waiting: 26.61 ms + sleeping: 15341.44 ms + scheduling: 0.24 ms + overhead 6.48 ms
+	all time: executing: 2515.75 ms callback: 0.00 ms waiting: 26.61 ms sleeping: 15341.44 ms scheduling: 2891.17 ms
+CPU 1                           
+	181 task(s)
+	time split: total 17890.53 ms = executing: 2395.86 ms + callback: 0.00 ms + waiting: 20.82 ms + sleeping: 15471.29 ms + scheduling: 0.22 ms + overhead 2.33 ms
+	all time: executing: 2395.86 ms callback: 0.00 ms waiting: 20.82 ms sleeping: 15471.29 ms scheduling: 2940.55 ms
+CPU 2                           
+	171 task(s)
+	time split: total 17890.53 ms = executing: 2392.44 ms + callback: 0.00 ms + waiting: 16.52 ms + sleeping: 15479.10 ms + scheduling: 0.22 ms + overhead 2.24 ms
+	all time: executing: 2392.44 ms callback: 0.00 ms waiting: 16.52 ms sleeping: 15479.10 ms scheduling: 2672.69 ms
+CPU 3                           
+	161 task(s)
+	time split: total 17890.54 ms = executing: 2390.90 ms + callback: 0.00 ms + waiting: 16.53 ms + sleeping: 15480.81 ms + scheduling: 0.20 ms + overhead 2.10 ms
+	all time: executing: 2390.90 ms callback: 0.00 ms waiting: 16.53 ms sleeping: 15480.81 ms scheduling: 2454.49 ms
+CPU 4                           
+	157 task(s)
+	time split: total 17891.16 ms = executing: 2385.04 ms + callback: 0.00 ms + waiting: 16.60 ms + sleeping: 15487.29 ms + scheduling: 0.19 ms + overhead 2.04 ms
+	all time: executing: 2385.04 ms callback: 0.00 ms waiting: 16.60 ms sleeping: 15487.29 ms scheduling: 2857.29 ms
+	time split: total 17875.43 ms = executing: 2593.68 ms + callback: 0.17 ms + waiting: 28.12 ms + sleeping: 15248.63 ms + scheduling: 0.22 ms + overhead 4.61 ms
+	all time: executing: 2593.68 ms callback: 0.17 ms waiting: 28.12 ms sleeping: 15248.63 ms scheduling: 2852.39 ms
+	368 task(s)
+	1889 task(s)
+[starpu_comm_stats][3] max_sent_size: 400000
+CPU 5                           
+CPU 1                           
+	time split: total 17892.16 ms = executing: 2501.55 ms + callback: 0.82 ms + waiting: 30.96 ms + sleeping: 15355.37 ms + scheduling: 0.22 ms + overhead 3.24 ms
+	all time: executing: 2501.55 ms callback: 0.82 ms waiting: 30.96 ms sleeping: 15355.37 ms scheduling: 2872.18 ms
+	time split: total 17882.50 ms = executing: 3209.40 ms + callback: 2.16 ms + waiting: 10.46 ms + sleeping: 14651.24 ms + scheduling: 0.00 ms + overhead 9.24 ms
+	all time: executing: 3209.40 ms callback: 2.16 ms waiting: 11.00 ms sleeping: 14661.59 ms scheduling: 14662.26 ms
+[starpu_comm_stats][3] average sent size: 113228
+	time split: total 17890.54 ms = executing: 2387.57 ms + callback: 0.00 ms + waiting: 16.68 ms + sleeping: 15484.00 ms + scheduling: 0.20 ms + overhead 2.08 ms
+	all time: executing: 2387.57 ms callback: 0.00 ms waiting: 16.68 ms sleeping: 15484.00 ms scheduling: 3003.06 ms
+CPU 5                           
+	181 task(s)
+	time split: total 17890.55 ms = executing: 2387.12 ms + callback: 0.00 ms + waiting: 16.61 ms + sleeping: 15484.30 ms + scheduling: 0.21 ms + overhead 2.31 ms
+	all time: executing: 2387.12 ms callback: 0.00 ms waiting: 16.61 ms sleeping: 15484.30 ms scheduling: 2704.19 ms
+
+Global time split: total 125233.71 ms = executing: 17678.94 ms (14.12%) + callback: 2.16 ms (0.00%) + waiting: 123.77 ms (0.10%) + sleeping: 107400.10 ms (85.76%) + scheduling: 1.29 ms (0.00%) + overhead 27.45 ms (0.02%)
+#---------------------
+	160 task(s)
+	193 task(s)
+CPU 1                           
+CPU 0                           
+[starpu_comm_stats][3:0]	13813880.000000 B	13.173943 MB	 0.772787 B/s	 0.000001 MB/s
+	time split: total 17891.28 ms = executing: 2382.67 ms + callback: 0.00 ms + waiting: 16.46 ms + sleeping: 15489.91 ms + scheduling: 0.20 ms + overhead 2.05 ms
+	all time: executing: 2382.67 ms callback: 0.00 ms waiting: 16.46 ms sleeping: 15489.91 ms scheduling: 2640.49 ms
+	time split: total 17875.54 ms = executing: 2421.60 ms + callback: 0.00 ms + waiting: 18.94 ms + sleeping: 15432.72 ms + scheduling: 0.19 ms + overhead 2.09 ms
+	all time: executing: 2421.60 ms callback: 0.00 ms waiting: 18.94 ms sleeping: 15432.72 ms scheduling: 2933.17 ms
+	182 task(s)
+	377 task(s)
+[starpu_comm_stats_memnode][3:NUMA 0]	13813880.000000 B	13.173943 MB	 0.772787 B/s	 0.000001 MB/s
+
+Global time split: total 125236.54 ms = executing: 17641.19 ms (14.09%) + callback: 8.42 ms (0.01%) + waiting: 123.30 ms (0.10%) + sleeping: 107436.79 ms (85.79%) + scheduling: 1.25 ms (0.00%) + overhead 25.59 ms (0.02%)
+CPU 2                           
+	time split: total 17892.27 ms = executing: 2384.95 ms + callback: 0.03 ms + waiting: 0.50 ms + sleeping: 15504.38 ms + scheduling: 0.18 ms + overhead 2.22 ms
+	all time: executing: 2384.95 ms callback: 0.03 ms waiting: 0.50 ms sleeping: 15504.38 ms scheduling: 2957.19 ms
+	time split: total 17882.62 ms = executing: 2514.55 ms + callback: 0.00 ms + waiting: 26.15 ms + sleeping: 15336.32 ms + scheduling: 0.28 ms + overhead 5.32 ms
+	all time: executing: 2514.55 ms callback: 0.00 ms waiting: 26.15 ms sleeping: 15336.32 ms scheduling: 2545.68 ms
+[starpu_comm_stats][3] NB_COOP: 0
+#---------------------
+	166 task(s)
+CPU 2                           
+	time split: total 17875.66 ms = executing: 2409.09 ms + callback: 0.00 ms + waiting: 16.32 ms + sleeping: 15448.14 ms + scheduling: 0.18 ms + overhead 1.92 ms
+	all time: executing: 2409.09 ms callback: 0.00 ms waiting: 16.32 ms sleeping: 15448.14 ms scheduling: 2689.34 ms
+	167 task(s)
+CPU 1                           
+CPU 3                           
+	162 task(s)
+	time split: total 17875.78 ms = executing: 2408.73 ms + callback: 0.00 ms + waiting: 16.40 ms + sleeping: 15448.72 ms + scheduling: 0.18 ms + overhead 1.75 ms
+	all time: executing: 2408.73 ms callback: 0.00 ms waiting: 16.40 ms sleeping: 15448.72 ms scheduling: 2454.12 ms
+
+#---------------------
+CPU 4                           
+	168 task(s)
+	time split: total 17892.38 ms = executing: 2377.03 ms + callback: 0.00 ms + waiting: 16.74 ms + sleeping: 15496.42 ms + scheduling: 0.17 ms + overhead 2.03 ms
+	all time: executing: 2377.03 ms callback: 0.00 ms waiting: 16.74 ms sleeping: 15496.42 ms scheduling: 2711.14 ms
+CPU 3                           
+	159 task(s)
+	time split: total 17892.48 ms = executing: 2377.56 ms + callback: 0.00 ms + waiting: 16.80 ms + sleeping: 15496.12 ms + scheduling: 0.16 ms + overhead 1.85 ms
+	all time: executing: 2377.56 ms callback: 0.00 ms waiting: 16.80 ms sleeping: 15496.12 ms scheduling: 2470.75 ms
+CPU 4                           
+	177 task(s)
+	time split: total 17892.49 ms = executing: 2384.61 ms + callback: 0.18 ms + waiting: 16.80 ms + sleeping: 15488.77 ms + scheduling: 0.18 ms + overhead 1.95 ms
+	all time: executing: 2384.61 ms callback: 0.18 ms waiting: 16.80 ms sleeping: 15488.77 ms scheduling: 2961.60 ms
+CPU 5                           
+	201 task(s)
+	176 task(s)
+	time split: total 17875.90 ms = executing: 2413.48 ms + callback: 0.00 ms + waiting: 16.42 ms + sleeping: 15444.06 ms + scheduling: 0.18 ms + overhead 1.75 ms
+	all time: executing: 2413.48 ms callback: 0.00 ms waiting: 16.42 ms sleeping: 15444.06 ms scheduling: 2955.86 ms
+	time split: total 17882.73 ms = executing: 2385.96 ms + callback: 0.00 ms + waiting: 16.55 ms + sleeping: 15477.76 ms + scheduling: 0.17 ms + overhead 2.28 ms
+	all time: executing: 2385.96 ms callback: 0.00 ms waiting: 16.55 ms sleeping: 15477.76 ms scheduling: 2446.64 ms
+CPU 5                           
+
+[starpu_comm_stats][29] TOTAL:	13813880.000000 B	13.173943 MB	 0.772479 B/s	 0.000001 MB/s
+Worker stats:
+	156 task(s)
+	time split: total 17892.49 ms = executing: 2376.05 ms + callback: 2.02 ms + waiting: 25.57 ms + sleeping: 15486.57 ms + scheduling: 0.17 ms + overhead 2.12 ms
+	all time: executing: 2376.05 ms callback: 2.02 ms waiting: 25.57 ms sleeping: 15486.57 ms scheduling: 2712.60 ms
+
+Global time split: total 125246.31 ms = executing: 17628.47 ms (14.08%) + callback: 18.51 ms (0.01%) + waiting: 119.42 ms (0.10%) + sleeping: 107454.55 ms (85.79%) + scheduling: 1.08 ms (0.00%) + overhead 24.27 ms (0.02%)
+#---------------------
+CPU 2                           
+[starpu_comm_stats][29] nb_sends: 122
+CUDA 0.0 (NVIDIA L4 19.8 GiB 35:00.0)
+	time split: total 17876.01 ms = executing: 2404.73 ms + callback: 0.00 ms + waiting: 16.42 ms + sleeping: 15452.85 ms + scheduling: 0.18 ms + overhead 1.83 ms
+	all time: executing: 2404.73 ms callback: 0.00 ms waiting: 16.42 ms sleeping: 15452.85 ms scheduling: 2710.71 ms
+	172 task(s)
+
+[starpu_comm_stats][2] TOTAL:	13813880.000000 B	13.173943 MB	 0.772553 B/s	 0.000001 MB/s
+[starpu_comm_stats][2] nb_sends: 122
+[starpu_comm_stats][2] max_sent_size: 400000
+[starpu_comm_stats][2] average sent size: 113228
+[starpu_comm_stats][2:0]	13813880.000000 B	13.173943 MB	 0.772553 B/s	 0.000001 MB/s
+[starpu_comm_stats_memnode][2:NUMA 0]	13813880.000000 B	13.173943 MB	 0.772553 B/s	 0.000001 MB/s
+[starpu_comm_stats][2] NB_COOP: 0
+
+#---------------------
+Worker stats:
+CUDA 0.0 (NVIDIA L4 19.8 GiB 35:00.0)
+	1890 task(s)
+	time split: total 17881.15 ms = executing: 3205.25 ms + callback: 8.13 ms + waiting: 10.90 ms + sleeping: 14647.41 ms + scheduling: 0.00 ms + overhead 9.47 ms
+	all time: executing: 3205.25 ms callback: 8.13 ms waiting: 11.43 ms sleeping: 14664.06 ms scheduling: 14664.75 ms
+CPU 0                           
+	392 task(s)
+	time split: total 17881.16 ms = executing: 2564.75 ms + callback: 0.12 ms + waiting: 28.51 ms + sleeping: 15282.47 ms + scheduling: 0.21 ms + overhead 5.10 ms
+	all time: executing: 2564.75 ms callback: 0.12 ms waiting: 28.51 ms sleeping: 15282.47 ms scheduling: 2812.54 ms
+CPU 1                           
+	179 task(s)
+	time split: total 17881.17 ms = executing: 2382.84 ms + callback: 0.00 ms + waiting: 18.80 ms + sleeping: 15477.24 ms + scheduling: 0.17 ms + overhead 2.10 ms
+	all time: executing: 2382.84 ms callback: 0.00 ms waiting: 18.80 ms sleeping: 15477.24 ms scheduling: 2638.48 ms
+CPU 2                           
+	172 task(s)
+	time split: total 17881.17 ms = executing: 2382.06 ms + callback: 0.00 ms + waiting: 16.56 ms + sleeping: 15480.35 ms + scheduling: 0.19 ms + overhead 2.02 ms
+	all time: executing: 2382.06 ms callback: 0.00 ms waiting: 16.56 ms sleeping: 15480.35 ms scheduling: 2425.29 ms
+CPU 3                           
+	163 task(s)
+	time split: total 17881.18 ms = executing: 2378.99 ms + callback: 0.00 ms + waiting: 16.80 ms + sleeping: 15483.39 ms + scheduling: 0.16 ms + overhead 1.84 ms
+	all time: executing: 2378.99 ms callback: 0.00 ms waiting: 16.80 ms sleeping: 15483.39 ms scheduling: 2935.77 ms
+CPU 4                           
+	164 task(s)
+	time split: total 17881.18 ms = executing: 2379.91 ms + callback: 0.00 ms + waiting: 0.19 ms + sleeping: 15499.08 ms + scheduling: 0.17 ms + overhead 1.83 ms
+	all time: executing: 2379.91 ms callback: 0.00 ms waiting: 0.19 ms sleeping: 15499.08 ms scheduling: 2959.44 ms
+CPU 5                           
+	160 task(s)
+	time split: total 17881.19 ms = executing: 2378.79 ms + callback: 0.00 ms + waiting: 16.63 ms + sleeping: 15483.72 ms + scheduling: 0.17 ms + overhead 1.88 ms
+	all time: executing: 2378.79 ms callback: 0.00 ms waiting: 16.63 ms sleeping: 15483.72 ms scheduling: 2688.80 ms
+[starpu_comm_stats][29] max_sent_size: 400000
+	1879 task(s)
+
+Global time split: total 125129.63 ms = executing: 17857.92 ms (14.27%) + callback: 2.19 ms (0.00%) + waiting: 121.03 ms (0.10%) + sleeping: 107124.36 ms (85.61%) + scheduling: 1.14 ms (0.00%) + overhead 22.99 ms (0.02%)
+	time split: total 17882.83 ms = executing: 2388.54 ms + callback: 0.00 ms + waiting: 16.17 ms + sleeping: 15475.82 ms + scheduling: 0.18 ms + overhead 2.11 ms
+	all time: executing: 2388.54 ms callback: 0.00 ms waiting: 16.17 ms sleeping: 15475.82 ms scheduling: 2896.71 ms
+
+Global time split: total 125168.20 ms = executing: 17672.58 ms (14.12%) + callback: 8.25 ms (0.01%) + waiting: 108.40 ms (0.09%) + sleeping: 107353.65 ms (85.77%) + scheduling: 1.07 ms (0.00%) + overhead 24.25 ms (0.02%)
+#---------------------
+[starpu_comm_stats][29] average sent size: 113228
+	time split: total 17876.13 ms = executing: 3206.62 ms + callback: 2.59 ms + waiting: 10.45 ms + sleeping: 14647.76 ms + scheduling: 0.00 ms + overhead 8.71 ms
+	all time: executing: 3206.62 ms callback: 2.59 ms waiting: 11.00 ms sleeping: 14658.51 ms scheduling: 14659.26 ms
+#---------------------
+CPU 3                           
+[starpu_comm_stats][29:0]	13813760.000000 B	13.173828 MB	 0.772473 B/s	 0.000001 MB/s
+CPU 0                           
+	158 task(s)
+[starpu_comm_stats][29:28]	120.000000 B	0.000114 MB	 0.000007 B/s	 0.000000 MB/s
+	375 task(s)
+	time split: total 17882.93 ms = executing: 2380.55 ms + callback: 0.00 ms + waiting: 16.31 ms + sleeping: 15483.96 ms + scheduling: 0.16 ms + overhead 1.95 ms
+	all time: executing: 2380.55 ms callback: 0.00 ms waiting: 16.31 ms sleeping: 15483.96 ms scheduling: 2913.64 ms
+[starpu_comm_stats_memnode][29:NUMA 0]	13813880.000000 B	13.173943 MB	 0.772479 B/s	 0.000001 MB/s
+	time split: total 17876.23 ms = executing: 2503.44 ms + callback: 0.00 ms + waiting: 26.15 ms + sleeping: 15341.60 ms + scheduling: 0.22 ms + overhead 4.82 ms
+	all time: executing: 2503.44 ms callback: 0.00 ms waiting: 26.15 ms sleeping: 15341.60 ms scheduling: 2558.74 ms
+CPU 4                           
+[starpu_comm_stats][29] NB_COOP: 0
+CPU 1                           
+	160 task(s)
+
+#---------------------
+	167 task(s)
+	time split: total 17883.03 ms = executing: 2386.45 ms + callback: 0.00 ms + waiting: 16.57 ms + sleeping: 15477.92 ms + scheduling: 0.17 ms + overhead 1.94 ms
+	all time: executing: 2386.45 ms callback: 0.00 ms waiting: 16.57 ms sleeping: 15477.92 ms scheduling: 2666.32 ms
+Worker stats:
+	time split: total 17876.34 ms = executing: 2441.42 ms + callback: 0.05 ms + waiting: 0.37 ms + sleeping: 15432.27 ms + scheduling: 0.16 ms + overhead 2.06 ms
+	all time: executing: 2441.42 ms callback: 0.05 ms waiting: 0.37 ms sleeping: 15432.27 ms scheduling: 2439.87 ms
+CPU 5                           
+CUDA 0.0 (NVIDIA L4 19.8 GiB 35:00.0)
+CPU 2                           
+	188 task(s)
+	1889 task(s)
+	167 task(s)
+	time split: total 17883.13 ms = executing: 2381.83 ms + callback: 0.10 ms + waiting: 16.44 ms + sleeping: 15482.56 ms + scheduling: 0.16 ms + overhead 2.04 ms
+	all time: executing: 2381.83 ms callback: 0.10 ms waiting: 16.44 ms sleeping: 15482.56 ms scheduling: 2445.57 ms
+	time split: total 17883.37 ms = executing: 3214.98 ms + callback: 2.05 ms + waiting: 10.30 ms + sleeping: 14646.64 ms + scheduling: 0.00 ms + overhead 9.39 ms
+	all time: executing: 3214.98 ms callback: 2.05 ms waiting: 10.89 ms sleeping: 14657.08 ms scheduling: 14657.79 ms
+	time split: total 17876.46 ms = executing: 2378.67 ms + callback: 0.00 ms + waiting: 15.73 ms + sleeping: 15480.03 ms + scheduling: 0.17 ms + overhead 1.86 ms
+	all time: executing: 2378.67 ms callback: 0.00 ms waiting: 15.73 ms sleeping: 15480.03 ms scheduling: 2927.13 ms
+
+Global time split: total 125179.78 ms = executing: 17647.28 ms (14.10%) + callback: 2.25 ms (0.00%) + waiting: 118.66 ms (0.09%) + sleeping: 107385.58 ms (85.79%) + scheduling: 1.13 ms (0.00%) + overhead 24.89 ms (0.02%)
+CPU 0                           
+CPU 3                           
+#---------------------
+	371 task(s)
+	161 task(s)
+	time split: total 17883.49 ms = executing: 2506.05 ms + callback: 0.00 ms + waiting: 29.98 ms + sleeping: 15341.71 ms + scheduling: 0.21 ms + overhead 5.53 ms
+	all time: executing: 2506.05 ms callback: 0.00 ms waiting: 29.98 ms sleeping: 15341.71 ms scheduling: 2815.14 ms
+	time split: total 17876.57 ms = executing: 2377.65 ms + callback: 0.00 ms + waiting: 15.83 ms + sleeping: 15480.99 ms + scheduling: 0.16 ms + overhead 1.95 ms
+	all time: executing: 2377.65 ms callback: 0.00 ms waiting: 15.83 ms sleeping: 15480.99 ms scheduling: 2920.62 ms
+CPU 1                           
+CPU 4                           
+	181 task(s)
+	175 task(s)
+	time split: total 17883.60 ms = executing: 2385.90 ms + callback: 0.00 ms + waiting: 16.19 ms + sleeping: 15479.17 ms + scheduling: 0.19 ms + overhead 2.15 ms
+	all time: executing: 2385.90 ms callback: 0.00 ms waiting: 16.19 ms sleeping: 15479.17 ms scheduling: 2848.17 ms
+	time split: total 17876.68 ms = executing: 2382.58 ms + callback: 0.13 ms + waiting: 16.11 ms + sleeping: 15475.80 ms + scheduling: 0.17 ms + overhead 1.89 ms
+	all time: executing: 2382.58 ms callback: 0.13 ms waiting: 16.11 ms sleeping: 15475.80 ms scheduling: 2682.14 ms
+CPU 2                           
+CPU 5                           
+	168 task(s)
+	196 task(s)
+	time split: total 17883.71 ms = executing: 2381.16 ms + callback: 0.00 ms + waiting: 16.11 ms + sleeping: 15484.20 ms + scheduling: 0.19 ms + overhead 2.05 ms
+	all time: executing: 2381.16 ms callback: 0.00 ms waiting: 16.11 ms sleeping: 15484.20 ms scheduling: 2611.88 ms
+	time split: total 17876.75 ms = executing: 2384.86 ms + callback: 0.00 ms + waiting: 15.87 ms + sleeping: 15473.76 ms + scheduling: 0.17 ms + overhead 2.08 ms
+	all time: executing: 2384.86 ms callback: 0.00 ms waiting: 15.87 ms sleeping: 15473.76 ms scheduling: 2445.32 ms
+CPU 3                           
+
+Global time split: total 125135.15 ms = executing: 17675.23 ms (14.12%) + callback: 2.77 ms (0.00%) + waiting: 100.51 ms (0.08%) + sleeping: 107332.21 ms (85.77%) + scheduling: 1.05 ms (0.00%) + overhead 23.38 ms (0.02%)
+	162 task(s)
+#---------------------
+	time split: total 17883.83 ms = executing: 2379.29 ms + callback: 0.00 ms + waiting: 16.05 ms + sleeping: 15486.41 ms + scheduling: 0.18 ms + overhead 1.90 ms
+	all time: executing: 2379.29 ms callback: 0.00 ms waiting: 16.05 ms sleeping: 15486.41 ms scheduling: 2429.01 ms
+CPU 4                           
+	160 task(s)
+	time split: total 17883.95 ms = executing: 2381.06 ms + callback: 0.00 ms + waiting: 16.33 ms + sleeping: 15484.50 ms + scheduling: 0.17 ms + overhead 1.88 ms
+	all time: executing: 2381.06 ms callback: 0.00 ms waiting: 16.33 ms sleeping: 15484.50 ms scheduling: 2868.48 ms
+CPU 5                           
+	189 task(s)
+	time split: total 17884.06 ms = executing: 2379.45 ms + callback: 1.60 ms + waiting: 0.48 ms + sleeping: 15500.28 ms + scheduling: 0.18 ms + overhead 2.07 ms
+	all time: executing: 2379.45 ms callback: 1.60 ms waiting: 0.48 ms sleeping: 15500.28 ms scheduling: 2627.35 ms
+
+Global time split: total 125186.00 ms = executing: 17627.90 ms (14.08%) + callback: 3.65 ms (0.00%) + waiting: 105.45 ms (0.08%) + sleeping: 107422.92 ms (85.81%) + scheduling: 1.12 ms (0.00%) + overhead 24.96 ms (0.02%)
+#---------------------
+
+[starpu_comm_stats][22] TOTAL:	13813880.000000 B	13.173943 MB	 0.772260 B/s	 0.000001 MB/s
+
+[starpu_comm_stats][20] TOTAL:	13813880.000000 B	13.173943 MB	 0.771878 B/s	 0.000001 MB/s
+[starpu_comm_stats][20] nb_sends: 122
+[starpu_comm_stats][20] max_sent_size: 400000
+[starpu_comm_stats][20] average sent size: 113228
+[starpu_comm_stats][20:0]	13813880.000000 B	13.173943 MB	 0.771878 B/s	 0.000001 MB/s
+[starpu_comm_stats_memnode][20:NUMA 0]	13813880.000000 B	13.173943 MB	 0.771878 B/s	 0.000001 MB/s
+[starpu_comm_stats][20] NB_COOP: 0
+
+#---------------------
+Worker stats:
+CUDA 0.0 (NVIDIA L4 19.8 GiB 35:00.0)
+	2086 task(s)
+	time split: total 17896.81 ms = executing: 3219.08 ms + callback: 7.32 ms + waiting: 13.20 ms + sleeping: 14646.21 ms + scheduling: 0.00 ms + overhead 10.99 ms
+	all time: executing: 3219.08 ms callback: 7.32 ms waiting: 18.81 ms sleeping: 14654.69 ms scheduling: 14655.50 ms
+CPU 0                           
+	372 task(s)
+	time split: total 17896.82 ms = executing: 2503.27 ms + callback: 0.87 ms + waiting: 26.24 ms + sleeping: 15363.03 ms + scheduling: 0.23 ms + overhead 3.18 ms
+	all time: executing: 2503.27 ms callback: 0.87 ms waiting: 26.24 ms sleeping: 15363.03 ms scheduling: 2907.66 ms
+CPU 1                           
+	179 task(s)
+	time split: total 17896.82 ms = executing: 2383.78 ms + callback: 0.04 ms + waiting: 16.43 ms + sleeping: 15494.30 ms + scheduling: 0.18 ms + overhead 2.09 ms
+	all time: executing: 2383.78 ms callback: 0.04 ms waiting: 16.43 ms sleeping: 15494.30 ms scheduling: 2943.43 ms
+CPU 2                           
+	173 task(s)
+	time split: total 17896.83 ms = executing: 2384.06 ms + callback: 0.00 ms + waiting: 15.75 ms + sleeping: 15494.86 ms + scheduling: 0.19 ms + overhead 1.98 ms
+	all time: executing: 2384.06 ms callback: 0.00 ms waiting: 15.75 ms sleeping: 15494.86 ms scheduling: 2670.63 ms
+CPU 3                           
+	158 task(s)
+	time split: total 17896.83 ms = executing: 2378.14 ms + callback: 0.00 ms + waiting: 15.99 ms + sleeping: 15500.60 ms + scheduling: 0.16 ms + overhead 1.94 ms
+	all time: executing: 2378.14 ms callback: 0.00 ms waiting: 15.99 ms sleeping: 15500.60 ms scheduling: 2451.44 ms
+CPU 4                           
+	168 task(s)
+
+[starpu_comm_stats][31] TOTAL:	13813880.000000 B	13.173943 MB	 0.772091 B/s	 0.000001 MB/s
+
+[starpu_comm_stats][26] TOTAL:	13813880.000000 B	13.173943 MB	 0.771850 B/s	 0.000001 MB/s
+
+[starpu_comm_stats][1] TOTAL:	13813880.000000 B	13.173943 MB	 0.771723 B/s	 0.000001 MB/s
+[starpu_comm_stats][1] nb_sends: 122
+[starpu_comm_stats][1] max_sent_size: 400000
+[starpu_comm_stats][1] average sent size: 113228
+[starpu_comm_stats][1:0]	13813880.000000 B	13.173943 MB	 0.771723 B/s	 0.000001 MB/s
+[starpu_comm_stats_memnode][1:NUMA 0]	13813880.000000 B	13.173943 MB	 0.771723 B/s	 0.000001 MB/s
+[starpu_comm_stats][1] NB_COOP: 0
+
+#---------------------
+Worker stats:
+CUDA 0.0 (NVIDIA L4 19.8 GiB 35:00.0)
+	1893 task(s)
+	time split: total 17900.40 ms = executing: 3215.51 ms + callback: 2.52 ms + waiting: 11.28 ms + sleeping: 14661.95 ms + scheduling: 0.00 ms + overhead 9.13 ms
+	all time: executing: 3215.51 ms callback: 2.52 ms waiting: 11.82 ms sleeping: 14672.77 ms scheduling: 14673.40 ms
+CPU 0                           
+	378 task(s)
+	time split: total 17900.41 ms = executing: 2513.88 ms + callback: 0.00 ms + waiting: 26.37 ms + sleeping: 15354.77 ms + scheduling: 0.25 ms + overhead 5.13 ms
+	all time: executing: 2513.88 ms callback: 0.00 ms waiting: 26.37 ms sleeping: 15354.77 ms scheduling: 2638.53 ms
+CPU 1                           
+	176 task(s)
+	time split: total 17900.41 ms = executing: 2384.07 ms + callback: 0.00 ms + waiting: 16.60 ms + sleeping: 15497.29 ms + scheduling: 0.19 ms + overhead 2.27 ms
+	all time: executing: 2384.07 ms callback: 0.00 ms waiting: 16.60 ms sleeping: 15497.29 ms scheduling: 2440.25 ms
+CPU 2                           
+	166 task(s)
+	time split: total 17900.42 ms = executing: 2381.94 ms + callback: 0.00 ms + waiting: 16.63 ms + sleeping: 15499.61 ms + scheduling: 0.18 ms + overhead 2.06 ms
+	all time: executing: 2381.94 ms callback: 0.00 ms waiting: 16.63 ms sleeping: 15499.61 ms scheduling: 3143.30 ms
+CPU 3                           
+	158 task(s)
+	time split: total 17900.42 ms = executing: 2382.96 ms + callback: 0.00 ms + waiting: 0.59 ms + sleeping: 15514.64 ms + scheduling: 0.18 ms + overhead 2.05 ms
+	all time: executing: 2382.96 ms callback: 0.00 ms waiting: 0.59 ms sleeping: 15514.64 ms scheduling: 2931.54 ms
+CPU 4                           
+	164 task(s)
+	time split: total 17900.43 ms = executing: 2386.91 ms + callback: 0.00 ms + waiting: 16.58 ms + sleeping: 15494.87 ms + scheduling: 0.19 ms + overhead 1.87 ms
+	all time: executing: 2386.91 ms callback: 0.00 ms waiting: 16.58 ms sleeping: 15494.87 ms scheduling: 2670.52 ms
+CPU 5                           
+	185 task(s)
+
+[starpu_comm_stats][7] TOTAL:	13813880.000000 B	13.173943 MB	 0.771389 B/s	 0.000001 MB/s
+
+[starpu_comm_stats][6] TOTAL:	13813880.000000 B	13.173943 MB	 0.772132 B/s	 0.000001 MB/s
+[starpu_comm_stats][6] nb_sends: 122
+[starpu_comm_stats][6] max_sent_size: 400000
+[starpu_comm_stats][6] average sent size: 113228
+[starpu_comm_stats][6:0]	13813880.000000 B	13.173943 MB	 0.772132 B/s	 0.000001 MB/s
+[starpu_comm_stats_memnode][6:NUMA 0]	13813880.000000 B	13.173943 MB	 0.772132 B/s	 0.000001 MB/s
+[starpu_comm_stats][6] NB_COOP: 0
+
+#---------------------
+Worker stats:
+CUDA 0.0 (NVIDIA L4 19.8 GiB 35:00.0)
+	1891 task(s)
+	time split: total 17890.93 ms = executing: 3210.15 ms + callback: 2.02 ms + waiting: 11.08 ms + sleeping: 14659.07 ms + scheduling: 0.00 ms + overhead 8.61 ms
+	all time: executing: 3210.15 ms callback: 2.02 ms waiting: 11.62 ms sleeping: 14669.35 ms scheduling: 14669.96 ms
+CPU 0                           
+	397 task(s)
+	time split: total 17890.94 ms = executing: 2534.79 ms + callback: 0.00 ms + waiting: 28.31 ms + sleeping: 15322.48 ms + scheduling: 0.24 ms + overhead 5.11 ms
+	all time: executing: 2534.79 ms callback: 0.00 ms waiting: 28.31 ms sleeping: 15322.48 ms scheduling: 2396.24 ms
+CPU 1                           
+	188 task(s)
+	time split: total 17890.95 ms = executing: 2415.74 ms + callback: 0.00 ms + waiting: 18.91 ms + sleeping: 15453.87 ms + scheduling: 0.19 ms + overhead 2.23 ms
+	all time: executing: 2415.74 ms callback: 0.00 ms waiting: 18.91 ms sleeping: 15453.87 ms scheduling: 2949.89 ms
+CPU 2                           
+	165 task(s)
+	time split: total 17890.95 ms = executing: 2406.92 ms + callback: 0.00 ms + waiting: 16.37 ms + sleeping: 15465.62 ms + scheduling: 0.18 ms + overhead 1.86 ms
+	all time: executing: 2406.92 ms callback: 0.00 ms waiting: 16.37 ms sleeping: 15465.62 ms scheduling: 2957.62 ms
+CPU 3                           
+	157 task(s)
+	time split: total 17890.96 ms = executing: 2404.96 ms + callback: 0.00 ms + waiting: 16.43 ms + sleeping: 15467.70 ms + scheduling: 0.19 ms + overhead 1.68 ms
+	all time: executing: 2404.96 ms callback: 0.00 ms waiting: 16.43 ms sleeping: 15467.70 ms scheduling: 2641.95 ms
+CPU 4                           
+	162 task(s)
+	time split: total 17890.96 ms = executing: 2409.43 ms + callback: 0.00 ms + waiting: 16.53 ms + sleeping: 15463.13 ms + scheduling: 0.17 ms + overhead 1.70 ms
+	all time: executing: 2409.43 ms callback: 0.00 ms waiting: 16.53 ms sleeping: 15463.13 ms scheduling: 2426.52 ms
+CPU 5                           
+	160 task(s)
+	time split: total 17890.97 ms = executing: 2409.23 ms + callback: 0.00 ms + waiting: 0.17 ms + sleeping: 15479.62 ms + scheduling: 0.18 ms + overhead 1.77 ms
+	all time: executing: 2409.23 ms callback: 0.00 ms waiting: 0.17 ms sleeping: 15479.62 ms scheduling: 2426.98 ms
+
+Global time split: total 125236.65 ms = executing: 17791.22 ms (14.21%) + callback: 2.02 ms (0.00%) + waiting: 107.80 ms (0.09%) + sleeping: 107311.50 ms (85.69%) + scheduling: 1.15 ms (0.00%) + overhead 22.97 ms (0.02%)
+#---------------------
+
+[starpu_comm_stats][19] TOTAL:	13813880.000000 B	13.173943 MB	 0.772105 B/s	 0.000001 MB/s
+[starpu_comm_stats][22] nb_sends: 122
+	time split: total 17896.84 ms = executing: 2380.23 ms + callback: 0.22 ms + waiting: 0.36 ms + sleeping: 15513.83 ms + scheduling: 0.18 ms + overhead 2.03 ms
+	all time: executing: 2380.23 ms callback: 0.22 ms waiting: 0.36 ms sleeping: 15513.83 ms scheduling: 3019.81 ms
+CPU 5                           
+	194 task(s)
+	time split: total 17896.84 ms = executing: 2379.24 ms + callback: 0.16 ms + waiting: 16.13 ms + sleeping: 15499.18 ms + scheduling: 0.17 ms + overhead 1.96 ms
+	all time: executing: 2379.24 ms callback: 0.16 ms waiting: 16.13 ms sleeping: 15499.18 ms scheduling: 2695.61 ms
+
+Global time split: total 125277.80 ms = executing: 17627.80 ms (14.07%) + callback: 8.60 ms (0.01%) + waiting: 104.10 ms (0.08%) + sleeping: 107512.00 ms (85.82%) + scheduling: 1.11 ms (0.00%) + overhead 24.17 ms (0.02%)
+#---------------------
+[starpu_comm_stats][31] nb_sends: 122
+[starpu_comm_stats][26] nb_sends: 122
+	time split: total 17900.43 ms = executing: 2383.27 ms + callback: 0.00 ms + waiting: 16.72 ms + sleeping: 15498.13 ms + scheduling: 0.19 ms + overhead 2.12 ms
+	all time: executing: 2383.27 ms callback: 0.00 ms waiting: 16.72 ms sleeping: 15498.13 ms scheduling: 2440.32 ms
+
+Global time split: total 125302.91 ms = executing: 17648.55 ms (14.08%) + callback: 2.52 ms (0.00%) + waiting: 104.77 ms (0.08%) + sleeping: 107521.25 ms (85.81%) + scheduling: 1.18 ms (0.00%) + overhead 24.64 ms (0.02%)
+#---------------------
+[starpu_comm_stats][7] nb_sends: 122
+[starpu_comm_stats][19] nb_sends: 122
+[starpu_comm_stats][22] max_sent_size: 400000
+[starpu_comm_stats][31] max_sent_size: 400000
+[starpu_comm_stats][26] max_sent_size: 400000
+[starpu_comm_stats][7] max_sent_size: 400000
+[starpu_comm_stats][19] max_sent_size: 400000
+[starpu_comm_stats][22] average sent size: 113228
+[starpu_comm_stats][31] average sent size: 113228
+[starpu_comm_stats][26] average sent size: 113228
+[starpu_comm_stats][7] average sent size: 113228
+[starpu_comm_stats][19] average sent size: 113228
+[starpu_comm_stats][22:0]	13813760.000000 B	13.173828 MB	 0.772253 B/s	 0.000001 MB/s
+[starpu_comm_stats][31:0]	13813760.000000 B	13.173828 MB	 0.772084 B/s	 0.000001 MB/s
+[starpu_comm_stats][26:0]	13813760.000000 B	13.173828 MB	 0.771843 B/s	 0.000001 MB/s
+[starpu_comm_stats][7:0]	13813880.000000 B	13.173943 MB	 0.771389 B/s	 0.000001 MB/s
+[starpu_comm_stats][19:0]	13813760.000000 B	13.173828 MB	 0.772098 B/s	 0.000001 MB/s
+[starpu_comm_stats][22:20]	120.000000 B	0.000114 MB	 0.000007 B/s	 0.000000 MB/s
+[starpu_comm_stats][31:28]	120.000000 B	0.000114 MB	 0.000007 B/s	 0.000000 MB/s
+[starpu_comm_stats][26:28]	120.000000 B	0.000114 MB	 0.000007 B/s	 0.000000 MB/s
+[starpu_comm_stats_memnode][7:NUMA 0]	13813880.000000 B	13.173943 MB	 0.771389 B/s	 0.000001 MB/s
+[starpu_comm_stats][19:20]	120.000000 B	0.000114 MB	 0.000007 B/s	 0.000000 MB/s
+[starpu_comm_stats_memnode][22:NUMA 0]	13813880.000000 B	13.173943 MB	 0.772260 B/s	 0.000001 MB/s
+[starpu_comm_stats_memnode][31:NUMA 0]	13813880.000000 B	13.173943 MB	 0.772091 B/s	 0.000001 MB/s
+[starpu_comm_stats_memnode][26:NUMA 0]	13813880.000000 B	13.173943 MB	 0.771850 B/s	 0.000001 MB/s
+[starpu_comm_stats][7] NB_COOP: 0
+[starpu_comm_stats_memnode][19:NUMA 0]	13813880.000000 B	13.173943 MB	 0.772105 B/s	 0.000001 MB/s
+[starpu_comm_stats][22] NB_COOP: 0
+[starpu_comm_stats][31] NB_COOP: 0
+[starpu_comm_stats][26] NB_COOP: 0
+
+#---------------------
+[starpu_comm_stats][19] NB_COOP: 0
+
+#---------------------
+
+#---------------------
+
+#---------------------
+Worker stats:
+
+#---------------------
+Worker stats:
+Worker stats:
+Worker stats:
+CUDA 0.0 (NVIDIA L4 19.8 GiB 35:00.0)
+Worker stats:
+CUDA 0.0 (NVIDIA L4 19.8 GiB 35:00.0)
+CUDA 0.0 (NVIDIA L4 19.8 GiB 35:00.0)
+CUDA 0.0 (NVIDIA L4 19.8 GiB 35:00.0)
+	1889 task(s)
+	time split: total 17897.85 ms = executing: 3210.31 ms + callback: 3.13 ms + waiting: 10.53 ms + sleeping: 14664.40 ms + scheduling: 0.00 ms + overhead 9.48 ms
+	all time: executing: 3210.31 ms callback: 3.13 ms waiting: 11.13 ms sleeping: 14675.64 ms scheduling: 14676.42 ms
+CPU 0                           
+	368 task(s)
+	time split: total 17897.89 ms = executing: 2510.81 ms + callback: 0.00 ms + waiting: 25.99 ms + sleeping: 15356.22 ms + scheduling: 0.21 ms + overhead 4.66 ms
+	all time: executing: 2510.81 ms callback: 0.00 ms waiting: 25.99 ms sleeping: 15356.22 ms scheduling: 2411.45 ms
+CPU 1                           
+	187 task(s)
+	time split: total 17897.90 ms = executing: 2392.24 ms + callback: 0.00 ms + waiting: 16.12 ms + sleeping: 15487.25 ms + scheduling: 0.19 ms + overhead 2.11 ms
+	all time: executing: 2392.24 ms callback: 0.00 ms waiting: 16.12 ms sleeping: 15487.25 ms scheduling: 2854.55 ms
+CPU 2                           
+	163 task(s)
+	time split: total 17897.91 ms = executing: 2383.40 ms + callback: 0.00 ms + waiting: 15.23 ms + sleeping: 15497.18 ms + scheduling: 0.18 ms + overhead 1.93 ms
+	all time: executing: 2383.40 ms callback: 0.00 ms waiting: 15.23 ms sleeping: 15497.18 ms scheduling: 2878.40 ms
+CPU 3                           
+	166 task(s)
+	time split: total 17897.92 ms = executing: 2386.78 ms + callback: 0.00 ms + waiting: 0.17 ms + sleeping: 15508.90 ms + scheduling: 0.18 ms + overhead 1.88 ms
+	all time: executing: 2386.78 ms callback: 0.00 ms waiting: 0.17 ms sleeping: 15508.90 ms scheduling: 2674.85 ms
+CPU 4                           
+	155 task(s)
+	time split: total 17897.92 ms = executing: 2382.33 ms + callback: 0.00 ms + waiting: 15.33 ms + sleeping: 15498.27 ms + scheduling: 0.16 ms + overhead 1.83 ms
+	all time: executing: 2382.33 ms callback: 0.00 ms waiting: 15.33 ms sleeping: 15498.27 ms scheduling: 2442.99 ms
+CPU 5                           
+	192 task(s)
+	time split: total 17897.93 ms = executing: 2385.21 ms + callback: 1.57 ms + waiting: 0.36 ms + sleeping: 15508.72 ms + scheduling: 0.17 ms + overhead 1.90 ms
+	all time: executing: 2385.21 ms callback: 1.57 ms waiting: 0.36 ms sleeping: 15508.72 ms scheduling: 2439.78 ms
+
+Global time split: total 125285.32 ms = executing: 17651.07 ms (14.09%) + callback: 4.70 ms (0.00%) + waiting: 83.73 ms (0.07%) + sleeping: 107520.93 ms (85.82%) + scheduling: 1.09 ms (0.00%) + overhead 23.80 ms (0.02%)
+#---------------------
+	1889 task(s)
+CUDA 0.0 (NVIDIA L4 19.8 GiB 35:00.0)
+	1894 task(s)
+	1889 task(s)
+	time split: total 17908.55 ms = executing: 3211.66 ms + callback: 1.89 ms + waiting: 8.29 ms + sleeping: 14677.96 ms + scheduling: 0.00 ms + overhead 8.74 ms
+	all time: executing: 3211.66 ms callback: 1.89 ms waiting: 8.82 ms sleeping: 14688.41 ms scheduling: 14689.10 ms
+	1889 task(s)
+	time split: total 17888.41 ms = executing: 3210.07 ms + callback: 2.82 ms + waiting: 11.25 ms + sleeping: 14655.11 ms + scheduling: 0.00 ms + overhead 9.16 ms
+	all time: executing: 3210.07 ms callback: 2.82 ms waiting: 11.80 ms sleeping: 14666.27 ms scheduling: 14666.94 ms
+	time split: total 17892.33 ms = executing: 3209.62 ms + callback: 1.93 ms + waiting: 9.34 ms + sleeping: 14662.20 ms + scheduling: 0.00 ms + overhead 9.25 ms
+	all time: executing: 3209.62 ms callback: 1.93 ms waiting: 9.89 ms sleeping: 14672.39 ms scheduling: 14673.11 ms
+CPU 0                           
+	time split: total 17892.08 ms = executing: 3217.90 ms + callback: 1.88 ms + waiting: 11.50 ms + sleeping: 14651.94 ms + scheduling: 0.00 ms + overhead 8.86 ms
+	all time: executing: 3217.90 ms callback: 1.88 ms waiting: 12.04 ms sleeping: 14662.19 ms scheduling: 14662.90 ms
+CPU 0                           
+CPU 0                           
+	406 task(s)
+CPU 0                           
+	373 task(s)
+	396 task(s)
+	time split: total 17892.45 ms = executing: 2507.93 ms + callback: 0.13 ms + waiting: 28.93 ms + sleeping: 15350.15 ms + scheduling: 0.22 ms + overhead 5.10 ms
+	all time: executing: 2507.93 ms callback: 0.13 ms waiting: 28.93 ms sleeping: 15350.15 ms scheduling: 2555.75 ms
+CPU 1                           
+	188 task(s)
+	time split: total 17892.52 ms = executing: 2390.56 ms + callback: 0.00 ms + waiting: 18.70 ms + sleeping: 15480.91 ms + scheduling: 0.18 ms + overhead 2.16 ms
+	all time: executing: 2390.56 ms callback: 0.00 ms waiting: 18.70 ms sleeping: 15480.91 ms scheduling: 2455.86 ms
+CPU 2                           
+	162 task(s)
+	time split: total 17892.53 ms = executing: 2385.03 ms + callback: 0.00 ms + waiting: 0.09 ms + sleeping: 15505.35 ms + scheduling: 0.18 ms + overhead 1.88 ms
+	all time: executing: 2385.03 ms callback: 0.00 ms waiting: 0.09 ms sleeping: 15505.35 ms scheduling: 2900.00 ms
+	time split: total 17908.66 ms = executing: 2503.32 ms + callback: 0.23 ms + waiting: 28.64 ms + sleeping: 15370.82 ms + scheduling: 0.23 ms + overhead 5.42 ms
+	all time: executing: 2503.32 ms callback: 0.23 ms waiting: 28.64 ms sleeping: 15370.82 ms scheduling: 2575.18 ms
+	378 task(s)
+	time split: total 17888.54 ms = executing: 2507.79 ms + callback: 0.00 ms + waiting: 26.33 ms + sleeping: 15349.21 ms + scheduling: 0.22 ms + overhead 4.98 ms
+	all time: executing: 2507.79 ms callback: 0.00 ms waiting: 26.33 ms sleeping: 15349.21 ms scheduling: 2913.98 ms
+CPU 3                           
+	164 task(s)
+	time split: total 17892.53 ms = executing: 2385.53 ms + callback: 0.00 ms + waiting: 16.67 ms + sleeping: 15488.23 ms + scheduling: 0.18 ms + overhead 1.92 ms
+	all time: executing: 2385.53 ms callback: 0.00 ms waiting: 16.67 ms sleeping: 15488.23 ms scheduling: 2909.32 ms
+CPU 4                           
+	162 task(s)
+	time split: total 17892.54 ms = executing: 2385.97 ms + callback: 0.00 ms + waiting: 0.39 ms + sleeping: 15504.07 ms + scheduling: 0.17 ms + overhead 1.93 ms
+	all time: executing: 2385.97 ms callback: 0.00 ms waiting: 0.39 ms sleeping: 15504.07 ms scheduling: 2671.07 ms
+CPU 5                           
+	159 task(s)
+	time split: total 17892.54 ms = executing: 2383.19 ms + callback: 0.00 ms + waiting: 16.84 ms + sleeping: 15490.44 ms + scheduling: 0.18 ms + overhead 1.89 ms
+	all time: executing: 2383.19 ms callback: 0.00 ms waiting: 16.84 ms sleeping: 15490.44 ms scheduling: 2455.31 ms
+
+Global time split: total 125247.43 ms = executing: 17647.82 ms (14.09%) + callback: 2.05 ms (0.00%) + waiting: 90.96 ms (0.07%) + sleeping: 107481.35 ms (85.82%) + scheduling: 1.11 ms (0.00%) + overhead 24.14 ms (0.02%)
+#---------------------
+CPU 1                           
+	time split: total 17892.20 ms = executing: 2521.45 ms + callback: 0.00 ms + waiting: 26.43 ms + sleeping: 15339.33 ms + scheduling: 0.23 ms + overhead 4.77 ms
+	all time: executing: 2521.45 ms callback: 0.00 ms waiting: 26.43 ms sleeping: 15339.33 ms scheduling: 2756.29 ms
+CPU 1                           
+	177 task(s)
+CPU 1                           
+	180 task(s)
+	time split: total 17908.77 ms = executing: 2379.58 ms + callback: 0.00 ms + waiting: 18.35 ms + sleeping: 15508.57 ms + scheduling: 0.17 ms + overhead 2.10 ms
+	all time: executing: 2379.58 ms callback: 0.00 ms waiting: 18.35 ms sleeping: 15508.57 ms scheduling: 2471.28 ms
+	174 task(s)
+	time split: total 17888.66 ms = executing: 2386.70 ms + callback: 0.00 ms + waiting: 16.34 ms + sleeping: 15483.35 ms + scheduling: 0.18 ms + overhead 2.09 ms
+	all time: executing: 2386.70 ms callback: 0.00 ms waiting: 16.34 ms sleeping: 15483.35 ms scheduling: 2947.12 ms
+CPU 2                           
+	time split: total 17892.31 ms = executing: 2396.89 ms + callback: 0.00 ms + waiting: 16.62 ms + sleeping: 15476.49 ms + scheduling: 0.18 ms + overhead 2.13 ms
+	all time: executing: 2396.89 ms callback: 0.00 ms waiting: 16.62 ms sleeping: 15476.49 ms scheduling: 2653.69 ms
+CPU 2                           
+	168 task(s)
+CPU 2                           
+	163 task(s)
+	time split: total 17908.87 ms = executing: 2380.98 ms + callback: 0.00 ms + waiting: 16.22 ms + sleeping: 15509.50 ms + scheduling: 0.16 ms + overhead 2.00 ms
+	all time: executing: 2380.98 ms callback: 0.00 ms waiting: 16.22 ms sleeping: 15509.50 ms scheduling: 2904.02 ms
+	163 task(s)
+	time split: total 17888.77 ms = executing: 2380.20 ms + callback: 0.00 ms + waiting: 16.15 ms + sleeping: 15490.30 ms + scheduling: 0.17 ms + overhead 1.95 ms
+	all time: executing: 2380.20 ms callback: 0.00 ms waiting: 16.15 ms sleeping: 15490.30 ms scheduling: 2670.30 ms
+CPU 3                           
+	time split: total 17892.42 ms = executing: 2394.42 ms + callback: 0.00 ms + waiting: 16.37 ms + sleeping: 15479.50 ms + scheduling: 0.16 ms + overhead 1.97 ms
+	all time: executing: 2394.42 ms callback: 0.00 ms waiting: 16.37 ms sleeping: 15479.50 ms scheduling: 2464.39 ms
+CPU 3                           
+	162 task(s)
+CPU 3                           
+	168 task(s)
+	time split: total 17892.54 ms = executing: 2398.07 ms + callback: 0.00 ms + waiting: 0.17 ms + sleeping: 15492.21 ms + scheduling: 0.16 ms + overhead 1.94 ms
+	all time: executing: 2398.07 ms callback: 0.00 ms waiting: 0.17 ms sleeping: 15492.21 ms scheduling: 2859.08 ms
+CPU 4                           
+	157 task(s)
+	time split: total 17892.55 ms = executing: 2393.36 ms + callback: 0.00 ms + waiting: 16.64 ms + sleeping: 15480.56 ms + scheduling: 0.16 ms + overhead 1.83 ms
+	all time: executing: 2393.36 ms callback: 0.00 ms waiting: 16.64 ms sleeping: 15480.56 ms scheduling: 2887.05 ms
+CPU 5                           
+	191 task(s)
+	time split: total 17892.56 ms = executing: 2395.23 ms + callback: 11.70 ms + waiting: 0.31 ms + sleeping: 15483.09 ms + scheduling: 0.18 ms + overhead 2.06 ms
+	all time: executing: 2395.23 ms callback: 11.70 ms waiting: 0.31 ms sleeping: 15483.09 ms scheduling: 2650.72 ms
+	166 task(s)
+	time split: total 17908.96 ms = executing: 2380.80 ms + callback: 0.00 ms + waiting: 16.46 ms + sleeping: 15509.61 ms + scheduling: 0.16 ms + overhead 1.92 ms
+	all time: executing: 2380.80 ms callback: 0.00 ms waiting: 16.46 ms sleeping: 15509.61 ms scheduling: 2928.11 ms
+
+Global time split: total 125246.66 ms = executing: 17717.31 ms (14.15%) + callback: 13.58 ms (0.01%) + waiting: 88.04 ms (0.07%) + sleeping: 107403.10 ms (85.75%) + scheduling: 1.06 ms (0.00%) + overhead 23.57 ms (0.02%)
+#---------------------
+	time split: total 17888.88 ms = executing: 2384.68 ms + callback: 0.00 ms + waiting: 0.17 ms + sleeping: 15502.01 ms + scheduling: 0.17 ms + overhead 1.85 ms
+	all time: executing: 2384.68 ms callback: 0.00 ms waiting: 0.17 ms sleeping: 15502.01 ms scheduling: 2448.15 ms
+CPU 4                           
+CPU 4                           
+	158 task(s)
+	155 task(s)
+	time split: total 17909.05 ms = executing: 2378.21 ms + callback: 0.00 ms + waiting: 16.42 ms + sleeping: 15512.49 ms + scheduling: 0.15 ms + overhead 1.78 ms
+	all time: executing: 2378.21 ms callback: 0.00 ms waiting: 16.42 ms sleeping: 15512.49 ms scheduling: 2708.41 ms
+	time split: total 17888.98 ms = executing: 2378.28 ms + callback: 0.00 ms + waiting: 16.51 ms + sleeping: 15492.09 ms + scheduling: 0.16 ms + overhead 1.94 ms
+	all time: executing: 2378.28 ms callback: 0.00 ms waiting: 16.51 ms sleeping: 15492.09 ms scheduling: 3015.12 ms
+CPU 5                           
+CPU 5                           
+	160 task(s)
+	189 task(s)
+	time split: total 17909.15 ms = executing: 2379.55 ms + callback: 0.00 ms + waiting: 16.44 ms + sleeping: 15511.21 ms + scheduling: 0.17 ms + overhead 1.79 ms
+	all time: executing: 2379.55 ms callback: 0.00 ms waiting: 16.44 ms sleeping: 15511.21 ms scheduling: 2477.81 ms
+	time split: total 17889.08 ms = executing: 2382.52 ms + callback: 0.00 ms + waiting: 16.24 ms + sleeping: 15488.08 ms + scheduling: 0.19 ms + overhead 2.05 ms
+	all time: executing: 2382.52 ms callback: 0.00 ms waiting: 16.24 ms sleeping: 15488.08 ms scheduling: 2687.36 ms
+
+Global time split: total 125362.01 ms = executing: 17614.10 ms (14.05%) + callback: 2.12 ms (0.00%) + waiting: 120.83 ms (0.10%) + sleeping: 107600.17 ms (85.83%) + scheduling: 1.04 ms (0.00%) + overhead 23.75 ms (0.02%)
+
+Global time split: total 125221.32 ms = executing: 17630.24 ms (14.08%) + callback: 2.82 ms (0.00%) + waiting: 102.99 ms (0.08%) + sleeping: 107460.15 ms (85.82%) + scheduling: 1.10 ms (0.00%) + overhead 24.02 ms (0.02%)
+#---------------------
+#---------------------
+
+[starpu_comm_stats][5] TOTAL:	13813880.000000 B	13.173943 MB	 0.771415 B/s	 0.000001 MB/s
+[starpu_comm_stats][5] nb_sends: 122
+[starpu_comm_stats][5] max_sent_size: 400000
+
+[starpu_comm_stats][4] TOTAL:	13813880.000000 B	13.173943 MB	 0.771361 B/s	 0.000001 MB/s
+[starpu_comm_stats][4] nb_sends: 122
+[starpu_comm_stats][4] max_sent_size: 400000
+[starpu_comm_stats][4] average sent size: 113228
+[starpu_comm_stats][4:0]	13813880.000000 B	13.173943 MB	 0.771361 B/s	 0.000001 MB/s
+[starpu_comm_stats_memnode][4:NUMA 0]	13813880.000000 B	13.173943 MB	 0.771361 B/s	 0.000001 MB/s
+[starpu_comm_stats][4] NB_COOP: 0
+
+#---------------------
+Worker stats:
+CUDA 0.0 (NVIDIA L4 19.8 GiB 35:00.0)
+	1892 task(s)
+	time split: total 17908.80 ms = executing: 3210.71 ms + callback: 2.45 ms + waiting: 11.15 ms + sleeping: 14675.94 ms + scheduling: 0.00 ms + overhead 8.55 ms
+	all time: executing: 3210.71 ms callback: 2.45 ms waiting: 11.73 ms sleeping: 14686.83 ms scheduling: 14687.40 ms
+CPU 0                           
+	364 task(s)
+	time split: total 17908.81 ms = executing: 2568.73 ms + callback: 0.15 ms + waiting: 25.97 ms + sleeping: 15308.78 ms + scheduling: 0.22 ms + overhead 4.96 ms
+	all time: executing: 2568.73 ms callback: 0.15 ms waiting: 25.97 ms sleeping: 15308.78 ms scheduling: 2432.56 ms
+CPU 1                           
+	180 task(s)
+	time split: total 17908.81 ms = executing: 2387.91 ms + callback: 0.00 ms + waiting: 16.53 ms + sleeping: 15501.73 ms + scheduling: 0.18 ms + overhead 2.46 ms
+	all time: executing: 2387.91 ms callback: 0.00 ms waiting: 16.53 ms sleeping: 15501.73 ms scheduling: 2857.92 ms
+CPU 2                           
+	168 task(s)
+	time split: total 17908.82 ms = executing: 2383.38 ms + callback: 0.00 ms + waiting: 16.55 ms + sleeping: 15506.71 ms + scheduling: 0.17 ms + overhead 2.00 ms
+	all time: executing: 2383.38 ms callback: 0.00 ms waiting: 16.55 ms sleeping: 15506.71 ms scheduling: 2906.87 ms
+CPU 3                           
+	168 task(s)
+	time split: total 17908.82 ms = executing: 2386.11 ms + callback: 0.00 ms + waiting: 16.53 ms + sleeping: 15504.14 ms + scheduling: 0.17 ms + overhead 1.88 ms
+	all time: executing: 2386.11 ms callback: 0.00 ms waiting: 16.53 ms sleeping: 15504.14 ms scheduling: 2716.08 ms
+CPU 4                           
+	157 task(s)
+	time split: total 17908.83 ms = executing: 2378.16 ms + callback: 0.00 ms + waiting: 16.32 ms + sleeping: 15512.31 ms + scheduling: 0.17 ms + overhead 1.87 ms
+	all time: executing: 2378.16 ms callback: 0.00 ms waiting: 16.32 ms sleeping: 15512.31 ms scheduling: 2472.95 ms
+CPU 5                           
+	191 task(s)
+	time split: total 17908.83 ms = executing: 2385.44 ms + callback: 0.00 ms + waiting: 16.49 ms + sleeping: 15504.51 ms + scheduling: 0.18 ms + overhead 2.21 ms
+	all time: executing: 2385.44 ms callback: 0.00 ms waiting: 16.49 ms sleeping: 15504.51 ms scheduling: 2469.08 ms
+[starpu_comm_stats][5] average sent size: 113228
+
+Global time split: total 125361.73 ms = executing: 17700.45 ms (14.12%) + callback: 2.60 ms (0.00%) + waiting: 119.54 ms (0.10%) + sleeping: 107514.12 ms (85.76%) + scheduling: 1.09 ms (0.00%) + overhead 23.93 ms (0.02%)
+#---------------------
+[starpu_comm_stats][5:0]	13813880.000000 B	13.173943 MB	 0.771415 B/s	 0.000001 MB/s
+[starpu_comm_stats_memnode][5:NUMA 0]	13813880.000000 B	13.173943 MB	 0.771415 B/s	 0.000001 MB/s
+[starpu_comm_stats][5] NB_COOP: 0
+
+#---------------------
+Worker stats:
+CUDA 0.0 (NVIDIA L4 19.8 GiB 35:00.0)
+	1889 task(s)
+	time split: total 17908.00 ms = executing: 3209.65 ms + callback: 1.83 ms + waiting: 11.18 ms + sleeping: 14676.54 ms + scheduling: 0.00 ms + overhead 8.81 ms
+	all time: executing: 3209.65 ms callback: 1.83 ms waiting: 11.67 ms sleeping: 14686.71 ms scheduling: 14687.33 ms
+CPU 0                           
+	405 task(s)
+	time split: total 17908.13 ms = executing: 2511.24 ms + callback: 0.10 ms + waiting: 28.95 ms + sleeping: 15362.35 ms + scheduling: 0.23 ms + overhead 5.26 ms
+	all time: executing: 2511.24 ms callback: 0.10 ms waiting: 28.95 ms sleeping: 15362.35 ms scheduling: 2889.71 ms
+CPU 1                           
+	179 task(s)
+	time split: total 17908.24 ms = executing: 2391.48 ms + callback: 0.00 ms + waiting: 18.60 ms + sleeping: 15495.79 ms + scheduling: 0.18 ms + overhead 2.20 ms
+	all time: executing: 2391.48 ms callback: 0.00 ms waiting: 18.60 ms sleeping: 15495.79 ms scheduling: 2929.26 ms
+CPU 2                           
+	167 task(s)
+	time split: total 17908.36 ms = executing: 2385.07 ms + callback: 0.00 ms + waiting: 16.55 ms + sleeping: 15504.49 ms + scheduling: 0.18 ms + overhead 2.06 ms
+	all time: executing: 2385.07 ms callback: 0.00 ms waiting: 16.55 ms sleeping: 15504.49 ms scheduling: 2641.81 ms
+CPU 3                           
+	157 task(s)
+	time split: total 17908.47 ms = executing: 2383.77 ms + callback: 0.00 ms + waiting: 0.26 ms + sleeping: 15522.31 ms + scheduling: 0.16 ms + overhead 1.96 ms
+	all time: executing: 2383.77 ms callback: 0.00 ms waiting: 0.26 ms sleeping: 15522.31 ms scheduling: 2415.45 ms
+CPU 4                           
+	164 task(s)
+	time split: total 17908.59 ms = executing: 2388.07 ms + callback: 0.00 ms + waiting: 16.69 ms + sleeping: 15501.71 ms + scheduling: 0.17 ms + overhead 1.95 ms
+	all time: executing: 2388.07 ms callback: 0.00 ms waiting: 16.69 ms sleeping: 15501.71 ms scheduling: 3013.10 ms
+CPU 5                           
+	159 task(s)
+	time split: total 17908.71 ms = executing: 2384.97 ms + callback: 0.00 ms + waiting: 16.10 ms + sleeping: 15505.67 ms + scheduling: 0.16 ms + overhead 1.80 ms
+	all time: executing: 2384.97 ms callback: 0.00 ms waiting: 16.10 ms sleeping: 15505.67 ms scheduling: 2727.89 ms
+
+Global time split: total 125358.49 ms = executing: 17654.25 ms (14.08%) + callback: 1.93 ms (0.00%) + waiting: 108.33 ms (0.09%) + sleeping: 107568.87 ms (85.81%) + scheduling: 1.08 ms (0.00%) + overhead 24.04 ms (0.02%)
+#---------------------
+
+[starpu_comm_stats][25] TOTAL:	13813880.000000 B	13.173943 MB	 0.771109 B/s	 0.000001 MB/s
+[starpu_comm_stats][25] nb_sends: 122
+[starpu_comm_stats][25] max_sent_size: 400000
+[starpu_comm_stats][25] average sent size: 113228
+[starpu_comm_stats][25:0]	13813760.000000 B	13.173828 MB	 0.771103 B/s	 0.000001 MB/s
+[starpu_comm_stats][25:28]	120.000000 B	0.000114 MB	 0.000007 B/s	 0.000000 MB/s
+[starpu_comm_stats_memnode][25:NUMA 0]	13813880.000000 B	13.173943 MB	 0.771109 B/s	 0.000001 MB/s
+[starpu_comm_stats][25] NB_COOP: 0
+
+#---------------------
+Worker stats:
+CUDA 0.0 (NVIDIA L4 19.8 GiB 35:00.0)
+	1889 task(s)
+	time split: total 17915.13 ms = executing: 3209.40 ms + callback: 3.11 ms + waiting: 10.84 ms + sleeping: 14682.53 ms + scheduling: 0.00 ms + overhead 9.25 ms
+	all time: executing: 3209.40 ms callback: 3.11 ms waiting: 11.40 ms sleeping: 14693.84 ms scheduling: 14694.53 ms
+CPU 0                           
+	376 task(s)
+	time split: total 17915.26 ms = executing: 2522.64 ms + callback: 0.00 ms + waiting: 25.93 ms + sleeping: 15361.60 ms + scheduling: 0.22 ms + overhead 4.86 ms
+	all time: executing: 2522.64 ms callback: 0.00 ms waiting: 25.93 ms sleeping: 15361.60 ms scheduling: 2800.55 ms
+CPU 1                           
+	185 task(s)
+	time split: total 17915.37 ms = executing: 2408.56 ms + callback: 0.00 ms + waiting: 16.55 ms + sleeping: 15487.82 ms + scheduling: 0.20 ms + overhead 2.25 ms
+	all time: executing: 2408.56 ms callback: 0.00 ms waiting: 16.55 ms sleeping: 15487.82 ms scheduling: 2834.67 ms
+CPU 2                           
+	163 task(s)
+	time split: total 17915.49 ms = executing: 2400.56 ms + callback: 0.00 ms + waiting: 16.23 ms + sleeping: 15496.61 ms + scheduling: 0.18 ms + overhead 1.92 ms
+	all time: executing: 2400.56 ms callback: 0.00 ms waiting: 16.23 ms sleeping: 15496.61 ms scheduling: 2642.44 ms
+CPU 3                           
+	160 task(s)
+	time split: total 17915.61 ms = executing: 2398.68 ms + callback: 0.00 ms + waiting: 16.30 ms + sleeping: 15498.51 ms + scheduling: 0.19 ms + overhead 1.93 ms
+	all time: executing: 2398.68 ms callback: 0.00 ms waiting: 16.30 ms sleeping: 15498.51 ms scheduling: 2431.94 ms
+CPU 4                           
+	159 task(s)
+	time split: total 17915.72 ms = executing: 2398.07 ms + callback: 0.00 ms + waiting: 0.30 ms + sleeping: 15515.33 ms + scheduling: 0.18 ms + overhead 1.85 ms
+	all time: executing: 2398.07 ms callback: 0.00 ms waiting: 0.30 ms sleeping: 15515.33 ms scheduling: 2927.38 ms
+CPU 5                           
+	188 task(s)
+	time split: total 17915.83 ms = executing: 2398.17 ms + callback: 0.11 ms + waiting: 17.67 ms + sleeping: 15497.53 ms + scheduling: 0.20 ms + overhead 2.16 ms
+	all time: executing: 2398.17 ms callback: 0.11 ms waiting: 17.67 ms sleeping: 15497.53 ms scheduling: 2609.71 ms
+
+Global time split: total 125408.42 ms = executing: 17736.08 ms (14.14%) + callback: 3.22 ms (0.00%) + waiting: 103.82 ms (0.08%) + sleeping: 107539.93 ms (85.75%) + scheduling: 1.16 ms (0.00%) + overhead 24.20 ms (0.02%)
+#---------------------
+
+[starpu_comm_stats][18] TOTAL:	13813880.000000 B	13.173943 MB	 0.771012 B/s	 0.000001 MB/s
+[starpu_comm_stats][18] nb_sends: 122
+[starpu_comm_stats][18] max_sent_size: 400000
+[starpu_comm_stats][18] average sent size: 113228
+[starpu_comm_stats][18:0]	13813760.000000 B	13.173828 MB	 0.771005 B/s	 0.000001 MB/s
+[starpu_comm_stats][18:20]	120.000000 B	0.000114 MB	 0.000007 B/s	 0.000000 MB/s
+[starpu_comm_stats_memnode][18:NUMA 0]	13813880.000000 B	13.173943 MB	 0.771012 B/s	 0.000001 MB/s
+[starpu_comm_stats][18] NB_COOP: 0
+
+#---------------------
+Worker stats:
+CUDA 0.0 (NVIDIA L4 19.8 GiB 35:00.0)
+	1889 task(s)
+	time split: total 17917.36 ms = executing: 3205.74 ms + callback: 1.99 ms + waiting: 10.87 ms + sleeping: 14689.04 ms + scheduling: 0.00 ms + overhead 9.72 ms
+	all time: executing: 3205.74 ms callback: 1.99 ms waiting: 11.47 ms sleeping: 14699.20 ms scheduling: 14699.89 ms
+CPU 0                           
+
+[starpu_comm_stats][17] TOTAL:	13813880.000000 B	13.173943 MB	 0.770622 B/s	 0.000001 MB/s
+	360 task(s)
+[starpu_comm_stats][17] nb_sends: 122
+[starpu_comm_stats][17] max_sent_size: 400000
+	time split: total 17917.50 ms = executing: 2565.23 ms + callback: 0.06 ms + waiting: 26.37 ms + sleeping: 15319.03 ms + scheduling: 0.23 ms + overhead 6.58 ms
+	all time: executing: 2565.23 ms callback: 0.06 ms waiting: 26.37 ms sleeping: 15319.03 ms scheduling: 2884.40 ms
+CPU 1                           
+[starpu_comm_stats][17] average sent size: 113228
+	186 task(s)
+[starpu_comm_stats][17:0]	13813760.000000 B	13.173828 MB	 0.770616 B/s	 0.000001 MB/s
+[starpu_comm_stats][17:20]	120.000000 B	0.000114 MB	 0.000007 B/s	 0.000000 MB/s
+	time split: total 17917.61 ms = executing: 2392.38 ms + callback: 0.00 ms + waiting: 16.58 ms + sleeping: 15506.03 ms + scheduling: 0.21 ms + overhead 2.41 ms
+	all time: executing: 2392.38 ms callback: 0.00 ms waiting: 16.58 ms sleeping: 15506.03 ms scheduling: 2941.23 ms
+[starpu_comm_stats_memnode][17:NUMA 0]	13813880.000000 B	13.173943 MB	 0.770622 B/s	 0.000001 MB/s
+[starpu_comm_stats][17] NB_COOP: 0
+CPU 2                           
+	175 task(s)
+	time split: total 17917.73 ms = executing: 2390.74 ms + callback: 0.00 ms + waiting: 16.38 ms + sleeping: 15508.23 ms + scheduling: 0.19 ms + overhead 2.20 ms
+	all time: executing: 2390.74 ms callback: 0.00 ms waiting: 16.38 ms sleeping: 15508.23 ms scheduling: 2675.13 ms
+
+#---------------------
+CPU 3                           
+Worker stats:
+CUDA 0.0 (NVIDIA L4 19.8 GiB 35:00.0)
+	160 task(s)
+	1889 task(s)
+	time split: total 17917.85 ms = executing: 2382.27 ms + callback: 0.00 ms + waiting: 16.39 ms + sleeping: 15516.82 ms + scheduling: 0.19 ms + overhead 2.18 ms
+	all time: executing: 2382.27 ms callback: 0.00 ms waiting: 16.39 ms sleeping: 15516.82 ms scheduling: 2450.96 ms
+	time split: total 17926.32 ms = executing: 3209.89 ms + callback: 2.87 ms + waiting: 10.91 ms + sleeping: 14693.85 ms + scheduling: 0.00 ms + overhead 8.80 ms
+	all time: executing: 3209.89 ms callback: 2.87 ms waiting: 11.42 ms sleeping: 14705.04 ms scheduling: 14705.82 ms
+CPU 4                           
+	161 task(s)
+CPU 0                           
+	383 task(s)
+	time split: total 17917.96 ms = executing: 2384.57 ms + callback: 0.00 ms + waiting: 16.34 ms + sleeping: 15514.77 ms + scheduling: 0.19 ms + overhead 2.08 ms
+	all time: executing: 2384.57 ms callback: 0.00 ms waiting: 16.34 ms sleeping: 15514.77 ms scheduling: 3012.40 ms
+	time split: total 17926.42 ms = executing: 2517.77 ms + callback: 0.00 ms + waiting: 25.88 ms + sleeping: 15377.54 ms + scheduling: 0.24 ms + overhead 5.00 ms
+	all time: executing: 2517.77 ms callback: 0.00 ms waiting: 25.88 ms sleeping: 15377.54 ms scheduling: 2754.19 ms
+CPU 5                           
+CPU 1                           
+	189 task(s)
+	time split: total 17918.08 ms = executing: 2382.78 ms + callback: 0.11 ms + waiting: 17.89 ms + sleeping: 15514.98 ms + scheduling: 0.19 ms + overhead 2.12 ms
+	all time: executing: 2382.78 ms callback: 0.11 ms waiting: 17.89 ms sleeping: 15514.98 ms scheduling: 2682.80 ms
+	175 task(s)
+	time split: total 17926.54 ms = executing: 2385.88 ms + callback: 0.00 ms + waiting: 16.18 ms + sleeping: 15522.01 ms + scheduling: 0.20 ms + overhead 2.28 ms
+	all time: executing: 2385.88 ms callback: 0.00 ms waiting: 16.18 ms sleeping: 15522.01 ms scheduling: 2620.57 ms
+
+Global time split: total 125424.08 ms = executing: 17703.72 ms (14.12%) + callback: 2.17 ms (0.00%) + waiting: 120.81 ms (0.10%) + sleeping: 107568.90 ms (85.76%) + scheduling: 1.20 ms (0.00%) + overhead 27.29 ms (0.02%)
+CPU 2                           
+#---------------------
+	164 task(s)
+	time split: total 17926.65 ms = executing: 2386.11 ms + callback: 0.00 ms + waiting: 16.04 ms + sleeping: 15522.35 ms + scheduling: 0.17 ms + overhead 1.98 ms
+	all time: executing: 2386.11 ms callback: 0.00 ms waiting: 16.04 ms sleeping: 15522.35 ms scheduling: 2435.73 ms
+CPU 3                           
+	160 task(s)
+	time split: total 17926.76 ms = executing: 2386.01 ms + callback: 0.00 ms + waiting: 16.15 ms + sleeping: 15522.62 ms + scheduling: 0.17 ms + overhead 1.81 ms
+	all time: executing: 2386.01 ms callback: 0.00 ms waiting: 16.15 ms sleeping: 15522.62 ms scheduling: 2891.12 ms
+CPU 4                           
+	158 task(s)
+	time split: total 17926.87 ms = executing: 2385.90 ms + callback: 0.00 ms + waiting: 0.27 ms + sleeping: 15538.58 ms + scheduling: 0.18 ms + overhead 1.95 ms
+	all time: executing: 2385.90 ms callback: 0.00 ms waiting: 0.27 ms sleeping: 15538.58 ms scheduling: 2899.01 ms
+CPU 5                           
+	191 task(s)
+	time split: total 17926.98 ms = executing: 2386.86 ms + callback: 0.10 ms + waiting: 31.37 ms + sleeping: 15506.44 ms + scheduling: 0.20 ms + overhead 2.00 ms
+	all time: executing: 2386.86 ms callback: 0.10 ms waiting: 31.37 ms sleeping: 15506.44 ms scheduling: 2638.31 ms
+
+Global time split: total 125486.55 ms = executing: 17658.41 ms (14.07%) + callback: 2.97 ms (0.00%) + waiting: 116.80 ms (0.09%) + sleeping: 107683.39 ms (85.81%) + scheduling: 1.16 ms (0.00%) + overhead 23.82 ms (0.02%)
+#---------------------
+
+[starpu_comm_stats][30] TOTAL:	13813880.000000 B	13.173943 MB	 0.770390 B/s	 0.000001 MB/s
+[starpu_comm_stats][30] nb_sends: 122
+[starpu_comm_stats][30] max_sent_size: 400000
+[starpu_comm_stats][30] average sent size: 113228
+[starpu_comm_stats][30:0]	13813760.000000 B	13.173828 MB	 0.770383 B/s	 0.000001 MB/s
+[starpu_comm_stats][30:28]	120.000000 B	0.000114 MB	 0.000007 B/s	 0.000000 MB/s
+[starpu_comm_stats_memnode][30:NUMA 0]	13813880.000000 B	13.173943 MB	 0.770390 B/s	 0.000001 MB/s
+[starpu_comm_stats][30] NB_COOP: 0
+
+#---------------------
+Worker stats:
+CUDA 0.0 (NVIDIA L4 19.8 GiB 35:00.0)
+	1898 task(s)
+	time split: total 17931.38 ms = executing: 3217.42 ms + callback: 1.99 ms + waiting: 10.29 ms + sleeping: 14692.93 ms + scheduling: 0.00 ms + overhead 8.75 ms
+	all time: executing: 3217.42 ms callback: 1.99 ms waiting: 10.84 ms sleeping: 14703.32 ms scheduling: 14703.99 ms
+CPU 0                           
+	374 task(s)
+	time split: total 17931.39 ms = executing: 2504.88 ms + callback: 0.00 ms + waiting: 26.60 ms + sleeping: 15394.75 ms + scheduling: 0.21 ms + overhead 4.94 ms
+	all time: executing: 2504.88 ms callback: 0.00 ms waiting: 26.60 ms sleeping: 15394.75 ms scheduling: 2845.81 ms
+CPU 1                           
+	175 task(s)
+	time split: total 17931.40 ms = executing: 2380.30 ms + callback: 0.00 ms + waiting: 16.69 ms + sleeping: 15532.13 ms + scheduling: 0.20 ms + overhead 2.09 ms
+	all time: executing: 2380.30 ms callback: 0.00 ms waiting: 16.69 ms sleeping: 15532.13 ms scheduling: 2880.65 ms
+CPU 2                           
+	166 task(s)
+	time split: total 17931.40 ms = executing: 2382.22 ms + callback: 0.00 ms + waiting: 16.60 ms + sleeping: 15530.41 ms + scheduling: 0.18 ms + overhead 1.99 ms
+	all time: executing: 2382.22 ms callback: 0.00 ms waiting: 16.60 ms sleeping: 15530.41 ms scheduling: 2645.23 ms
+CPU 3                           
+	159 task(s)
+	time split: total 17931.43 ms = executing: 2379.40 ms + callback: 0.00 ms + waiting: 16.72 ms + sleeping: 15533.20 ms + scheduling: 0.17 ms + overhead 1.95 ms
+	all time: executing: 2379.40 ms callback: 0.00 ms waiting: 16.72 ms sleeping: 15533.20 ms scheduling: 2473.59 ms
+CPU 4                           
+	164 task(s)
+	time split: total 17931.45 ms = executing: 2382.76 ms + callback: 0.00 ms + waiting: 16.82 ms + sleeping: 15529.75 ms + scheduling: 0.18 ms + overhead 1.93 ms
+	all time: executing: 2382.76 ms callback: 0.00 ms waiting: 16.82 ms sleeping: 15529.75 ms scheduling: 2860.14 ms
+CPU 5                           
+	184 task(s)
+	time split: total 17931.45 ms = executing: 2382.64 ms + callback: 0.00 ms + waiting: 16.82 ms + sleeping: 15529.72 ms + scheduling: 0.17 ms + overhead 2.09 ms
+	all time: executing: 2382.64 ms callback: 0.00 ms waiting: 16.82 ms sleeping: 15529.72 ms scheduling: 2667.13 ms
+
+Global time split: total 125519.90 ms = executing: 17629.62 ms (14.05%) + callback: 1.99 ms (0.00%) + waiting: 120.55 ms (0.10%) + sleeping: 107742.89 ms (85.84%) + scheduling: 1.12 ms (0.00%) + overhead 23.73 ms (0.02%)
+#---------------------
+
+[starpu_comm_stats][28] TOTAL:	13813880.000000 B	13.173943 MB	 0.770655 B/s	 0.000001 MB/s
+[starpu_comm_stats][28] nb_sends: 122
+[starpu_comm_stats][28] max_sent_size: 400000
+[starpu_comm_stats][28] average sent size: 113228
+[starpu_comm_stats][28:0]	13813880.000000 B	13.173943 MB	 0.770655 B/s	 0.000001 MB/s
+[starpu_comm_stats_memnode][28:NUMA 0]	13813880.000000 B	13.173943 MB	 0.770655 B/s	 0.000001 MB/s
+
+[starpu_comm_stats][24] TOTAL:	13813880.000000 B	13.173943 MB	 0.770951 B/s	 0.000001 MB/s
+[starpu_comm_stats][24] nb_sends: 122
+[starpu_comm_stats][24] max_sent_size: 400000
+[starpu_comm_stats][24] average sent size: 113228
+[starpu_comm_stats][24:0]	13813760.000000 B	13.173828 MB	 0.770945 B/s	 0.000001 MB/s
+[starpu_comm_stats][24:28]	120.000000 B	0.000114 MB	 0.000007 B/s	 0.000000 MB/s
+[starpu_comm_stats_memnode][24:NUMA 0]	13813880.000000 B	13.173943 MB	 0.770951 B/s	 0.000001 MB/s
+[starpu_comm_stats][24] NB_COOP: 0
+
+#---------------------
+Worker stats:
+CUDA 0.0 (NVIDIA L4 19.8 GiB 35:00.0)
+	1898 task(s)
+	time split: total 17918.33 ms = executing: 3212.94 ms + callback: 2.03 ms + waiting: 10.32 ms + sleeping: 14684.18 ms + scheduling: 0.00 ms + overhead 8.86 ms
+	all time: executing: 3212.94 ms callback: 2.03 ms waiting: 10.85 ms sleeping: 14694.84 ms scheduling: 14695.45 ms
+CPU 0                           
+	364 task(s)
+	time split: total 17918.34 ms = executing: 2513.01 ms + callback: 0.00 ms + waiting: 26.64 ms + sleeping: 15373.28 ms + scheduling: 0.21 ms + overhead 5.19 ms
+	all time: executing: 2513.01 ms callback: 0.00 ms waiting: 26.64 ms sleeping: 15373.28 ms scheduling: 2861.47 ms
+CPU 1                           
+	179 task(s)
+	time split: total 17918.34 ms = executing: 2387.51 ms + callback: 0.00 ms + waiting: 16.95 ms + sleeping: 15511.61 ms + scheduling: 0.17 ms + overhead 2.10 ms
+	all time: executing: 2387.51 ms callback: 0.00 ms waiting: 16.95 ms sleeping: 15511.61 ms scheduling: 2897.93 ms
+CPU 2                           
+	185 task(s)
+	time split: total 17918.35 ms = executing: 2396.44 ms + callback: 0.00 ms + waiting: 16.77 ms + sleeping: 15502.94 ms + scheduling: 0.19 ms + overhead 2.01 ms
+	all time: executing: 2396.44 ms callback: 0.00 ms waiting: 16.77 ms sleeping: 15502.94 ms scheduling: 2656.30 ms
+CPU 3                           
+	160 task(s)
+	time split: total 17918.35 ms = executing: 2386.41 ms + callback: 0.00 ms + waiting: 16.83 ms + sleeping: 15513.17 ms + scheduling: 0.17 ms + overhead 1.77 ms
+	all time: executing: 2386.41 ms callback: 0.00 ms waiting: 16.83 ms sleeping: 15513.17 ms scheduling: 2473.03 ms
+CPU 4                           
+	156 task(s)
+	time split: total 17918.36 ms = executing: 2410.06 ms + callback: 0.00 ms + waiting: 0.25 ms + sleeping: 15505.94 ms + scheduling: 0.16 ms + overhead 1.94 ms
+	all time: executing: 2410.06 ms callback: 0.00 ms waiting: 0.25 ms sleeping: 15505.94 ms scheduling: 2843.74 ms
+CPU 5                           
+	178 task(s)
+	time split: total 17918.36 ms = executing: 2384.56 ms + callback: 0.00 ms + waiting: 16.88 ms + sleeping: 15514.85 ms + scheduling: 0.16 ms + overhead 1.90 ms
+	all time: executing: 2384.56 ms callback: 0.00 ms waiting: 16.88 ms sleeping: 15514.85 ms scheduling: 2685.80 ms
+[starpu_comm_stats][28] NB_COOP: 0
+
+[starpu_comm_stats][16] TOTAL:	13813880.000000 B	13.173943 MB	 0.770880 B/s	 0.000001 MB/s
+
+Global time split: total 125428.43 ms = executing: 17690.94 ms (14.10%) + callback: 2.03 ms (0.00%) + waiting: 104.64 ms (0.08%) + sleeping: 107605.97 ms (85.79%) + scheduling: 1.07 ms (0.00%) + overhead 23.78 ms (0.02%)
+#---------------------
+[starpu_comm_stats][16] nb_sends: 122
+[starpu_comm_stats][16] max_sent_size: 400000
+
+#---------------------
+[starpu_comm_stats][16] average sent size: 113228
+Worker stats:
+[starpu_comm_stats][16:0]	13813760.000000 B	13.173828 MB	 0.770873 B/s	 0.000001 MB/s
+CUDA 0.0 (NVIDIA L4 19.8 GiB 35:00.0)
+[starpu_comm_stats][16:20]	120.000000 B	0.000114 MB	 0.000007 B/s	 0.000000 MB/s
+	2077 task(s)
+[starpu_comm_stats_memnode][16:NUMA 0]	13813880.000000 B	13.173943 MB	 0.770880 B/s	 0.000001 MB/s
+	time split: total 17925.61 ms = executing: 3215.07 ms + callback: 7.90 ms + waiting: 11.17 ms + sleeping: 14680.57 ms + scheduling: 0.00 ms + overhead 10.91 ms
+	all time: executing: 3215.07 ms callback: 7.90 ms waiting: 18.23 ms sleeping: 14688.56 ms scheduling: 14689.38 ms
+[starpu_comm_stats][16] NB_COOP: 0
+CPU 0                           
+
+#---------------------
+	411 task(s)
+	time split: total 17925.74 ms = executing: 2515.57 ms + callback: 1.28 ms + waiting: 28.71 ms + sleeping: 15376.75 ms + scheduling: 0.23 ms + overhead 3.20 ms
+	all time: executing: 2515.57 ms callback: 1.28 ms waiting: 28.71 ms sleeping: 15376.75 ms scheduling: 2749.82 ms
+CPU 1                           
+Worker stats:
+	179 task(s)
+CUDA 0.0 (NVIDIA L4 19.8 GiB 35:00.0)
+	time split: total 17925.86 ms = executing: 2389.29 ms + callback: 0.00 ms + waiting: 18.49 ms + sleeping: 15515.79 ms + scheduling: 0.18 ms + overhead 2.11 ms
+	all time: executing: 2389.29 ms callback: 0.00 ms waiting: 18.49 ms sleeping: 15515.79 ms scheduling: 2619.49 ms
+	1889 task(s)
+	time split: total 17920.43 ms = executing: 3212.29 ms + callback: 3.60 ms + waiting: 10.03 ms + sleeping: 14685.10 ms + scheduling: 0.00 ms + overhead 9.41 ms
+	all time: executing: 3212.29 ms callback: 3.60 ms waiting: 10.54 ms sleeping: 14696.90 ms scheduling: 14697.58 ms
+CPU 0                           
+	416 task(s)
+CPU 2                           
+	171 task(s)
+	time split: total 17925.97 ms = executing: 2390.05 ms + callback: 0.00 ms + waiting: 16.50 ms + sleeping: 15517.34 ms + scheduling: 0.18 ms + overhead 1.91 ms
+	all time: executing: 2390.05 ms callback: 0.00 ms waiting: 16.50 ms sleeping: 15517.34 ms scheduling: 2430.25 ms
+CPU 3                           
+	164 task(s)
+	time split: total 17925.99 ms = executing: 2389.79 ms + callback: 0.00 ms + waiting: 0.25 ms + sleeping: 15533.96 ms + scheduling: 0.17 ms + overhead 1.81 ms
+	all time: executing: 2389.79 ms callback: 0.00 ms waiting: 0.25 ms sleeping: 15533.96 ms scheduling: 2880.62 ms
+CPU 4                           
+	165 task(s)
+	time split: total 17926.00 ms = executing: 2382.45 ms + callback: 0.12 ms + waiting: 16.85 ms + sleeping: 15524.45 ms + scheduling: 0.16 ms + overhead 1.96 ms
+	all time: executing: 2382.45 ms callback: 0.12 ms waiting: 16.85 ms sleeping: 15524.45 ms scheduling: 2887.32 ms
+CPU 5                           
+	163 task(s)
+	time split: total 17926.00 ms = executing: 2381.79 ms + callback: 0.22 ms + waiting: 16.65 ms + sleeping: 15525.33 ms + scheduling: 0.17 ms + overhead 1.84 ms
+	all time: executing: 2381.79 ms callback: 0.22 ms waiting: 16.65 ms sleeping: 15525.33 ms scheduling: 2625.01 ms
+
+Global time split: total 125481.18 ms = executing: 17664.02 ms (14.08%) + callback: 9.51 ms (0.01%) + waiting: 108.63 ms (0.09%) + sleeping: 107674.19 ms (85.81%) + scheduling: 1.09 ms (0.00%) + overhead 23.75 ms (0.02%)
+#---------------------
+	time split: total 17920.55 ms = executing: 2520.51 ms + callback: 0.08 ms + waiting: 32.85 ms + sleeping: 15361.55 ms + scheduling: 0.26 ms + overhead 5.30 ms
+	all time: executing: 2520.51 ms callback: 0.08 ms waiting: 32.85 ms sleeping: 15361.55 ms scheduling: 2966.77 ms
+CPU 1                           
+	176 task(s)
+	time split: total 17920.65 ms = executing: 2384.80 ms + callback: 0.00 ms + waiting: 18.61 ms + sleeping: 15514.98 ms + scheduling: 0.18 ms + overhead 2.08 ms
+	all time: executing: 2384.80 ms callback: 0.00 ms waiting: 18.61 ms sleeping: 15514.98 ms scheduling: 3010.98 ms
+CPU 2                           
+	159 task(s)
+	time split: total 17920.76 ms = executing: 2382.45 ms + callback: 0.00 ms + waiting: 16.66 ms + sleeping: 15519.47 ms + scheduling: 0.18 ms + overhead 2.00 ms
+	all time: executing: 2382.45 ms callback: 0.00 ms waiting: 16.66 ms sleeping: 15519.47 ms scheduling: 2682.92 ms
+CPU 3                           
+	160 task(s)
+	time split: total 17920.87 ms = executing: 2382.96 ms + callback: 0.00 ms + waiting: 16.69 ms + sleeping: 15519.22 ms + scheduling: 0.17 ms + overhead 1.85 ms
+	all time: executing: 2382.96 ms callback: 0.00 ms waiting: 16.69 ms sleeping: 15519.22 ms scheduling: 2435.46 ms
+CPU 4                           
+	164 task(s)
+	time split: total 17920.99 ms = executing: 2385.83 ms + callback: 0.00 ms + waiting: 16.71 ms + sleeping: 15516.42 ms + scheduling: 0.18 ms + overhead 1.84 ms
+	all time: executing: 2385.83 ms callback: 0.00 ms waiting: 16.71 ms sleeping: 15516.42 ms scheduling: 2967.09 ms
+CPU 5                           
+	156 task(s)
+	time split: total 17921.09 ms = executing: 2380.92 ms + callback: 0.00 ms + waiting: 16.57 ms + sleeping: 15521.50 ms + scheduling: 0.17 ms + overhead 1.93 ms
+	all time: executing: 2380.92 ms callback: 0.00 ms waiting: 16.57 ms sleeping: 15521.50 ms scheduling: 2656.51 ms
+
+Global time split: total 125445.34 ms = executing: 17649.77 ms (14.07%) + callback: 3.68 ms (0.00%) + waiting: 128.12 ms (0.10%) + sleeping: 107638.23 ms (85.80%) + scheduling: 1.14 ms (0.00%) + overhead 24.40 ms (0.02%)
+#---------------------
+============================================================
+METRICAS FINAIS — StarPU/MPI
+============================================================
+Workers (rank 0)          : 6 CPU  +  1 GPU CUDA
+Ranks MPI                 : 32
+
+Tempo do loop (max)       : 3876.73    ms  [min: 3854.89]
+Tempo total (max, c/init) : 24812.92   ms  [min: 24352.87]
+T. medio/iter             : 129.22     ms
+Iteracoes                 : 30 / max 30
+SSE                       : 2.9768e+14
+
+Tempos por rank:
+  Rank 0: loop=3876.73    ms  avg/iter=129.22   ms  total=24812.92   ms
+  Rank 1: loop=3869.90    ms  avg/iter=129.00   ms  total=24420.87   ms
+  Rank 2: loop=3869.72    ms  avg/iter=128.99   ms  total=24368.76   ms
+  Rank 3: loop=3870.55    ms  avg/iter=129.02   ms  total=24386.60   ms
+  Rank 4: loop=3860.35    ms  avg/iter=128.68   ms  total=24429.32   ms
+  Rank 5: loop=3870.55    ms  avg/iter=129.02   ms  total=24427.82   ms
+  Rank 6: loop=3870.56    ms  avg/iter=129.02   ms  total=24410.03   ms
+  Rank 7: loop=3860.02    ms  avg/iter=128.67   ms  total=24429.06   ms
+  Rank 8: loop=3858.59    ms  avg/iter=128.62   ms  total=24400.23   ms
+  Rank 9: loop=3870.40    ms  avg/iter=129.01   ms  total=24368.60   ms
+  Rank 10: loop=3870.71    ms  avg/iter=129.02   ms  total=24408.49   ms
+  Rank 11: loop=3858.56    ms  avg/iter=128.62   ms  total=24352.87   ms
+  Rank 12: loop=3865.69    ms  avg/iter=128.86   ms  total=24402.98   ms
+  Rank 13: loop=3870.43    ms  avg/iter=129.01   ms  total=24387.60   ms
+  Rank 14: loop=3870.47    ms  avg/iter=129.02   ms  total=24404.96   ms
+  Rank 15: loop=3866.11    ms  avg/iter=128.87   ms  total=24389.48   ms
+  Rank 16: loop=3857.82    ms  avg/iter=128.59   ms  total=24447.26   ms
+  Rank 17: loop=3868.50    ms  avg/iter=128.95   ms  total=24466.04   ms
+  Rank 18: loop=3868.52    ms  avg/iter=128.95   ms  total=24407.80   ms
+  Rank 19: loop=3858.15    ms  avg/iter=128.61   ms  total=24440.67   ms
+  Rank 20: loop=3866.72    ms  avg/iter=128.89   ms  total=24399.15   ms
+  Rank 21: loop=3870.79    ms  avg/iter=129.03   ms  total=24390.94   ms
+  Rank 22: loop=3870.80    ms  avg/iter=129.03   ms  total=24398.97   ms
+  Rank 23: loop=3867.16    ms  avg/iter=128.91   ms  total=24425.30   ms
+  Rank 24: loop=3867.35    ms  avg/iter=128.91   ms  total=24431.23   ms
+  Rank 25: loop=3870.76    ms  avg/iter=129.03   ms  total=24444.87   ms
+  Rank 26: loop=3865.99    ms  avg/iter=128.87   ms  total=24407.13   ms
+  Rank 27: loop=3867.32    ms  avg/iter=128.91   ms  total=24420.80   ms
+  Rank 28: loop=3854.89    ms  avg/iter=128.50   ms  total=24376.46   ms
+  Rank 29: loop=3858.01    ms  avg/iter=128.60   ms  total=24413.48   ms
+  Rank 30: loop=3858.05    ms  avg/iter=128.60   ms  total=24452.26   ms
+  Rank 31: loop=3855.44    ms  avg/iter=128.51   ms  total=24401.81   ms
+
+Distribuicao por kernel (CPU vs CUDA) — global:
+  Kernel        CPU (N / %)             GPU CUDA (N / %)        
+  ------------------------------------------------------------
+  Assign        5767 (18.7734%)         24952 (81.2266%)        
+  Calculate     29760 (96.875%)         960 (3.125%)            
+  Clean         960 (100%)              0 (0%)                  
+  Update        1 (3.33333%)            29 (96.6667%)           
+  Accumulate    1010 (3.19115%)         30640 (96.8088%)        
+  ------------------------------------------------------------
+  TOTAL         37498 (39.858%)         56581 (60.142%)         
+
+Tarefas por rank MPI:
+  Rank 0: 1203 CPU + 2667 CUDA = 3870 total (4.1%)
+  Rank 1: 1167 CPU + 1743 CUDA = 2910 total (3.1%)
+  Rank 2: 1171 CPU + 1739 CUDA = 2910 total (3.1%)
+  Rank 3: 1181 CPU + 1729 CUDA = 2910 total (3.1%)
+  Rank 4: 1169 CPU + 1741 CUDA = 2910 total (3.1%)
+  Rank 5: 1171 CPU + 1739 CUDA = 2910 total (3.1%)
+  Rank 6: 1169 CPU + 1741 CUDA = 2910 total (3.1%)
+  Rank 7: 1171 CPU + 1739 CUDA = 2910 total (3.1%)
+  Rank 8: 1171 CPU + 1739 CUDA = 2910 total (3.1%)
+  Rank 9: 1193 CPU + 1717 CUDA = 2910 total (3.1%)
+  Rank 10: 1166 CPU + 1744 CUDA = 2910 total (3.1%)
+  Rank 11: 1173 CPU + 1737 CUDA = 2910 total (3.1%)
+  Rank 12: 1171 CPU + 1739 CUDA = 2910 total (3.1%)
+  Rank 13: 1171 CPU + 1739 CUDA = 2910 total (3.1%)
+  Rank 14: 1172 CPU + 1738 CUDA = 2910 total (3.1%)
+  Rank 15: 1169 CPU + 1741 CUDA = 2910 total (3.1%)
+  Rank 16: 1171 CPU + 1739 CUDA = 2910 total (3.1%)
+  Rank 17: 1171 CPU + 1739 CUDA = 2910 total (3.1%)
+  Rank 18: 1172 CPU + 1738 CUDA = 2910 total (3.1%)
+  Rank 19: 1171 CPU + 1739 CUDA = 2910 total (3.1%)
+  Rank 20: 1170 CPU + 1740 CUDA = 2910 total (3.1%)
+  Rank 21: 1165 CPU + 1745 CUDA = 2910 total (3.1%)
+  Rank 22: 1166 CPU + 1744 CUDA = 2910 total (3.1%)
+  Rank 23: 1171 CPU + 1739 CUDA = 2910 total (3.1%)
+  Rank 24: 1162 CPU + 1748 CUDA = 2910 total (3.1%)
+  Rank 25: 1171 CPU + 1739 CUDA = 2910 total (3.1%)
+  Rank 26: 1171 CPU + 1739 CUDA = 2910 total (3.1%)
+  Rank 27: 1171 CPU + 1739 CUDA = 2910 total (3.1%)
+  Rank 28: 1175 CPU + 1735 CUDA = 2910 total (3.1%)
+  Rank 29: 1171 CPU + 1739 CUDA = 2910 total (3.1%)
+  Rank 30: 1162 CPU + 1748 CUDA = 2910 total (3.1%)
+  Rank 31: 1170 CPU + 1739 CUDA = 2909 total (3.1%)
+============================================================
+
+[starpu_comm_stats][0] TOTAL:	30477960.000000 B	29.066048 MB	 1.607988 B/s	 0.000001 MB/s
+[starpu_comm_stats][0] nb_sends: 1860
+[starpu_comm_stats][0] max_sent_size: 32768
+[starpu_comm_stats][0] average sent size: 16386
+[starpu_comm_stats][0:1]	983160.000000 B	0.937614 MB	 0.051871 B/s	 0.000000 MB/s
+[starpu_comm_stats][0:2]	983160.000000 B	0.937614 MB	 0.051871 B/s	 0.000000 MB/s
+[starpu_comm_stats][0:3]	983160.000000 B	0.937614 MB	 0.051871 B/s	 0.000000 MB/s
+[starpu_comm_stats][0:4]	983160.000000 B	0.937614 MB	 0.051871 B/s	 0.000000 MB/s
+[starpu_comm_stats][0:5]	983160.000000 B	0.937614 MB	 0.051871 B/s	 0.000000 MB/s
+[starpu_comm_stats][0:6]	983160.000000 B	0.937614 MB	 0.051871 B/s	 0.000000 MB/s
+[starpu_comm_stats][0:7]	983160.000000 B	0.937614 MB	 0.051871 B/s	 0.000000 MB/s
+[starpu_comm_stats][0:8]	983160.000000 B	0.937614 MB	 0.051871 B/s	 0.000000 MB/s
+[starpu_comm_stats][0:9]	983160.000000 B	0.937614 MB	 0.051871 B/s	 0.000000 MB/s
+[starpu_comm_stats][0:10]	983160.000000 B	0.937614 MB	 0.051871 B/s	 0.000000 MB/s
+[starpu_comm_stats][0:11]	983160.000000 B	0.937614 MB	 0.051871 B/s	 0.000000 MB/s
+[starpu_comm_stats][0:12]	983160.000000 B	0.937614 MB	 0.051871 B/s	 0.000000 MB/s
+[starpu_comm_stats][0:13]	983160.000000 B	0.937614 MB	 0.051871 B/s	 0.000000 MB/s
+[starpu_comm_stats][0:14]	983160.000000 B	0.937614 MB	 0.051871 B/s	 0.000000 MB/s
+[starpu_comm_stats][0:15]	983160.000000 B	0.937614 MB	 0.051871 B/s	 0.000000 MB/s
+[starpu_comm_stats][0:16]	983160.000000 B	0.937614 MB	 0.051871 B/s	 0.000000 MB/s
+[starpu_comm_stats][0:17]	983160.000000 B	0.937614 MB	 0.051871 B/s	 0.000000 MB/s
+[starpu_comm_stats][0:18]	983160.000000 B	0.937614 MB	 0.051871 B/s	 0.000000 MB/s
+[starpu_comm_stats][0:19]	983160.000000 B	0.937614 MB	 0.051871 B/s	 0.000000 MB/s
+[starpu_comm_stats][0:20]	983160.000000 B	0.937614 MB	 0.051871 B/s	 0.000000 MB/s
+[starpu_comm_stats][0:21]	983160.000000 B	0.937614 MB	 0.051871 B/s	 0.000000 MB/s
+[starpu_comm_stats][0:22]	983160.000000 B	0.937614 MB	 0.051871 B/s	 0.000000 MB/s
+[starpu_comm_stats][0:23]	983160.000000 B	0.937614 MB	 0.051871 B/s	 0.000000 MB/s
+[starpu_comm_stats][0:24]	983160.000000 B	0.937614 MB	 0.051871 B/s	 0.000000 MB/s
+[starpu_comm_stats][0:25]	983160.000000 B	0.937614 MB	 0.051871 B/s	 0.000000 MB/s
+[starpu_comm_stats][0:26]	983160.000000 B	0.937614 MB	 0.051871 B/s	 0.000000 MB/s
+[starpu_comm_stats][0:27]	983160.000000 B	0.937614 MB	 0.051871 B/s	 0.000000 MB/s
+[starpu_comm_stats][0:28]	983160.000000 B	0.937614 MB	 0.051871 B/s	 0.000000 MB/s
+[starpu_comm_stats][0:29]	983160.000000 B	0.937614 MB	 0.051871 B/s	 0.000000 MB/s
+[starpu_comm_stats][0:30]	983160.000000 B	0.937614 MB	 0.051871 B/s	 0.000000 MB/s
+[starpu_comm_stats][0:31]	983160.000000 B	0.937614 MB	 0.051871 B/s	 0.000000 MB/s
+[starpu_comm_stats_memnode][0:NUMA 0]	30477960.000000 B	29.066048 MB	 1.607988 B/s	 0.000002 MB/s
+[starpu_comm_stats][0] NB_COOP: 0
+
+#---------------------
+Worker stats:
+CUDA 0.0 (NVIDIA L4 19.8 GiB 35:00.0)
+	3129 task(s)
+	time split: total 18954.55 ms = executing: 3320.42 ms + callback: 67.56 ms + waiting: 16.60 ms + sleeping: 15525.62 ms + scheduling: 0.00 ms + overhead 24.36 ms
+	all time: executing: 3320.42 ms callback: 67.56 ms waiting: 19.34 ms sleeping: 15610.99 ms scheduling: 15611.84 ms
+CPU 0                           
+	406 task(s)
+	time split: total 18954.56 ms = executing: 2478.36 ms + callback: 4.22 ms + waiting: 214.18 ms + sleeping: 16253.46 ms + scheduling: 0.25 ms + overhead 4.10 ms
+	all time: executing: 2478.36 ms callback: 4.22 ms waiting: 214.18 ms sleeping: 16253.46 ms scheduling: 2573.55 ms
+CPU 1                           
+	211 task(s)
+	time split: total 18954.57 ms = executing: 2412.89 ms + callback: 0.00 ms + waiting: 163.82 ms + sleeping: 16375.35 ms + scheduling: 0.21 ms + overhead 2.30 ms
+	all time: executing: 2412.89 ms callback: 0.00 ms waiting: 163.82 ms sleeping: 16375.35 ms scheduling: 3087.50 ms
+CPU 2                           
+	159 task(s)
+	time split: total 18954.57 ms = executing: 2371.34 ms + callback: 0.00 ms + waiting: 175.40 ms + sleeping: 16405.47 ms + scheduling: 0.18 ms + overhead 2.18 ms
+	all time: executing: 2371.34 ms callback: 0.00 ms waiting: 175.40 ms sleeping: 16405.47 ms scheduling: 3074.40 ms
+CPU 3                           
+	167 task(s)
+	time split: total 18954.58 ms = executing: 2379.69 ms + callback: 0.00 ms + waiting: 187.96 ms + sleeping: 16384.56 ms + scheduling: 0.20 ms + overhead 2.16 ms
+	all time: executing: 2379.69 ms callback: 0.00 ms waiting: 187.96 ms sleeping: 16384.56 ms scheduling: 2798.46 ms
+CPU 4                           
+	154 task(s)
+	time split: total 18954.58 ms = executing: 2368.60 ms + callback: 0.01 ms + waiting: 202.01 ms + sleeping: 16381.72 ms + scheduling: 0.18 ms + overhead 2.06 ms
+	all time: executing: 2368.60 ms callback: 0.01 ms waiting: 202.01 ms sleeping: 16381.72 ms scheduling: 2601.34 ms
+CPU 5                           
+	154 task(s)
+	time split: total 18954.59 ms = executing: 2369.92 ms + callback: 0.00 ms + waiting: 185.73 ms + sleeping: 16396.62 ms + scheduling: 0.18 ms + overhead 2.13 ms
+	all time: executing: 2369.92 ms callback: 0.00 ms waiting: 185.73 ms sleeping: 16396.62 ms scheduling: 2600.52 ms
+
+Global time split: total 132682.00 ms = executing: 17701.22 ms (13.34%) + callback: 71.79 ms (0.05%) + waiting: 1145.70 ms (0.86%) + sleeping: 113722.80 ms (85.71%) + scheduling: 1.21 ms (0.00%) + overhead 39.29 ms (0.03%)
+#---------------------
+Escalonador StarPU ativo: dmda

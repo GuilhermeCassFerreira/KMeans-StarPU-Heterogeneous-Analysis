@@ -1,0 +1,46 @@
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.12' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.13' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.14' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.15' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.16' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.17' (ED25519) to the list of known hosts.
+[generate-input] Gerando 20480000 pontos no nó mestre 10.0.0.10...
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Usando 8 processo(s) de 8 disponivel(is), seed=42, formato=binario
+Concatenando chunks...
+Arquivo 'input_deep.bin' criado com 20480000 pontos.
+[generate-input] Concluido: input_deep.bin
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.12' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.13' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.14' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.15' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.16' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.17' (ED25519) to the list of known hosts.
+[generate-input] Gerando 102400000 pontos no nó mestre 10.0.0.10...
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Usando 8 processo(s) de 8 disponivel(is), seed=42, formato=binario
+Concatenando chunks...
+Arquivo 'input_pq.bin' criado com 102400000 pontos.
+[generate-input] Concluido: input_pq.bin
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.12' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.13' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.14' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.15' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.16' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.17' (ED25519) to the list of known hosts.
+[generate-input] Gerando 10240000 pontos no nó mestre 10.0.0.10...
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Usando 8 processo(s) de 8 disponivel(is), seed=42, formato=binario
+Concatenando chunks...
+Arquivo 'input_sift.bin' criado com 10240000 pontos.
+[generate-input] Concluido: input_sift.bin
+-rw-rw-r--. 1 ec2-user ec2-user 15728640016 Oct 31 00:51 input_deep.bin
+-rw-rw-r--. 1 ec2-user ec2-user 13107200016 Oct 31 00:52 input_pq.bin
+-rw-rw-r--. 1 ec2-user ec2-user 10485760016 Oct 31 00:53 input_sift.bin
+===== ENTRADAS GERADAS

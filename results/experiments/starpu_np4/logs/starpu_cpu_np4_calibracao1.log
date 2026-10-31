@@ -1,0 +1,134 @@
+[run] launch host: 10.0.0.10
+[run] hostfile: /home/ec2-user/KMeans-StarPU-Heterogeneous-Analysis/cluster-config/.cluster/hostfile
+[run] np: 4
+[run] mpirun args: --bind-to none -x STARPU_SCHED=dmda -x STARPU_NOPENCL=1 -x STARPU_RESERVE_NCPU=1 -x STARPU_NCPUS=8 -x STARPU_NCUDA=0 -x STARPU_WORKERS_CPUID=0,1,2,3,4,5,6,7
+[run] preparing MPI SSH from launch host 10.0.0.10 ...
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.12' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.13' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.12' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.13' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+[RANK 0/4] Host: ip-10-0-0-10.us-east-2.compute.internal
+[RANK 3/4] Host: ip-10-0-0-13.us-east-2.compute.internal
+[RANK 2/4] Host: ip-10-0-0-12.us-east-2.compute.internal
+[RANK 1/4] Host: ip-10-0-0-11.us-east-2.compute.internal
+[MODO] Escalonamento ESTATICO (Manual via EXECUTE_ON_NODE)
+[INFO] Centroides iniciais escolhidos aleatoriamente (Seed: 42)
+[INFO] Injetando max 30 iteracoes no DAG (Assíncrono)...
+[starpu][ip-10-0-0-10.us-east-2.compute.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-10.us-east-2.compute.internal][__starpu_history_based_job_expected_perf] Warning: model kmeans_assign_model_mpi is not calibrated enough for cpu0_cores1_impl0 (Comb0) size 53572248 footprint 855f04a0 (only 0 measurements), forcing calibration for this run. Use the STARPU_CALIBRATE environment variable to control this. You probably need to run again to continue calibrating the model, until this warning disappears.
+[starpu][ip-10-0-0-11.us-east-2.compute.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-12.us-east-2.compute.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-13.us-east-2.compute.internal][starpu_data_set_reduction_methods_with_args] Warning: The reduction method should use STARPU_COMMUTE for its first parameter
+[starpu][ip-10-0-0-11.us-east-2.compute.internal][__starpu_history_based_job_expected_perf] Warning: model kmeans_assign_model_mpi is not calibrated enough for cpu0_cores1_impl0 (Comb0) size 53572248 footprint 855f04a0 (only 0 measurements), forcing calibration for this run. Use the STARPU_CALIBRATE environment variable to control this. You probably need to run again to continue calibrating the model, until this warning disappears.
+[starpu][ip-10-0-0-12.us-east-2.compute.internal][__starpu_history_based_job_expected_perf] Warning: model kmeans_assign_model_mpi is not calibrated enough for cpu0_cores1_impl0 (Comb0) size 53572228 footprint 3bab6d80 (only 0 measurements), forcing calibration for this run. Use the STARPU_CALIBRATE environment variable to control this. You probably need to run again to continue calibrating the model, until this warning disappears.
+[starpu][ip-10-0-0-11.us-east-2.compute.internal][__starpu_history_based_job_expected_perf] Warning: model kmeans_clean_model_mpi is not calibrated enough for cpu0_cores1_impl0 (Comb0) size 1004 footprint 42d81305 (only 0 measurements), forcing calibration for this run. Use the STARPU_CALIBRATE environment variable to control this. You probably need to run again to continue calibrating the model, until this warning disappears.
+[starpu][ip-10-0-0-12.us-east-2.compute.internal][__starpu_history_based_job_expected_perf] Warning: model kmeans_clean_model_mpi is not calibrated enough for cpu0_cores1_impl0 (Comb0) size 1004 footprint 42d81305 (only 0 measurements), forcing calibration for this run. Use the STARPU_CALIBRATE environment variable to control this. You probably need to run again to continue calibrating the model, until this warning disappears.
+[starpu][ip-10-0-0-13.us-east-2.compute.internal][__starpu_history_based_job_expected_perf] Warning: model kmeans_assign_model_mpi is not calibrated enough for cpu0_cores1_impl0 (Comb0) size 53572228 footprint 3bab6d80 (only 0 measurements), forcing calibration for this run. Use the STARPU_CALIBRATE environment variable to control this. You probably need to run again to continue calibrating the model, until this warning disappears.
+[starpu][ip-10-0-0-13.us-east-2.compute.internal][__starpu_history_based_job_expected_perf] Warning: model kmeans_clean_model_mpi is not calibrated enough for cpu0_cores1_impl0 (Comb0) size 1004 footprint 42d81305 (only 0 measurements), forcing calibration for this run. Use the STARPU_CALIBRATE environment variable to control this. You probably need to run again to continue calibrating the model, until this warning disappears.
+[starpu][ip-10-0-0-12.us-east-2.compute.internal][__starpu_history_based_job_expected_perf] Warning: model kmeans_calculate_model_mpi is not calibrated enough for cpu0_cores1_impl0 (Comb0) size 53572424 footprint 9c49b95e (only 0 measurements), forcing calibration for this run. Use the STARPU_CALIBRATE environment variable to control this. You probably need to run again to continue calibrating the model, until this warning disappears.
+[starpu][ip-10-0-0-12.us-east-2.compute.internal][__starpu_history_based_job_expected_perf] Warning: model kmeans_calculate_model_mpi is not calibrated enough for cpu0_cores1_impl0 (Comb0) size 53572424 footprint 9c49b95e (only 0 measurements), forcing calibration for this run. Use the STARPU_CALIBRATE environment variable to control this. You probably need to run again to continue calibrating the model, until this warning disappears.
+[starpu][ip-10-0-0-12.us-east-2.compute.internal][__starpu_history_based_job_expected_perf] Warning: model kmeans_calculate_model_mpi is not calibrated enough for cpu0_cores1_impl0 (Comb0) size 53572424 footprint 9c49b95e (only 0 measurements), forcing calibration for this run. Use the STARPU_CALIBRATE environment variable to control this. You probably need to run again to continue calibrating the model, until this warning disappears.
+[starpu][ip-10-0-0-12.us-east-2.compute.internal][__starpu_history_based_job_expected_perf] Warning: model kmeans_calculate_model_mpi is not calibrated enough for cpu0_cores1_impl0 (Comb0) size 53572424 footprint 9c49b95e (only 0 measurements), forcing calibration for this run. Use the STARPU_CALIBRATE environment variable to control this. You probably need to run again to continue calibrating the model, until this warning disappears.
+[starpu][ip-10-0-0-12.us-east-2.compute.internal][__starpu_history_based_job_expected_perf] Warning: model kmeans_calculate_model_mpi is not calibrated enough for cpu0_cores1_impl0 (Comb0) size 53572424 footprint 9c49b95e (only 0 measurements), forcing calibration for this run. Use the STARPU_CALIBRATE environment variable to control this. You probably need to run again to continue calibrating the model, until this warning disappears.
+[starpu][ip-10-0-0-12.us-east-2.compute.internal][__starpu_history_based_job_expected_perf] Warning: model kmeans_calculate_model_mpi is not calibrated enough for cpu0_cores1_impl0 (Comb0) size 53572424 footprint 9c49b95e (only 0 measurements), forcing calibration for this run. Use the STARPU_CALIBRATE environment variable to control this. You probably need to run again to continue calibrating the model, until this warning disappears.
+[starpu][ip-10-0-0-11.us-east-2.compute.internal][__starpu_history_based_job_expected_perf] Warning: model kmeans_calculate_model_mpi is not calibrated enough for cpu0_cores1_impl0 (Comb0) size 53572444 footprint 6ce82588 (only 0 measurements), forcing calibration for this run. Use the STARPU_CALIBRATE environment variable to control this. You probably need to run again to continue calibrating the model, until this warning disappears.
+[starpu][ip-10-0-0-11.us-east-2.compute.internal][__starpu_history_based_job_expected_perf] Warning: model kmeans_calculate_model_mpi is not calibrated enough for cpu0_cores1_impl0 (Comb0) size 53572444 footprint 6ce82588 (only 0 measurements), forcing calibration for this run. Use the STARPU_CALIBRATE environment variable to control this. You probably need to run again to continue calibrating the model, until this warning disappears.
+[starpu][ip-10-0-0-11.us-east-2.compute.internal][__starpu_history_based_job_expected_perf] Warning: model kmeans_calculate_model_mpi is not calibrated enough for cpu0_cores1_impl0 (Comb0) size 53572444 footprint 6ce82588 (only 0 measurements), forcing calibration for this run. Use the STARPU_CALIBRATE environment variable to control this. You probably need to run again to continue calibrating the model, until this warning disappears.
+[starpu][ip-10-0-0-11.us-east-2.compute.internal][__starpu_history_based_job_expected_perf] Warning: model kmeans_calculate_model_mpi is not calibrated enough for cpu0_cores1_impl0 (Comb0) size 53572444 footprint 6ce82588 (only 0 measurements), forcing calibration for this run. Use the STARPU_CALIBRATE environment variable to control this. You probably need to run again to continue calibrating the model, until this warning disappears.
+[starpu][ip-10-0-0-11.us-east-2.compute.internal][__starpu_history_based_job_expected_perf] Warning: model kmeans_calculate_model_mpi is not calibrated enough for cpu0_cores1_impl0 (Comb0) size 53572444 footprint 6ce82588 (only 0 measurements), forcing calibration for this run. Use the STARPU_CALIBRATE environment variable to control this. You probably need to run again to continue calibrating the model, until this warning disappears.
+[starpu][ip-10-0-0-11.us-east-2.compute.internal][__starpu_history_based_job_expected_perf] Warning: model kmeans_calculate_model_mpi is not calibrated enough for cpu0_cores1_impl0 (Comb0) size 53572444 footprint 6ce82588 (only 0 measurements), forcing calibration for this run. Use the STARPU_CALIBRATE environment variable to control this. You probably need to run again to continue calibrating the model, until this warning disappears.
+[starpu][ip-10-0-0-11.us-east-2.compute.internal][__starpu_history_based_job_expected_perf] Warning: model kmeans_calculate_model_mpi is not calibrated enough for cpu0_cores1_impl0 (Comb0) size 53572444 footprint 6ce82588 (only 0 measurements), forcing calibration for this run. Use the STARPU_CALIBRATE environment variable to control this. You probably need to run again to continue calibrating the model, until this warning disappears.
+[starpu][ip-10-0-0-13.us-east-2.compute.internal][__starpu_history_based_job_expected_perf] Warning: model kmeans_calculate_model_mpi is not calibrated enough for cpu0_cores1_impl0 (Comb0) size 53572424 footprint 9c49b95e (only 0 measurements), forcing calibration for this run. Use the STARPU_CALIBRATE environment variable to control this. You probably need to run again to continue calibrating the model, until this warning disappears.
+[starpu][ip-10-0-0-13.us-east-2.compute.internal][__starpu_history_based_job_expected_perf] Warning: model kmeans_calculate_model_mpi is not calibrated enough for cpu0_cores1_impl0 (Comb0) size 53572424 footprint 9c49b95e (only 0 measurements), forcing calibration for this run. Use the STARPU_CALIBRATE environment variable to control this. You probably need to run again to continue calibrating the model, until this warning disappears.
+[starpu][ip-10-0-0-13.us-east-2.compute.internal][__starpu_history_based_job_expected_perf] Warning: model kmeans_calculate_model_mpi is not calibrated enough for cpu0_cores1_impl0 (Comb0) size 53572424 footprint 9c49b95e (only 0 measurements), forcing calibration for this run. Use the STARPU_CALIBRATE environment variable to control this. You probably need to run again to continue calibrating the model, until this warning disappears.
+[starpu][ip-10-0-0-13.us-east-2.compute.internal][__starpu_history_based_job_expected_perf] Warning: model kmeans_calculate_model_mpi is not calibrated enough for cpu0_cores1_impl0 (Comb0) size 53572424 footprint 9c49b95e (only 0 measurements), forcing calibration for this run. Use the STARPU_CALIBRATE environment variable to control this. You probably need to run again to continue calibrating the model, until this warning disappears.
+[starpu][ip-10-0-0-13.us-east-2.compute.internal][__starpu_history_based_job_expected_perf] Warning: model kmeans_calculate_model_mpi is not calibrated enough for cpu0_cores1_impl0 (Comb0) size 53572424 footprint 9c49b95e (only 0 measurements), forcing calibration for this run. Use the STARPU_CALIBRATE environment variable to control this. You probably need to run again to continue calibrating the model, until this warning disappears.
+[starpu][ip-10-0-0-11.us-east-2.compute.internal][_starpu_update_perfmodel_history] Too big deviation for model kmeans_calculate_model_mpi on cpu0_cores1_impl0 (Comb0): 7588.296000us vs average 12046.560000us, 1 such errors against 1 samples (-37.008607%), flushing the performance model. Use the STARPU_HISTORY_MAX_ERROR environment variable to control the threshold (currently 50%)
+[StarPU] Iteracao 1
+[StarPU] Iteracao 2
+[starpu][ip-10-0-0-12.us-east-2.compute.internal][_starpu_update_perfmodel_history] Too big deviation for model kmeans_clean_model_mpi on cpu0_cores1_impl0 (Comb0): 1.009000us vs average 1.930000us, 1 such errors against 1 samples (-47.720207%), flushing the performance model. Use the STARPU_HISTORY_MAX_ERROR environment variable to control the threshold (currently 50%)
+[StarPU] Iteracao 3
+[StarPU] Iteracao 4
+[starpu][ip-10-0-0-12.us-east-2.compute.internal][_starpu_update_perfmodel_history] Too big deviation for model kmeans_clean_model_mpi on cpu0_cores1_impl0 (Comb0): 2.490000us vs average 0.930000us, 1 such errors against 1 samples (+167.741935%), flushing the performance model. Use the STARPU_HISTORY_MAX_ERROR environment variable to control the threshold (currently 50%)
+[StarPU] Iteracao 5
+[StarPU] Iteracao 6
+[starpu][ip-10-0-0-13.us-east-2.compute.internal][_starpu_update_perfmodel_history] Too big deviation for model kmeans_clean_model_mpi on cpu0_cores1_impl0 (Comb0): 0.880000us vs average 1.666667us, 3 such errors against 3 samples (-47.200000%), flushing the performance model. Use the STARPU_HISTORY_MAX_ERROR environment variable to control the threshold (currently 50%)
+[starpu][ip-10-0-0-12.us-east-2.compute.internal][_starpu_update_perfmodel_history] Too big deviation for model starpu_data_cpy on cpu0_cores1_impl0 (Comb0): 2.390000us vs average 0.761667us, 6 such errors against 6 samples (+213.785544%), flushing the performance model. Use the STARPU_HISTORY_MAX_ERROR environment variable to control the threshold (currently 50%)
+[starpu][ip-10-0-0-13.us-east-2.compute.internal][_starpu_update_perfmodel_history] Too big deviation for model starpu_data_cpy on cpu0_cores1_impl0 (Comb0): 2.050000us vs average 0.733500us, 6 such errors against 6 samples (+179.481936%), flushing the performance model. Use the STARPU_HISTORY_MAX_ERROR environment variable to control the threshold (currently 50%)
+[starpu][ip-10-0-0-11.us-east-2.compute.internal][_starpu_update_perfmodel_history] Too big deviation for model starpu_data_cpy on cpu0_cores1_impl0 (Comb0): 2.080000us vs average 0.780000us, 6 such errors against 6 samples (+166.666667%), flushing the performance model. Use the STARPU_HISTORY_MAX_ERROR environment variable to control the threshold (currently 50%)
+[StarPU] Iteracao 7
+[StarPU] Iteracao 8
+[StarPU] Iteracao 9
+[StarPU] Iteracao 10
+[starpu][ip-10-0-0-12.us-east-2.compute.internal][_starpu_update_perfmodel_history] Too big deviation for model kmeans_clean_model_mpi on cpu0_cores1_impl0 (Comb0): 0.951000us vs average 1.436667us, 3 such errors against 3 samples (-33.805104%), flushing the performance model. Use the STARPU_HISTORY_MAX_ERROR environment variable to control the threshold (currently 50%)
+[StarPU] Iteracao 11
+[StarPU] Iteracao 12
+[StarPU] Iteracao 13
+[StarPU] Iteracao 14
+[StarPU] Iteracao 15
+[StarPU] Iteracao 16
+[StarPU] Iteracao 17
+[StarPU] Iteracao 18
+[StarPU] Iteracao 19
+[StarPU] Iteracao 20
+[StarPU] Iteracao 21
+[StarPU] Iteracao 22
+[StarPU] Iteracao 23
+[StarPU] Iteracao 24
+[StarPU] Iteracao 25
+[StarPU] Iteracao 26
+[StarPU] Iteracao 27
+[StarPU] Iteracao 28
+[StarPU] Iteracao 29
+[StarPU] Iteracao 30
+[INFO] Limite de iterações atingido sem convergência completa.
+[INFO] Salvando centróides finais...
+[INFO] Arquivo de centróides salvo com sucesso em: output_bench/exp_starpu_cpu_np4_calibracao1/50-clusters.txt
+============================================================
+METRICAS FINAIS — StarPU/MPI
+============================================================
+Workers (rank 0)          : 7 CPU  +  0 GPU CUDA
+Ranks MPI                 : 4
+
+Tempo do loop (max)       : 24676.39   ms  [min: 24653.88]
+Tempo total (max, c/init) : 182923.74  ms  [min: 182016.67]
+T. medio/iter             : 822.55     ms
+Iteracoes                 : 30 / max 30
+SSE                       : 4.0052e+12
+
+Tempos por rank:
+  Rank 0: loop=24676.39   ms  avg/iter=822.55   ms  total=182923.74  ms
+  Rank 1: loop=24656.41   ms  avg/iter=821.88   ms  total=182080.69  ms
+  Rank 2: loop=24657.68   ms  avg/iter=821.92   ms  total=182016.67  ms
+  Rank 3: loop=24653.88   ms  avg/iter=821.80   ms  total=182088.43  ms
+
+Distribuicao por kernel (CPU vs CUDA) — global:
+  Kernel        CPU (N / %)             GPU CUDA (N / %)        
+  ------------------------------------------------------------
+  Assign        3357 (100%)             0 (0%)                  
+  Calculate     3359 (100%)             0 (0%)                  
+  Clean         120 (100%)              0 (0%)                  
+  Update        30 (100%)               0 (0%)                  
+  Accumulate    3450 (100%)             0 (0%)                  
+  ------------------------------------------------------------
+  TOTAL         10316 (100%)            0 (0%)                  
+
+Tarefas por rank MPI:
+  Rank 0: 2668 CPU + 0 CUDA = 2668 total (25.9%)
+  Rank 1: 2550 CPU + 0 CUDA = 2550 total (24.7%)
+  Rank 2: 2548 CPU + 0 CUDA = 2548 total (24.7%)
+  Rank 3: 2550 CPU + 0 CUDA = 2550 total (24.7%)
+============================================================
+Escalonador StarPU ativo: dmda

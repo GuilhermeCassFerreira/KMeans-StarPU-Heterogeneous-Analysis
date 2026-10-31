@@ -1,0 +1,47 @@
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.12' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.13' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.14' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.15' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.16' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.17' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.18' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.19' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.20' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.21' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.22' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.23' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.24' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.25' (ED25519) to the list of known hosts.
+===== 18:50:53 RODADA 1 pq np16
+pq: loop 6816.23 ms, SSE 2.9768e+14
+===== 18:51:55 RODADA 1 deep np16
+deep: loop 8186.61 ms, SSE 6.0084e+14
+===== 18:53:00 RODADA 1 sift np16
+sift: loop 5531.53 ms, SSE 4.0941e+14
+===== 18:53:52 RODADA 2 pq np16
+pq: loop 6815.56 ms, SSE 2.9768e+14
+===== 18:54:55 RODADA 2 deep np16
+deep: loop 8172.11 ms, SSE 6.0084e+14
+===== 18:56:01 RODADA 2 sift np16
+sift: loop 5507.46 ms, SSE 4.0941e+14
+===== 18:56:53 RODADA 3 pq np16
+pq: loop 6820.74 ms, SSE 2.9768e+14
+===== 18:57:56 RODADA 3 deep np16
+deep: loop 8196.86 ms, SSE 6.0084e+14
+===== 18:59:02 RODADA 3 sift np16
+sift: loop 5532.91 ms, SSE 4.0941e+14
+===== 18:59:54 RODADA 4 pq np16
+pq: loop 6800.25 ms, SSE 2.9768e+14
+===== 19:00:57 RODADA 4 deep np16
+deep: loop 8234.27 ms, SSE 6.0084e+14
+===== 19:02:03 RODADA 4 sift np16
+sift: loop 5573.28 ms, SSE 4.0941e+14
+===== 19:02:55 RODADA 5 pq np16
+pq: loop 6818.41 ms, SSE 2.9768e+14
+===== 19:03:58 RODADA 5 deep np16
+deep: loop 8168.25 ms, SSE 6.0084e+14
+===== 19:05:04 RODADA 5 sift np16
+sift: loop 5522.06 ms, SSE 4.0941e+14
+===== OMP NP16 CONCLUIDO

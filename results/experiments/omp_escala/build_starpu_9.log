@@ -1,0 +1,180 @@
+Warning: Permanently added '10.0.0.33' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.34' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.35' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.36' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.37' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.38' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.39' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.40' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.41' (ED25519) to the list of known hosts.
+[build:starpu] 10.0.0.33
+Warning: Permanently added '10.0.0.33' (ED25519) to the list of known hosts.
+===> [AUTO-CONFIG] GPU CUDA detetada. Compilando modo Hibrido (CPU+GPU).
+rm -rf build kmeans_starpu
+===> [AUTO-CONFIG] GPU CUDA detetada. Compilando modo Hibrido (CPU+GPU).
+mkdir -p build
+mpic++ -O3 -DNDEBUG -std=c++11 -fPIC -DUSE_MPI -DSTARPU_USE_CUDA -DSTARPU_USE_CUDA -Iinclude -Isrc/starpu -I/usr/local/include/starpu/1.4 -I/usr/local/cuda/include -c src/common/io.cpp -o build/io.o
+mpic++ -O3 -DNDEBUG -std=c++11 -fPIC -DUSE_MPI -DSTARPU_USE_CUDA -DSTARPU_USE_CUDA -Iinclude -Isrc/starpu -I/usr/local/include/starpu/1.4 -I/usr/local/cuda/include -c src/common/metrics.cpp -o build/metrics.o
+mpic++ -O3 -DNDEBUG -std=c++11 -fPIC -DUSE_MPI -DSTARPU_USE_CUDA -DSTARPU_USE_CUDA -Iinclude -Isrc/starpu -I/usr/local/include/starpu/1.4 -I/usr/local/cuda/include -c src/starpu/kmeans_cpu.cpp -o build/kmeans_cpu.o
+mpic++ -O3 -DNDEBUG -std=c++11 -fPIC -DUSE_MPI -DSTARPU_USE_CUDA -DSTARPU_USE_CUDA -Iinclude -Isrc/starpu -I/usr/local/include/starpu/1.4 -I/usr/local/cuda/include -c src/starpu/kmeans_mpi.cpp -o build/kmeans_mpi.o
+mpic++ -O3 -DNDEBUG -std=c++11 -fPIC -DUSE_MPI -DSTARPU_USE_CUDA -DSTARPU_USE_CUDA -Iinclude -Isrc/starpu -I/usr/local/include/starpu/1.4 -I/usr/local/cuda/include -c src/starpu/kmeans_main.cpp -o build/kmeans_main.o
+"src/starpu/kmeans_main.cpp", line 95: warning: variable "use_heterogeneous_chunks_val" was declared but never referenced [declared_but_not_referenced]
+      bool use_heterogeneous_chunks_val = false;
+           ^
+
+Remark: individual warnings can be suppressed with "--diag_suppress <warning-name>"
+
+nvcc -ccbin /usr/bin/g++ -std=c++11 -Xcompiler "-fPIC" -O3 -DSTARPU_USE_CUDA -gencode arch=compute_89,code=sm_89 -Iinclude -Isrc/starpu -I/usr/local/include/starpu/1.4 -I/usr/local/cuda/include -c src/starpu/kmeans_cuda.cu -o build/kmeans_cuda.o
+mpic++ -O3 -DNDEBUG -std=c++11 -fPIC -DUSE_MPI -DSTARPU_USE_CUDA -DSTARPU_USE_CUDA build/io.o build/metrics.o build/kmeans_cpu.o build/kmeans_mpi.o build/kmeans_main.o build/kmeans_cuda.o -o kmeans_starpu -L/usr/local/lib -L/usr/local/cuda/lib64 -lstarpumpi-1.4 -lstarpu-1.4 -lpthread -lm -lcuda -lcudart
+[build:starpu] 10.0.0.34
+Warning: Permanently added '10.0.0.34' (ED25519) to the list of known hosts.
+===> [AUTO-CONFIG] GPU CUDA detetada. Compilando modo Hibrido (CPU+GPU).
+rm -rf build kmeans_starpu
+===> [AUTO-CONFIG] GPU CUDA detetada. Compilando modo Hibrido (CPU+GPU).
+mkdir -p build
+mpic++ -O3 -DNDEBUG -std=c++11 -fPIC -DUSE_MPI -DSTARPU_USE_CUDA -DSTARPU_USE_CUDA -Iinclude -Isrc/starpu -I/usr/local/include/starpu/1.4 -I/usr/local/cuda/include -c src/common/io.cpp -o build/io.o
+mpic++ -O3 -DNDEBUG -std=c++11 -fPIC -DUSE_MPI -DSTARPU_USE_CUDA -DSTARPU_USE_CUDA -Iinclude -Isrc/starpu -I/usr/local/include/starpu/1.4 -I/usr/local/cuda/include -c src/common/metrics.cpp -o build/metrics.o
+mpic++ -O3 -DNDEBUG -std=c++11 -fPIC -DUSE_MPI -DSTARPU_USE_CUDA -DSTARPU_USE_CUDA -Iinclude -Isrc/starpu -I/usr/local/include/starpu/1.4 -I/usr/local/cuda/include -c src/starpu/kmeans_cpu.cpp -o build/kmeans_cpu.o
+mpic++ -O3 -DNDEBUG -std=c++11 -fPIC -DUSE_MPI -DSTARPU_USE_CUDA -DSTARPU_USE_CUDA -Iinclude -Isrc/starpu -I/usr/local/include/starpu/1.4 -I/usr/local/cuda/include -c src/starpu/kmeans_mpi.cpp -o build/kmeans_mpi.o
+mpic++ -O3 -DNDEBUG -std=c++11 -fPIC -DUSE_MPI -DSTARPU_USE_CUDA -DSTARPU_USE_CUDA -Iinclude -Isrc/starpu -I/usr/local/include/starpu/1.4 -I/usr/local/cuda/include -c src/starpu/kmeans_main.cpp -o build/kmeans_main.o
+"src/starpu/kmeans_main.cpp", line 95: warning: variable "use_heterogeneous_chunks_val" was declared but never referenced [declared_but_not_referenced]
+      bool use_heterogeneous_chunks_val = false;
+           ^
+
+Remark: individual warnings can be suppressed with "--diag_suppress <warning-name>"
+
+nvcc -ccbin /usr/bin/g++ -std=c++11 -Xcompiler "-fPIC" -O3 -DSTARPU_USE_CUDA -gencode arch=compute_89,code=sm_89 -Iinclude -Isrc/starpu -I/usr/local/include/starpu/1.4 -I/usr/local/cuda/include -c src/starpu/kmeans_cuda.cu -o build/kmeans_cuda.o
+mpic++ -O3 -DNDEBUG -std=c++11 -fPIC -DUSE_MPI -DSTARPU_USE_CUDA -DSTARPU_USE_CUDA build/io.o build/metrics.o build/kmeans_cpu.o build/kmeans_mpi.o build/kmeans_main.o build/kmeans_cuda.o -o kmeans_starpu -L/usr/local/lib -L/usr/local/cuda/lib64 -lstarpumpi-1.4 -lstarpu-1.4 -lpthread -lm -lcuda -lcudart
+[build:starpu] 10.0.0.35
+Warning: Permanently added '10.0.0.35' (ED25519) to the list of known hosts.
+===> [AUTO-CONFIG] GPU CUDA detetada. Compilando modo Hibrido (CPU+GPU).
+rm -rf build kmeans_starpu
+===> [AUTO-CONFIG] GPU CUDA detetada. Compilando modo Hibrido (CPU+GPU).
+mkdir -p build
+mpic++ -O3 -DNDEBUG -std=c++11 -fPIC -DUSE_MPI -DSTARPU_USE_CUDA -DSTARPU_USE_CUDA -Iinclude -Isrc/starpu -I/usr/local/include/starpu/1.4 -I/usr/local/cuda/include -c src/common/io.cpp -o build/io.o
+mpic++ -O3 -DNDEBUG -std=c++11 -fPIC -DUSE_MPI -DSTARPU_USE_CUDA -DSTARPU_USE_CUDA -Iinclude -Isrc/starpu -I/usr/local/include/starpu/1.4 -I/usr/local/cuda/include -c src/common/metrics.cpp -o build/metrics.o
+mpic++ -O3 -DNDEBUG -std=c++11 -fPIC -DUSE_MPI -DSTARPU_USE_CUDA -DSTARPU_USE_CUDA -Iinclude -Isrc/starpu -I/usr/local/include/starpu/1.4 -I/usr/local/cuda/include -c src/starpu/kmeans_cpu.cpp -o build/kmeans_cpu.o
+mpic++ -O3 -DNDEBUG -std=c++11 -fPIC -DUSE_MPI -DSTARPU_USE_CUDA -DSTARPU_USE_CUDA -Iinclude -Isrc/starpu -I/usr/local/include/starpu/1.4 -I/usr/local/cuda/include -c src/starpu/kmeans_mpi.cpp -o build/kmeans_mpi.o
+mpic++ -O3 -DNDEBUG -std=c++11 -fPIC -DUSE_MPI -DSTARPU_USE_CUDA -DSTARPU_USE_CUDA -Iinclude -Isrc/starpu -I/usr/local/include/starpu/1.4 -I/usr/local/cuda/include -c src/starpu/kmeans_main.cpp -o build/kmeans_main.o
+"src/starpu/kmeans_main.cpp", line 95: warning: variable "use_heterogeneous_chunks_val" was declared but never referenced [declared_but_not_referenced]
+      bool use_heterogeneous_chunks_val = false;
+           ^
+
+Remark: individual warnings can be suppressed with "--diag_suppress <warning-name>"
+
+nvcc -ccbin /usr/bin/g++ -std=c++11 -Xcompiler "-fPIC" -O3 -DSTARPU_USE_CUDA -gencode arch=compute_89,code=sm_89 -Iinclude -Isrc/starpu -I/usr/local/include/starpu/1.4 -I/usr/local/cuda/include -c src/starpu/kmeans_cuda.cu -o build/kmeans_cuda.o
+mpic++ -O3 -DNDEBUG -std=c++11 -fPIC -DUSE_MPI -DSTARPU_USE_CUDA -DSTARPU_USE_CUDA build/io.o build/metrics.o build/kmeans_cpu.o build/kmeans_mpi.o build/kmeans_main.o build/kmeans_cuda.o -o kmeans_starpu -L/usr/local/lib -L/usr/local/cuda/lib64 -lstarpumpi-1.4 -lstarpu-1.4 -lpthread -lm -lcuda -lcudart
+[build:starpu] 10.0.0.36
+Warning: Permanently added '10.0.0.36' (ED25519) to the list of known hosts.
+===> [AUTO-CONFIG] GPU CUDA detetada. Compilando modo Hibrido (CPU+GPU).
+rm -rf build kmeans_starpu
+===> [AUTO-CONFIG] GPU CUDA detetada. Compilando modo Hibrido (CPU+GPU).
+mkdir -p build
+mpic++ -O3 -DNDEBUG -std=c++11 -fPIC -DUSE_MPI -DSTARPU_USE_CUDA -DSTARPU_USE_CUDA -Iinclude -Isrc/starpu -I/usr/local/include/starpu/1.4 -I/usr/local/cuda/include -c src/common/io.cpp -o build/io.o
+mpic++ -O3 -DNDEBUG -std=c++11 -fPIC -DUSE_MPI -DSTARPU_USE_CUDA -DSTARPU_USE_CUDA -Iinclude -Isrc/starpu -I/usr/local/include/starpu/1.4 -I/usr/local/cuda/include -c src/common/metrics.cpp -o build/metrics.o
+mpic++ -O3 -DNDEBUG -std=c++11 -fPIC -DUSE_MPI -DSTARPU_USE_CUDA -DSTARPU_USE_CUDA -Iinclude -Isrc/starpu -I/usr/local/include/starpu/1.4 -I/usr/local/cuda/include -c src/starpu/kmeans_cpu.cpp -o build/kmeans_cpu.o
+mpic++ -O3 -DNDEBUG -std=c++11 -fPIC -DUSE_MPI -DSTARPU_USE_CUDA -DSTARPU_USE_CUDA -Iinclude -Isrc/starpu -I/usr/local/include/starpu/1.4 -I/usr/local/cuda/include -c src/starpu/kmeans_mpi.cpp -o build/kmeans_mpi.o
+mpic++ -O3 -DNDEBUG -std=c++11 -fPIC -DUSE_MPI -DSTARPU_USE_CUDA -DSTARPU_USE_CUDA -Iinclude -Isrc/starpu -I/usr/local/include/starpu/1.4 -I/usr/local/cuda/include -c src/starpu/kmeans_main.cpp -o build/kmeans_main.o
+"src/starpu/kmeans_main.cpp", line 95: warning: variable "use_heterogeneous_chunks_val" was declared but never referenced [declared_but_not_referenced]
+      bool use_heterogeneous_chunks_val = false;
+           ^
+
+Remark: individual warnings can be suppressed with "--diag_suppress <warning-name>"
+
+nvcc -ccbin /usr/bin/g++ -std=c++11 -Xcompiler "-fPIC" -O3 -DSTARPU_USE_CUDA -gencode arch=compute_89,code=sm_89 -Iinclude -Isrc/starpu -I/usr/local/include/starpu/1.4 -I/usr/local/cuda/include -c src/starpu/kmeans_cuda.cu -o build/kmeans_cuda.o
+mpic++ -O3 -DNDEBUG -std=c++11 -fPIC -DUSE_MPI -DSTARPU_USE_CUDA -DSTARPU_USE_CUDA build/io.o build/metrics.o build/kmeans_cpu.o build/kmeans_mpi.o build/kmeans_main.o build/kmeans_cuda.o -o kmeans_starpu -L/usr/local/lib -L/usr/local/cuda/lib64 -lstarpumpi-1.4 -lstarpu-1.4 -lpthread -lm -lcuda -lcudart
+[build:starpu] 10.0.0.37
+Warning: Permanently added '10.0.0.37' (ED25519) to the list of known hosts.
+===> [AUTO-CONFIG] GPU CUDA detetada. Compilando modo Hibrido (CPU+GPU).
+rm -rf build kmeans_starpu
+===> [AUTO-CONFIG] GPU CUDA detetada. Compilando modo Hibrido (CPU+GPU).
+mkdir -p build
+mpic++ -O3 -DNDEBUG -std=c++11 -fPIC -DUSE_MPI -DSTARPU_USE_CUDA -DSTARPU_USE_CUDA -Iinclude -Isrc/starpu -I/usr/local/include/starpu/1.4 -I/usr/local/cuda/include -c src/common/io.cpp -o build/io.o
+mpic++ -O3 -DNDEBUG -std=c++11 -fPIC -DUSE_MPI -DSTARPU_USE_CUDA -DSTARPU_USE_CUDA -Iinclude -Isrc/starpu -I/usr/local/include/starpu/1.4 -I/usr/local/cuda/include -c src/common/metrics.cpp -o build/metrics.o
+mpic++ -O3 -DNDEBUG -std=c++11 -fPIC -DUSE_MPI -DSTARPU_USE_CUDA -DSTARPU_USE_CUDA -Iinclude -Isrc/starpu -I/usr/local/include/starpu/1.4 -I/usr/local/cuda/include -c src/starpu/kmeans_cpu.cpp -o build/kmeans_cpu.o
+mpic++ -O3 -DNDEBUG -std=c++11 -fPIC -DUSE_MPI -DSTARPU_USE_CUDA -DSTARPU_USE_CUDA -Iinclude -Isrc/starpu -I/usr/local/include/starpu/1.4 -I/usr/local/cuda/include -c src/starpu/kmeans_mpi.cpp -o build/kmeans_mpi.o
+mpic++ -O3 -DNDEBUG -std=c++11 -fPIC -DUSE_MPI -DSTARPU_USE_CUDA -DSTARPU_USE_CUDA -Iinclude -Isrc/starpu -I/usr/local/include/starpu/1.4 -I/usr/local/cuda/include -c src/starpu/kmeans_main.cpp -o build/kmeans_main.o
+"src/starpu/kmeans_main.cpp", line 95: warning: variable "use_heterogeneous_chunks_val" was declared but never referenced [declared_but_not_referenced]
+      bool use_heterogeneous_chunks_val = false;
+           ^
+
+Remark: individual warnings can be suppressed with "--diag_suppress <warning-name>"
+
+nvcc -ccbin /usr/bin/g++ -std=c++11 -Xcompiler "-fPIC" -O3 -DSTARPU_USE_CUDA -gencode arch=compute_89,code=sm_89 -Iinclude -Isrc/starpu -I/usr/local/include/starpu/1.4 -I/usr/local/cuda/include -c src/starpu/kmeans_cuda.cu -o build/kmeans_cuda.o
+mpic++ -O3 -DNDEBUG -std=c++11 -fPIC -DUSE_MPI -DSTARPU_USE_CUDA -DSTARPU_USE_CUDA build/io.o build/metrics.o build/kmeans_cpu.o build/kmeans_mpi.o build/kmeans_main.o build/kmeans_cuda.o -o kmeans_starpu -L/usr/local/lib -L/usr/local/cuda/lib64 -lstarpumpi-1.4 -lstarpu-1.4 -lpthread -lm -lcuda -lcudart
+[build:starpu] 10.0.0.38
+Warning: Permanently added '10.0.0.38' (ED25519) to the list of known hosts.
+===> [AUTO-CONFIG] GPU CUDA detetada. Compilando modo Hibrido (CPU+GPU).
+rm -rf build kmeans_starpu
+===> [AUTO-CONFIG] GPU CUDA detetada. Compilando modo Hibrido (CPU+GPU).
+mkdir -p build
+mpic++ -O3 -DNDEBUG -std=c++11 -fPIC -DUSE_MPI -DSTARPU_USE_CUDA -DSTARPU_USE_CUDA -Iinclude -Isrc/starpu -I/usr/local/include/starpu/1.4 -I/usr/local/cuda/include -c src/common/io.cpp -o build/io.o
+mpic++ -O3 -DNDEBUG -std=c++11 -fPIC -DUSE_MPI -DSTARPU_USE_CUDA -DSTARPU_USE_CUDA -Iinclude -Isrc/starpu -I/usr/local/include/starpu/1.4 -I/usr/local/cuda/include -c src/common/metrics.cpp -o build/metrics.o
+mpic++ -O3 -DNDEBUG -std=c++11 -fPIC -DUSE_MPI -DSTARPU_USE_CUDA -DSTARPU_USE_CUDA -Iinclude -Isrc/starpu -I/usr/local/include/starpu/1.4 -I/usr/local/cuda/include -c src/starpu/kmeans_cpu.cpp -o build/kmeans_cpu.o
+mpic++ -O3 -DNDEBUG -std=c++11 -fPIC -DUSE_MPI -DSTARPU_USE_CUDA -DSTARPU_USE_CUDA -Iinclude -Isrc/starpu -I/usr/local/include/starpu/1.4 -I/usr/local/cuda/include -c src/starpu/kmeans_mpi.cpp -o build/kmeans_mpi.o
+mpic++ -O3 -DNDEBUG -std=c++11 -fPIC -DUSE_MPI -DSTARPU_USE_CUDA -DSTARPU_USE_CUDA -Iinclude -Isrc/starpu -I/usr/local/include/starpu/1.4 -I/usr/local/cuda/include -c src/starpu/kmeans_main.cpp -o build/kmeans_main.o
+"src/starpu/kmeans_main.cpp", line 95: warning: variable "use_heterogeneous_chunks_val" was declared but never referenced [declared_but_not_referenced]
+      bool use_heterogeneous_chunks_val = false;
+           ^
+
+Remark: individual warnings can be suppressed with "--diag_suppress <warning-name>"
+
+nvcc -ccbin /usr/bin/g++ -std=c++11 -Xcompiler "-fPIC" -O3 -DSTARPU_USE_CUDA -gencode arch=compute_89,code=sm_89 -Iinclude -Isrc/starpu -I/usr/local/include/starpu/1.4 -I/usr/local/cuda/include -c src/starpu/kmeans_cuda.cu -o build/kmeans_cuda.o
+mpic++ -O3 -DNDEBUG -std=c++11 -fPIC -DUSE_MPI -DSTARPU_USE_CUDA -DSTARPU_USE_CUDA build/io.o build/metrics.o build/kmeans_cpu.o build/kmeans_mpi.o build/kmeans_main.o build/kmeans_cuda.o -o kmeans_starpu -L/usr/local/lib -L/usr/local/cuda/lib64 -lstarpumpi-1.4 -lstarpu-1.4 -lpthread -lm -lcuda -lcudart
+[build:starpu] 10.0.0.39
+Warning: Permanently added '10.0.0.39' (ED25519) to the list of known hosts.
+===> [AUTO-CONFIG] GPU CUDA detetada. Compilando modo Hibrido (CPU+GPU).
+rm -rf build kmeans_starpu
+===> [AUTO-CONFIG] GPU CUDA detetada. Compilando modo Hibrido (CPU+GPU).
+mkdir -p build
+mpic++ -O3 -DNDEBUG -std=c++11 -fPIC -DUSE_MPI -DSTARPU_USE_CUDA -DSTARPU_USE_CUDA -Iinclude -Isrc/starpu -I/usr/local/include/starpu/1.4 -I/usr/local/cuda/include -c src/common/io.cpp -o build/io.o
+mpic++ -O3 -DNDEBUG -std=c++11 -fPIC -DUSE_MPI -DSTARPU_USE_CUDA -DSTARPU_USE_CUDA -Iinclude -Isrc/starpu -I/usr/local/include/starpu/1.4 -I/usr/local/cuda/include -c src/common/metrics.cpp -o build/metrics.o
+mpic++ -O3 -DNDEBUG -std=c++11 -fPIC -DUSE_MPI -DSTARPU_USE_CUDA -DSTARPU_USE_CUDA -Iinclude -Isrc/starpu -I/usr/local/include/starpu/1.4 -I/usr/local/cuda/include -c src/starpu/kmeans_cpu.cpp -o build/kmeans_cpu.o
+mpic++ -O3 -DNDEBUG -std=c++11 -fPIC -DUSE_MPI -DSTARPU_USE_CUDA -DSTARPU_USE_CUDA -Iinclude -Isrc/starpu -I/usr/local/include/starpu/1.4 -I/usr/local/cuda/include -c src/starpu/kmeans_mpi.cpp -o build/kmeans_mpi.o
+mpic++ -O3 -DNDEBUG -std=c++11 -fPIC -DUSE_MPI -DSTARPU_USE_CUDA -DSTARPU_USE_CUDA -Iinclude -Isrc/starpu -I/usr/local/include/starpu/1.4 -I/usr/local/cuda/include -c src/starpu/kmeans_main.cpp -o build/kmeans_main.o
+"src/starpu/kmeans_main.cpp", line 95: warning: variable "use_heterogeneous_chunks_val" was declared but never referenced [declared_but_not_referenced]
+      bool use_heterogeneous_chunks_val = false;
+           ^
+
+Remark: individual warnings can be suppressed with "--diag_suppress <warning-name>"
+
+nvcc -ccbin /usr/bin/g++ -std=c++11 -Xcompiler "-fPIC" -O3 -DSTARPU_USE_CUDA -gencode arch=compute_89,code=sm_89 -Iinclude -Isrc/starpu -I/usr/local/include/starpu/1.4 -I/usr/local/cuda/include -c src/starpu/kmeans_cuda.cu -o build/kmeans_cuda.o
+mpic++ -O3 -DNDEBUG -std=c++11 -fPIC -DUSE_MPI -DSTARPU_USE_CUDA -DSTARPU_USE_CUDA build/io.o build/metrics.o build/kmeans_cpu.o build/kmeans_mpi.o build/kmeans_main.o build/kmeans_cuda.o -o kmeans_starpu -L/usr/local/lib -L/usr/local/cuda/lib64 -lstarpumpi-1.4 -lstarpu-1.4 -lpthread -lm -lcuda -lcudart
+[build:starpu] 10.0.0.40
+Warning: Permanently added '10.0.0.40' (ED25519) to the list of known hosts.
+===> [AUTO-CONFIG] GPU CUDA detetada. Compilando modo Hibrido (CPU+GPU).
+rm -rf build kmeans_starpu
+===> [AUTO-CONFIG] GPU CUDA detetada. Compilando modo Hibrido (CPU+GPU).
+mkdir -p build
+mpic++ -O3 -DNDEBUG -std=c++11 -fPIC -DUSE_MPI -DSTARPU_USE_CUDA -DSTARPU_USE_CUDA -Iinclude -Isrc/starpu -I/usr/local/include/starpu/1.4 -I/usr/local/cuda/include -c src/common/io.cpp -o build/io.o
+mpic++ -O3 -DNDEBUG -std=c++11 -fPIC -DUSE_MPI -DSTARPU_USE_CUDA -DSTARPU_USE_CUDA -Iinclude -Isrc/starpu -I/usr/local/include/starpu/1.4 -I/usr/local/cuda/include -c src/common/metrics.cpp -o build/metrics.o
+mpic++ -O3 -DNDEBUG -std=c++11 -fPIC -DUSE_MPI -DSTARPU_USE_CUDA -DSTARPU_USE_CUDA -Iinclude -Isrc/starpu -I/usr/local/include/starpu/1.4 -I/usr/local/cuda/include -c src/starpu/kmeans_cpu.cpp -o build/kmeans_cpu.o
+mpic++ -O3 -DNDEBUG -std=c++11 -fPIC -DUSE_MPI -DSTARPU_USE_CUDA -DSTARPU_USE_CUDA -Iinclude -Isrc/starpu -I/usr/local/include/starpu/1.4 -I/usr/local/cuda/include -c src/starpu/kmeans_mpi.cpp -o build/kmeans_mpi.o
+mpic++ -O3 -DNDEBUG -std=c++11 -fPIC -DUSE_MPI -DSTARPU_USE_CUDA -DSTARPU_USE_CUDA -Iinclude -Isrc/starpu -I/usr/local/include/starpu/1.4 -I/usr/local/cuda/include -c src/starpu/kmeans_main.cpp -o build/kmeans_main.o
+"src/starpu/kmeans_main.cpp", line 95: warning: variable "use_heterogeneous_chunks_val" was declared but never referenced [declared_but_not_referenced]
+      bool use_heterogeneous_chunks_val = false;
+           ^
+
+Remark: individual warnings can be suppressed with "--diag_suppress <warning-name>"
+
+nvcc -ccbin /usr/bin/g++ -std=c++11 -Xcompiler "-fPIC" -O3 -DSTARPU_USE_CUDA -gencode arch=compute_89,code=sm_89 -Iinclude -Isrc/starpu -I/usr/local/include/starpu/1.4 -I/usr/local/cuda/include -c src/starpu/kmeans_cuda.cu -o build/kmeans_cuda.o
+mpic++ -O3 -DNDEBUG -std=c++11 -fPIC -DUSE_MPI -DSTARPU_USE_CUDA -DSTARPU_USE_CUDA build/io.o build/metrics.o build/kmeans_cpu.o build/kmeans_mpi.o build/kmeans_main.o build/kmeans_cuda.o -o kmeans_starpu -L/usr/local/lib -L/usr/local/cuda/lib64 -lstarpumpi-1.4 -lstarpu-1.4 -lpthread -lm -lcuda -lcudart
+[build:starpu] 10.0.0.41
+Warning: Permanently added '10.0.0.41' (ED25519) to the list of known hosts.
+===> [AUTO-CONFIG] GPU CUDA detetada. Compilando modo Hibrido (CPU+GPU).
+rm -rf build kmeans_starpu
+===> [AUTO-CONFIG] GPU CUDA detetada. Compilando modo Hibrido (CPU+GPU).
+mkdir -p build
+mpic++ -O3 -DNDEBUG -std=c++11 -fPIC -DUSE_MPI -DSTARPU_USE_CUDA -DSTARPU_USE_CUDA -Iinclude -Isrc/starpu -I/usr/local/include/starpu/1.4 -I/usr/local/cuda/include -c src/common/io.cpp -o build/io.o
+mpic++ -O3 -DNDEBUG -std=c++11 -fPIC -DUSE_MPI -DSTARPU_USE_CUDA -DSTARPU_USE_CUDA -Iinclude -Isrc/starpu -I/usr/local/include/starpu/1.4 -I/usr/local/cuda/include -c src/common/metrics.cpp -o build/metrics.o
+mpic++ -O3 -DNDEBUG -std=c++11 -fPIC -DUSE_MPI -DSTARPU_USE_CUDA -DSTARPU_USE_CUDA -Iinclude -Isrc/starpu -I/usr/local/include/starpu/1.4 -I/usr/local/cuda/include -c src/starpu/kmeans_cpu.cpp -o build/kmeans_cpu.o
+mpic++ -O3 -DNDEBUG -std=c++11 -fPIC -DUSE_MPI -DSTARPU_USE_CUDA -DSTARPU_USE_CUDA -Iinclude -Isrc/starpu -I/usr/local/include/starpu/1.4 -I/usr/local/cuda/include -c src/starpu/kmeans_mpi.cpp -o build/kmeans_mpi.o
+mpic++ -O3 -DNDEBUG -std=c++11 -fPIC -DUSE_MPI -DSTARPU_USE_CUDA -DSTARPU_USE_CUDA -Iinclude -Isrc/starpu -I/usr/local/include/starpu/1.4 -I/usr/local/cuda/include -c src/starpu/kmeans_main.cpp -o build/kmeans_main.o
+"src/starpu/kmeans_main.cpp", line 95: warning: variable "use_heterogeneous_chunks_val" was declared but never referenced [declared_but_not_referenced]
+      bool use_heterogeneous_chunks_val = false;
+           ^
+
+Remark: individual warnings can be suppressed with "--diag_suppress <warning-name>"
+
+nvcc -ccbin /usr/bin/g++ -std=c++11 -Xcompiler "-fPIC" -O3 -DSTARPU_USE_CUDA -gencode arch=compute_89,code=sm_89 -Iinclude -Isrc/starpu -I/usr/local/include/starpu/1.4 -I/usr/local/cuda/include -c src/starpu/kmeans_cuda.cu -o build/kmeans_cuda.o
+mpic++ -O3 -DNDEBUG -std=c++11 -fPIC -DUSE_MPI -DSTARPU_USE_CUDA -DSTARPU_USE_CUDA build/io.o build/metrics.o build/kmeans_cpu.o build/kmeans_mpi.o build/kmeans_main.o build/kmeans_cuda.o -o kmeans_starpu -L/usr/local/lib -L/usr/local/cuda/lib64 -lstarpumpi-1.4 -lstarpu-1.4 -lpthread -lm -lcuda -lcudart
