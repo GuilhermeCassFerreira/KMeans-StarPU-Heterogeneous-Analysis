@@ -45,6 +45,10 @@ DO_GENERATE=1             # 0 = reaproveita o INPUT_FILE já gerado no nó mestr
 BUILD_CLEAN=1
 BUILD_ARGS_STARPU=""
 GLOBAL_MPIRUN_ARGS="--bind-to none"
+# Opções a mais do mpirun na linha de comando (ex.: "-x KMEANS_ASSIGN_CALC_JUNTOS=1"),
+# somadas às do arquivo de configuração e gravadas no CSV
+EXTRA_MPIRUN_ARGS=""
+STARPU_SCHED_POLICY="dmda"
 SAVE_LOGS=1
 # Compilador que os binários devem ter (StarPU e OpenMP iguais); vazio = não confere
 EXPECTED_COMPILER="nvc++"
@@ -61,7 +65,7 @@ SKIP_SETUP=0             # 1 = não desliga HT nem confere o compilador (já fei
 
 CSV_HEADER="timestamp,mode,nodes,N,K,chunks,rep_kind,rep_idx,loop_ms,sse,run_ok"
 CSV_HEADER+=",assign_cpu,assign_gpu,calculate_cpu,calculate_gpu,clean_cpu,clean_gpu"
-CSV_HEADER+=",update_cpu,update_gpu,accumulate_cpu,accumulate_gpu,calib_md5,calib_warn"
+CSV_HEADER+=",update_cpu,update_gpu,accumulate_cpu,accumulate_gpu,calib_md5,calib_warn,sched,opcoes"
 CALIB_MD5=""
 
 POOL_CONTROL_IPS=()
@@ -86,6 +90,13 @@ Opcoes:
   --skip-setup           Nao desligar HT nem conferir o compilador
   --chunks-total <n>     Total fixo de chunks do hibrido (substitui CHUNKS_HYBRID_TOTAL)
   --chunks-min-per-node <n>  Minimo de chunks por no do hibrido (0 = so o total fixo)
+  --sched <politica>     Escalonador do StarPU (default: dmda)
+  --extra-mpirun-args "..."  Opcoes a mais do mpirun (ex.: "-x KMEANS_CHUNKS_PEQUENOS=16")
+  --n <pontos>           Numero de pontos gerados (substitui N)
+  --input <arquivo>      Arquivo de entrada (substitui INPUT_FILE)
+  --no-generate          Reaproveita o arquivo de entrada ja gerado no no mestre
+  --calib-hostname <h>   Nome de maquina dos arquivos de calibracao (substitui STARPU_HOSTNAME_FIXED)
+  --calib-dir <dir>      Pasta da calibracao salva no repositorio (substitui CALIB_DIR)
   -h, --help             Mostrar ajuda
 USAGE
 }
@@ -112,6 +123,13 @@ parse_args() {
       --skip-setup) SKIP_SETUP=1;        shift   ;;
       --chunks-total) CHUNKS_HYBRID_TOTAL="$2"; shift 2 ;;
       --chunks-min-per-node) CHUNKS_HYBRID_MIN_PER_NODE="$2"; shift 2 ;;
+      --sched)      STARPU_SCHED_POLICY="$2"; shift 2 ;;
+      --extra-mpirun-args) EXTRA_MPIRUN_ARGS="$2"; shift 2 ;;
+      --n)          N="$2";              shift 2 ;;
+      --input)      INPUT_FILE="$2";     shift 2 ;;
+      --no-generate) DO_GENERATE=0;      shift   ;;
+      --calib-hostname) STARPU_HOSTNAME_FIXED="$2"; shift 2 ;;
+      --calib-dir)  CALIB_DIR="$2";      shift 2 ;;
       -h|--help)    usage; exit 0 ;;
       *) die "Argumento desconhecido: $1" ;;
     esac
@@ -253,7 +271,7 @@ run_single() {
   local out_dir="output_bench/exp_${mode}_np${nodes}_${rep_kind}${rep_idx}"
   local run_args="${INPUT_FILE} ${K} ${out_dir} ${chunks} 0 ${SEED} ${ITERS}"
 
-  local mpirun_args="${GLOBAL_MPIRUN_ARGS} -x STARPU_SCHED=dmda -x STARPU_NOPENCL=1 -x STARPU_RESERVE_NCPU=1 -x STARPU_HOSTNAME=${STARPU_HOSTNAME_FIXED} -x STARPU_CALIBRATE=0"
+  local mpirun_args="${GLOBAL_MPIRUN_ARGS} ${EXTRA_MPIRUN_ARGS} -x STARPU_SCHED=${STARPU_SCHED_POLICY} -x STARPU_NOPENCL=1 -x STARPU_RESERVE_NCPU=1 -x STARPU_HOSTNAME=${STARPU_HOSTNAME_FIXED} -x STARPU_CALIBRATE=0"
   for var in $starpu_env; do
     mpirun_args+=" -x ${var}"
   done
@@ -291,12 +309,15 @@ run_single() {
   fi
   [[ "$warns" -eq 0 ]] || log "AVISO: ${warns} aviso(s) de calibracao dos kernels nesta execucao"
 
-  printf '%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n' \
+  # Opções extras sem vírgulas nem espaços, para caber numa coluna do CSV
+  local opcoes="${EXTRA_MPIRUN_ARGS//-x /}"
+  opcoes="$(echo $opcoes | tr ' ,' ';;')"
+  printf '%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n' \
     "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
     "$mode" "$nodes" "$N" "$K" "$chunks" \
     "$rep_kind" "$rep_idx" \
     "$loop_ms" "$sse" "$run_ok" \
-    "$kernels" "$CALIB_MD5" "$warns" \
+    "$kernels" "$CALIB_MD5" "$warns" "$STARPU_SCHED_POLICY" "$opcoes" \
     >> "$csv_file"
 }
 
