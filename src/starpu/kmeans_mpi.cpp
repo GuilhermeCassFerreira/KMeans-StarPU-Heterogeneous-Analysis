@@ -147,6 +147,16 @@ static int    g_chunks_pequenos = 0;
 static double g_fracao_pequenos = 0.2;
 static bool   g_prioridade_grandes = false;
 static bool   g_medir_nos = true;
+/* KMEANS_RANK0_MENOS_PEQUENOS=k (com chunks mistos): o rank 0 fica com k chunks pequenos a menos,
+ * e os nós 1..k com um a mais cada. O rank 0 também recebe as parciais, soma entre nós e faz o
+ * Update; nos traces da AWS (PQ, 32 nós) ele calculava em média 7 ms mais devagar que os outros.
+ * Os tamanhos dos chunks não mudam, então a calibração continua valendo. */
+static int    g_rank0_menos_pequenos = 0;
+/* KMEANS_COMMUTE (padrão 1): as somas no acumulador de cada nó em qualquer ordem. Em ordem fixa,
+ * um chunk (ou nó) atrasado segura todas as somas seguintes, que depois rodam em fila (traces da
+ * AWS, PQ com 2 nós: ~500 somas e ~25 ms por iteração depois do fim do cálculo). A ordem das
+ * somas em ponto flutuante muda, então o SSE pode variar na última casa entre execuções. */
+static bool   g_commute = true;
 
 /* Valor 0/1 da variável de ambiente; sem a variável, vale o padrão */
 static bool env_ligada(const char *nome, bool padrao) {
@@ -173,6 +183,12 @@ static void aplicar_opcoes_accumulate(int rank) {
     g_fracao_pequenos = frac ? atof(frac) : 0.2;
     g_prioridade_grandes = env_ligada("KMEANS_PRIORIDADE_GRANDES", false);
     g_medir_nos = env_ligada("KMEANS_MEDIR_NOS", true);
+    const char *r0 = getenv("KMEANS_RANK0_MENOS_PEQUENOS");
+    g_rank0_menos_pequenos = r0 ? std::max(atoi(r0), 0) : 0;
+    g_commute = env_ligada("KMEANS_COMMUTE", true);
+    starpu_data_access_mode acc_modo = g_commute ? (starpu_data_access_mode)(STARPU_RW | STARPU_COMMUTE) : STARPU_RW;
+    cl_accumulate_nodes.modes[0] = cl_accumulate_nodes.modes[1] = acc_modo;
+    cl_accumulate_nodes_cpu.modes[0] = cl_accumulate_nodes_cpu.modes[1] = acc_modo;
     if (rank == 0) {
         const char *blocos = getenv("KMEANS_ASSIGN_BLOCOS_SM");
         std::cout << "[ACCUMULATE] modelo de desempenho: " << (cl_accumulate_nodes.model ? "sim" : "nao")
@@ -181,7 +197,9 @@ static void aplicar_opcoes_accumulate(int rank) {
                   << " | Assign GPU balanceado: " << (env_ligada("KMEANS_ASSIGN_BALANCEADO", true) ? "sim" : "nao")
                   << " | blocos por SM: " << (blocos ? blocos : "2") << std::endl;
         std::cout << "[CHUNKS] pequenos por no: " << g_chunks_pequenos << " (fracao " << g_fracao_pequenos
-                  << ") | prioridade aos grandes: " << (g_prioridade_grandes ? "sim" : "nao")
+                  << ") | rank 0 com menos pequenos: " << g_rank0_menos_pequenos
+                  << " | somas em qualquer ordem: " << (g_commute ? "sim" : "nao")
+                  << " | prioridade aos grandes: " << (g_prioridade_grandes ? "sim" : "nao")
                   << " | medicao por no: " << (g_medir_nos ? "sim" : "nao") << std::endl;
     }
 }
@@ -308,6 +326,7 @@ void KMeans::clearClusters() {
 }
 
 int KMeans::getChunkOwner(int chunk_id) {
+    if (!chunk_dono.empty()) return chunk_dono[chunk_id];  // chunks mistos: lista explícita
     // Blocos contíguos: rank r possui chunks [r*cpr, (r+1)*cpr)
     // Alinha com o scatter contíguo dos pontos em run()
     int cpr = num_chunks / std::max(world_size, 1);
@@ -384,8 +403,8 @@ void KMeans::submitTasks(int N, int it) {
         if (this_chunk <= 0) break;
 
         starpu_mpi_task_insert(MPI_COMM_WORLD, &cl_accumulate_nodes,
-            STARPU_RW, partial_sums_handle[owners],
-            STARPU_RW, partial_counts_handle[owners],
+            cl_accumulate_nodes.modes[0], partial_sums_handle[owners],
+            cl_accumulate_nodes.modes[1], partial_counts_handle[owners],
             STARPU_R, chunk_sums_handle[chunk_id],
             STARPU_R, chunk_counts_handle[chunk_id],
             STARPU_VALUE, &K, sizeof(int),
@@ -398,8 +417,8 @@ void KMeans::submitTasks(int N, int it) {
     if (world_size > 1) {
             for (int n = 1; n < world_size; n++) {
                 starpu_mpi_task_insert(MPI_COMM_WORLD, g_acc_nodes_cpu ? &cl_accumulate_nodes_cpu : &cl_accumulate_nodes,
-                    STARPU_RW, partial_sums_handle[0],   
-                    STARPU_RW, partial_counts_handle[0], 
+                    cl_accumulate_nodes.modes[0], partial_sums_handle[0],
+                    cl_accumulate_nodes.modes[1], partial_counts_handle[0],
                     STARPU_R, partial_sums_handle[n],    
                     STARPU_R, partial_counts_handle[n],  
                     STARPU_VALUE, &K, sizeof(int),
@@ -442,31 +461,40 @@ void KMeans::run(const vector<double> &all_values, int N) {
     // Chunks mistos: os chunks do argumento viram os grandes de cada nó, seguidos de
     // g_chunks_pequenos chunks pequenos com g_fracao_pequenos dos pontos do nó
     chunk_tamanhos.clear();
+    chunk_dono.clear();
     chunk_grande.assign(num_chunks, 1);
+    pontos_no.clear();
     if (g_chunks_pequenos > 0) {
         int grandes = std::max(num_chunks / world_size, 1);
         long local_n = N / world_size;
         long peq = (long)(g_fracao_pequenos * local_n) / g_chunks_pequenos;
-        if (N % world_size != 0 || peq < 1 || peq * g_chunks_pequenos >= local_n) {
-            if (mpi_rank == 0) cerr << "[ERRO] Chunks mistos invalidos (N divisivel pelos nos e 0 < fracao < 1)" << endl;
+        int menos = world_size > 1 ? g_rank0_menos_pequenos : 0;
+        if (N % world_size != 0 || peq < 1 || peq * g_chunks_pequenos >= local_n ||
+            menos > g_chunks_pequenos || menos > world_size - 1) {
+            if (mpi_rank == 0) cerr << "[ERRO] Chunks mistos invalidos (N divisivel pelos nos, 0 < fracao < 1, "
+                                       "rank 0 com menos pequenos <= pequenos e < nos)" << endl;
             exit(1);
         }
         long resto = local_n - peq * g_chunks_pequenos;
         chunk_grande.clear();
+        pontos_no.assign(world_size, 0);
         for (int r = 0; r < world_size; r++) {
             for (int g = 0; g < grandes; g++) {
-                chunk_tamanhos.push_back((uint32_t)(resto / grandes + (g < resto % grandes ? 1 : 0)));
-                chunk_grande.push_back(1);
+                uint32_t t = (uint32_t)(resto / grandes + (g < resto % grandes ? 1 : 0));
+                chunk_tamanhos.push_back(t); chunk_grande.push_back(1); chunk_dono.push_back(r);
+                pontos_no[r] += t;
             }
-            for (int p = 0; p < g_chunks_pequenos; p++) {
-                chunk_tamanhos.push_back((uint32_t)peq);
-                chunk_grande.push_back(0);
+            int npeq = g_chunks_pequenos - (r == 0 ? menos : 0) + (r >= 1 && r <= menos ? 1 : 0);
+            for (int p = 0; p < npeq; p++) {
+                chunk_tamanhos.push_back((uint32_t)peq); chunk_grande.push_back(0); chunk_dono.push_back(r);
+                pontos_no[r] += peq;
             }
         }
-        num_chunks = world_size * (grandes + g_chunks_pequenos);
+        num_chunks = (int)chunk_tamanhos.size();
         if (mpi_rank == 0)
             cout << "[CHUNKS] por no: " << grandes << " grandes de ~" << resto / grandes << " pontos + "
-                 << g_chunks_pequenos << " pequenos de " << peq << " pontos (" << num_chunks << " no total)" << endl;
+                 << g_chunks_pequenos << " pequenos de " << peq << " pontos (rank 0: "
+                 << g_chunks_pequenos - menos << " pequenos; " << num_chunks << " chunks no total)" << endl;
     }
     points_ptr = nullptr;
     labels_ptr = nullptr;
@@ -498,7 +526,23 @@ void KMeans::run(const vector<double> &all_values, int N) {
 
     // Distribui pontos: cada rank recebe sua fatia contígua (alinhada com getChunkOwner)
     // Rank r recebe points[r*local_n .. (r+1)*local_n - 1] e armazena no offset correto
-    if (world_size > 1) {
+    if (world_size > 1 && !pontos_no.empty()) {
+        // Chunks mistos: cada nó recebe a soma dos seus chunks (o rank 0 pode ter menos)
+        std::vector<int> counts(world_size), displs(world_size);
+        long desl = 0;
+        for (int r = 0; r < world_size; r++) {
+            counts[r] = (int)(pontos_no[r] * dimensions);
+            displs[r] = (int)desl;
+            desl += (long)counts[r];
+        }
+        if (mpi_rank == 0) {
+            MPI_Scatterv(points_ptr, counts.data(), displs.data(), MPI_DOUBLE,
+                         MPI_IN_PLACE, counts[0], MPI_DOUBLE, 0, MPI_COMM_WORLD);
+        } else {
+            MPI_Scatterv(nullptr, counts.data(), displs.data(), MPI_DOUBLE,
+                         points_ptr + displs[mpi_rank], counts[mpi_rank], MPI_DOUBLE, 0, MPI_COMM_WORLD);
+        }
+    } else if (world_size > 1) {
         int local_n = N / world_size;
         int count   = local_n * dimensions;
         if (mpi_rank == 0) {

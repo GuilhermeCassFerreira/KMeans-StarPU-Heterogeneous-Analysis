@@ -137,6 +137,8 @@ private:
     std::vector<int> chunk_owners;
     std::vector<uint32_t> chunk_tamanhos;  // tamanho de cada chunk com chunks mistos (vazio = iguais)
     std::vector<char> chunk_grande;        // 1 = chunk grande, 0 = pequeno (chunks mistos)
+    std::vector<int> chunk_dono;           // nó de cada chunk com chunks mistos (vazio = blocos iguais)
+    std::vector<long> pontos_no;           // pontos de cada nó com chunks mistos (vazio = N / nós)
     double t_loop_ms_ = 0.0;
 
     void clearClusters();
