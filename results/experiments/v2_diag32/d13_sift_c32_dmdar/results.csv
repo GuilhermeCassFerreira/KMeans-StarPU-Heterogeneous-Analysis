@@ -1,0 +1,2 @@
+timestamp,mode,nodes,N,K,chunks,rep_kind,rep_idx,loop_ms,sse,run_ok,assign_cpu,assign_gpu,calculate_cpu,calculate_gpu,clean_cpu,clean_gpu,update_cpu,update_gpu,accumulate_cpu,accumulate_gpu,calib_md5,calib_warn,sched,opcoes
+2026-11-01T16:56:33Z,starpu_hybrid,32,10240000,256,1024,metricas,1,3197.60,4.0941e+14,1,5835,24884,29756,964,960,0,30,0,30621,1029,4b0f8676480a15491f444cf8712e2725,0,dmdar,KMEANS_ASSIGN_CALC_JUNTOS=0;KMEANS_MEDIR_NOS=1

@@ -1,0 +1,270 @@
+[run] launch host: 10.0.0.10
+[run] hostfile: /home/ec2-user/KMeans-StarPU-Heterogeneous-Analysis/cluster-config/.cluster/hostfile
+[run] np: 32
+[run] mpirun args: --bind-to none -x KMEANS_ASSIGN_CALC_JUNTOS=0 -x KMEANS_MEDIR_NOS=1 -x KMEANS_ASSIGN_EXPANDIDO=1 -x STARPU_SCHED=dmda -x STARPU_NOPENCL=1 -x STARPU_RESERVE_NCPU=1 -x STARPU_HOSTNAME=g6.4xlarge-v2 -x STARPU_CALIBRATE=0 -x STARPU_NCPUS=7 -x STARPU_NCUDA=1 -x STARPU_WORKERS_CPUID=0,1,2,3,4,5,6,7
+[run] preparing MPI SSH from launch host 10.0.0.10 ...
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.12' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.13' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.14' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.15' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.16' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.17' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.18' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.19' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.20' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.21' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.22' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.23' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.24' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.25' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.26' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.27' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.28' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.29' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.30' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.31' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.32' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.33' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.34' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.35' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.36' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.37' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.38' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.39' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.40' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.41' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.25' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.16' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.20' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.17' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.21' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.12' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.19' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.28' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.22' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.30' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.14' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.18' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.27' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.36' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.31' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.35' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.32' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.37' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.33' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.29' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.38' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.41' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.39' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.40' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.34' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.23' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.15' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.13' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.24' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.26' (ED25519) to the list of known hosts.
+[RANK 0/32] Host: ip-10-0-0-10.ec2.internal
+[RANK 1/32] Host: ip-10-0-0-11.ec2.internal
+[RANK 7/32] Host: ip-10-0-0-17.ec2.internal
+[RANK 3/32] Host: ip-10-0-0-13.ec2.internal
+[RANK 6/32] Host: ip-10-0-0-16.ec2.internal
+[RANK 15/32] Host: ip-10-0-0-25.ec2.internal
+[RANK 26/32] Host: ip-10-0-0-36.ec2.internal
+[RANK 11/32] Host: ip-10-0-0-21.ec2.internal
+[RANK 4/32] Host: ip-10-0-0-14.ec2.internal
+[RANK 13/32] Host: ip-10-0-0-23.ec2.internal
+[RANK 14/32] Host: ip-10-0-0-24.ec2.internal
+[RANK 2/32] Host: ip-10-0-0-12.ec2.internal
+[RANK 31/32] Host: ip-10-0-0-41.ec2.internal
+[RANK 23/32] Host: ip-10-0-0-33.ec2.internal
+[RANK 8/32] Host: ip-10-0-0-18.ec2.internal
+[RANK 9/32] Host: ip-10-0-0-19.ec2.internal
+[RANK 10/32] Host: ip-10-0-0-20.ec2.internal
+[RANK 22/32] Host: ip-10-0-0-32.ec2.internal
+[RANK 28/32] Host: ip-10-0-0-38.ec2.internal
+[RANK 30/32] Host: ip-10-0-0-40.ec2.internal
+[RANK 5/32] Host: ip-10-0-0-15.ec2.internal
+[RANK 19/32] Host: ip-10-0-0-29.ec2.internal
+[RANK 27/32] Host: ip-10-0-0-37.ec2.internal
+[RANK 18/32] Host: ip-10-0-0-28.ec2.internal
+[RANK 12/32] Host: ip-10-0-0-22.ec2.internal
+[RANK 17/32] Host: ip-10-0-0-27.ec2.internal
+[RANK 21/32] Host: ip-10-0-0-31.ec2.internal
+[RANK 24/32] Host: ip-10-0-0-34.ec2.internal
+[RANK 16/32] Host: ip-10-0-0-26.ec2.internal
+[RANK 25/32] Host: ip-10-0-0-35.ec2.internal
+[RANK 29/32] Host: ip-10-0-0-39.ec2.internal
+[RANK 20/32] Host: ip-10-0-0-30.ec2.internal
+[COMPILADOR] nvc++ 26.3
+[MODO] Escalonamento ESTATICO (Manual via EXECUTE_ON_NODE)
+[ACCUMULATE] modelo de desempenho: sim | soma entre nos so na CPU: sim | Update so na CPU: sim | Assign GPU balanceado: sim | blocos por SM: 2 | distancia expandida (teste): sim
+[CHUNKS] pequenos por no: 0 (fracao 0.2) | rank 0 com menos pequenos: 0 | somas em qualquer ordem: sim | Assign e Calculate juntos: nao | prioridade aos grandes: nao | medicao por no: sim
+[INFO] Centroides iniciais escolhidos aleatoriamente (Seed: 42)
+[INFO] Injetando max 30 iteracoes no DAG (Assíncrono)...
+[StarPU] Iteracao 1
+[StarPU] Iteracao 2
+[StarPU] Iteracao 3
+[StarPU] Iteracao 4
+[StarPU] Iteracao 5
+[StarPU] Iteracao 6
+[StarPU] Iteracao 7
+[StarPU] Iteracao 8
+[StarPU] Iteracao 9
+[StarPU] Iteracao 10
+[StarPU] Iteracao 11
+[StarPU] Iteracao 12
+[StarPU] Iteracao 13
+[StarPU] Iteracao 14
+[StarPU] Iteracao 15
+[StarPU] Iteracao 16
+[StarPU] Iteracao 17
+[StarPU] Iteracao 18
+[StarPU] Iteracao 19
+[StarPU] Iteracao 20
+[StarPU] Iteracao 21
+[StarPU] Iteracao 22
+[StarPU] Iteracao 23
+[StarPU] Iteracao 24
+[StarPU] Iteracao 25
+[StarPU] Iteracao 26
+[StarPU] Iteracao 27
+[StarPU] Iteracao 28
+[StarPU] Iteracao 29
+[StarPU] Iteracao 30
+[NOS] calculo por iteracao (centroides chegam -> parcial pronta): mediana dos nos 75.20 ms, no mais lento 76.36 ms
+[NOS] atraso do no mais lento sobre a mediana: media 1.17 ms, maximo 4.45 ms
+[NOS] Assign por iteracao, no mais lento: GPU 54.76, maximo num worker de CPU 2.00 | no mediano: GPU 54.76, maximo num worker de CPU 2.00
+[INFO] Salvando centróides finais...
+[INFO] Arquivo de centróides salvo com sucesso em: output_bench/exp_starpu_hybrid_np32_metricas2/256-clusters.txt
+============================================================
+METRICAS FINAIS — StarPU/MPI
+============================================================
+Workers (rank 0)          : 6 CPU  +  1 GPU CUDA
+Ranks MPI                 : 32
+
+Tempo do loop (max)       : 2523.42    ms  [min: 2431.02]
+Tempo total (max, c/init) : 37493.01   ms  [min: 37287.86]
+T. medio/iter             : 84.11      ms
+Iteracoes                 : 30 / max 30
+SSE                       : 6.0084e+14
+
+Tempos por rank:
+  Rank 0: loop=2523.42    ms  avg/iter=84.11    ms  total=37493.01   ms
+  Rank 1: loop=2451.86    ms  avg/iter=81.73    ms  total=37301.02   ms
+  Rank 2: loop=2488.35    ms  avg/iter=82.94    ms  total=37368.98   ms
+  Rank 3: loop=2488.42    ms  avg/iter=82.95    ms  total=37350.63   ms
+  Rank 4: loop=2441.71    ms  avg/iter=81.39    ms  total=37300.76   ms
+  Rank 5: loop=2487.28    ms  avg/iter=82.91    ms  total=37323.13   ms
+  Rank 6: loop=2450.84    ms  avg/iter=81.69    ms  total=37321.77   ms
+  Rank 7: loop=2444.14    ms  avg/iter=81.47    ms  total=37312.28   ms
+  Rank 8: loop=2435.41    ms  avg/iter=81.18    ms  total=37295.77   ms
+  Rank 9: loop=2452.79    ms  avg/iter=81.76    ms  total=37334.39   ms
+  Rank 10: loop=2452.56    ms  avg/iter=81.75    ms  total=37367.04   ms
+  Rank 11: loop=2434.61    ms  avg/iter=81.15    ms  total=37299.35   ms
+  Rank 12: loop=2447.39    ms  avg/iter=81.58    ms  total=37287.86   ms
+  Rank 13: loop=2452.51    ms  avg/iter=81.75    ms  total=37339.44   ms
+  Rank 14: loop=2452.59    ms  avg/iter=81.75    ms  total=37319.10   ms
+  Rank 15: loop=2446.86    ms  avg/iter=81.56    ms  total=37309.36   ms
+  Rank 16: loop=2440.82    ms  avg/iter=81.36    ms  total=37304.68   ms
+  Rank 17: loop=2451.32    ms  avg/iter=81.71    ms  total=37353.41   ms
+  Rank 18: loop=2451.27    ms  avg/iter=81.71    ms  total=37312.48   ms
+  Rank 19: loop=2440.23    ms  avg/iter=81.34    ms  total=37317.64   ms
+  Rank 20: loop=2431.02    ms  avg/iter=81.03    ms  total=37363.06   ms
+  Rank 21: loop=2446.12    ms  avg/iter=81.54    ms  total=37358.43   ms
+  Rank 22: loop=2446.48    ms  avg/iter=81.55    ms  total=37390.97   ms
+  Rank 23: loop=2463.90    ms  avg/iter=82.13    ms  total=37294.03   ms
+  Rank 24: loop=2476.52    ms  avg/iter=82.55    ms  total=37406.44   ms
+  Rank 25: loop=2480.50    ms  avg/iter=82.68    ms  total=37308.47   ms
+  Rank 26: loop=2480.56    ms  avg/iter=82.69    ms  total=37366.89   ms
+  Rank 27: loop=2475.37    ms  avg/iter=82.51    ms  total=37384.64   ms
+  Rank 28: loop=2472.61    ms  avg/iter=82.42    ms  total=37393.67   ms
+  Rank 29: loop=2473.07    ms  avg/iter=82.44    ms  total=37355.54   ms
+  Rank 30: loop=2473.05    ms  avg/iter=82.44    ms  total=37346.08   ms
+  Rank 31: loop=2472.26    ms  avg/iter=82.41    ms  total=37333.79   ms
+
+Distribuicao por kernel (CPU vs CUDA) — global:
+  Kernel        CPU (N / %)             GPU CUDA (N / %)        
+  ------------------------------------------------------------
+  Assign        9019 (14.6806%)         52416 (85.3194%)        
+  Calculate     60389 (98.2894%)        1051 (1.71061%)         
+  Clean         960 (100%)              0 (0%)                  
+  Update        30 (100%)               0 (0%)                  
+  Accumulate    56895 (91.2217%)        5475 (8.77826%)         
+  ------------------------------------------------------------
+  TOTAL         127293 (68.3507%)       58942 (31.6493%)        
+
+Tarefas por rank MPI:
+  Rank 0: 4955 CPU + 1795 CUDA = 6750 total (3.6%)
+  Rank 1: 3930 CPU + 1860 CUDA = 5790 total (3.1%)
+  Rank 2: 4000 CPU + 1790 CUDA = 5790 total (3.1%)
+  Rank 3: 3983 CPU + 1807 CUDA = 5790 total (3.1%)
+  Rank 4: 3930 CPU + 1860 CUDA = 5790 total (3.1%)
+  Rank 5: 3925 CPU + 1864 CUDA = 5789 total (3.1%)
+  Rank 6: 3955 CPU + 1835 CUDA = 5790 total (3.1%)
+  Rank 7: 3951 CPU + 1838 CUDA = 5789 total (3.1%)
+  Rank 8: 3929 CPU + 1861 CUDA = 5790 total (3.1%)
+  Rank 9: 3985 CPU + 1805 CUDA = 5790 total (3.1%)
+  Rank 10: 3927 CPU + 1863 CUDA = 5790 total (3.1%)
+  Rank 11: 3951 CPU + 1839 CUDA = 5790 total (3.1%)
+  Rank 12: 3987 CPU + 1803 CUDA = 5790 total (3.1%)
+  Rank 13: 3931 CPU + 1859 CUDA = 5790 total (3.1%)
+  Rank 14: 3929 CPU + 1861 CUDA = 5790 total (3.1%)
+  Rank 15: 3929 CPU + 1861 CUDA = 5790 total (3.1%)
+  Rank 16: 3927 CPU + 1863 CUDA = 5790 total (3.1%)
+  Rank 17: 3947 CPU + 1843 CUDA = 5790 total (3.1%)
+  Rank 18: 3929 CPU + 1861 CUDA = 5790 total (3.1%)
+  Rank 19: 3981 CPU + 1808 CUDA = 5789 total (3.1%)
+  Rank 20: 3953 CPU + 1837 CUDA = 5790 total (3.1%)
+  Rank 21: 3931 CPU + 1859 CUDA = 5790 total (3.1%)
+  Rank 22: 3928 CPU + 1861 CUDA = 5789 total (3.1%)
+  Rank 23: 3930 CPU + 1860 CUDA = 5790 total (3.1%)
+  Rank 24: 3984 CPU + 1806 CUDA = 5790 total (3.1%)
+  Rank 25: 3930 CPU + 1860 CUDA = 5790 total (3.1%)
+  Rank 26: 3928 CPU + 1861 CUDA = 5789 total (3.1%)
+  Rank 27: 3931 CPU + 1859 CUDA = 5790 total (3.1%)
+  Rank 28: 3930 CPU + 1860 CUDA = 5790 total (3.1%)
+  Rank 29: 3930 CPU + 1860 CUDA = 5790 total (3.1%)
+  Rank 30: 3986 CPU + 1804 CUDA = 5790 total (3.1%)
+  Rank 31: 3951 CPU + 1839 CUDA = 5790 total (3.1%)
+============================================================
+Escalonador StarPU ativo: dmda

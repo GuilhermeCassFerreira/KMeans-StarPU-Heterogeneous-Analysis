@@ -1,0 +1,59 @@
+[diag32 16:20:47] Gerando input_pq.bin (102400000 pontos, D=16)
+[diag32 16:22:07] Gerando input_pq_32.bin (3200000 pontos, D=16)
+[diag32 16:22:24] Gerando input_deep.bin (20480000 pontos, D=96)
+[diag32 16:23:54] Gerando input_deep_32.bin (640000 pontos, D=96)
+[diag32 16:24:11] Gerando input_sift.bin (10240000 pontos, D=128)
+[diag32 16:25:13] Gerando input_sift_32.bin (320000 pontos, D=128)
+[diag32 16:25:29] Sessão n_pq_c100
+[diag32 16:27:19] Sessão n_sift_g16p18
+[diag32 16:27:54] Sessão n_pq_g20p60
+[diag32 16:28:13] Sessão n_deep_c64
+[diag32 16:28:35] Sessão n_sift_c32
+[diag32 16:28:53] Sessão x_pq_g20p60
+[diag32 16:29:25] Sessão x_deep_c64
+[diag32 16:30:00] Sessão x_sift_c32
+[diag32 16:30:31] SSE pq_g20p60: normal 9.2988e+12 | expandido 9.2988e+12 | diferença relativa 0
+[diag32 16:30:31] SSE deep_c64: normal 1.8698e+13 | expandido 1.8698e+13 | diferença relativa 0
+[diag32 16:30:31] SSE sift_c32: normal 1.272e+13 | expandido 1.272e+13 | diferença relativa 0
+[diag32 16:30:31] Sessão d01_pq_c32
+[diag32 16:40:56] Sessão d02_pq_g20p60
+[diag32 16:42:42] Sessão d03_pq_c100
+[diag32 16:43:47] Sessão d04_pq_g20p60_r0
+[diag32 16:45:09] Sessão d05_pq_g20p60_dmdas
+[diag32 16:46:31] Sessão d06_pq_g20p60_dmdar
+[diag32 16:47:54] Sessão d07_deep_c64
+[diag32 16:49:12] Sessão d08_sift_c32
+[diag32 16:50:28] Sessão d09_sift_g16p18
+[diag32 16:51:41] Sessão d10_deep_c64_dmdas
+[diag32 16:53:04] Sessão d11_deep_c64_dmdar
+[diag32 16:54:26] Sessão d12_sift_c32_dmdas
+[diag32 16:55:34] Sessão d13_sift_c32_dmdar
+[diag32 16:56:33] Sessão e_pq_g20p60
+[diag32 17:01:17] Sessão e_deep_c64
+[diag32 17:05:06] Sessão e_sift_c32
+d01_pq_c32               n=1 ok=1 loop=4431.4 ms sse=2.9768e+14
+d02_pq_g20p60            n=1 ok=1 loop=4876.6 ms sse=2.9768e+14
+d03_pq_c100              n=1 ok=1 loop=3412.0 ms sse=2.9768e+14
+d04_pq_g20p60_r0         n=1 ok=1 loop=4550.3 ms sse=2.9768e+14
+d05_pq_g20p60_dmdas      n=1 ok=1 loop=4812.0 ms sse=2.9768e+14
+d06_pq_g20p60_dmdar      n=1 ok=1 loop=4182.4 ms sse=2.9768e+14
+d07_deep_c64             n=1 ok=1 loop=3912.3 ms sse=6.0084e+14
+d08_sift_c32             n=1 ok=1 loop=3229.5 ms sse=4.0941e+14
+d09_sift_g16p18          n=1 ok=1 loop=3444.1 ms sse=4.0941e+14
+d10_deep_c64_dmdas       n=1 ok=1 loop=3941.1 ms sse=6.0084e+14
+d11_deep_c64_dmdar       n=1 ok=1 loop=3963.1 ms sse=6.0084e+14
+d12_sift_c32_dmdas       n=1 ok=1 loop=3163.7 ms sse=4.0941e+14
+d13_sift_c32_dmdar       n=1 ok=1 loop=3197.6 ms sse=4.0941e+14
+e_deep_c64               n=3 ok=3 loop=2516.9 ms sse=6.0084e+14
+e_pq_g20p60              n=3 ok=3 loop=2193.0 ms sse=2.9768e+14
+e_sift_c32               n=3 ok=3 loop=2901.5 ms sse=4.0941e+14
+n_deep_c64               n=3 ok=3 loop=3682.3 ms sse=1.8698e+13
+n_pq_c100                n=3 ok=3 loop=3116.9 ms sse=9.2988e+12
+n_pq_g20p60              n=3 ok=3 loop=3042.4 ms sse=9.2988e+12
+n_sift_c32               n=3 ok=3 loop=2775.6 ms sse=1.2720e+13
+n_sift_g16p18            n=3 ok=3 loop=2446.6 ms sse=1.2720e+13
+x_deep_c64               n=3 ok=3 loop=2258.5 ms sse=1.8698e+13
+x_pq_g20p60              n=3 ok=3 loop=1875.8 ms sse=9.2988e+12
+x_sift_c32               n=3 ok=3 loop=1735.0 ms sse=1.2720e+13
+[diag32 17:08:14] Estado final: CONCLUIDO em 47 min (kernel expandido: testado)
+[diag32 17:08:14] Agendando o desligamento de todos os nós para daqui a 15 min (proteção)

@@ -1,0 +1,7 @@
+timestamp,mode,nodes,N,K,chunks,rep_kind,rep_idx,loop_ms,sse,run_ok,assign_cpu,assign_gpu,calculate_cpu,calculate_gpu,clean_cpu,clean_gpu,update_cpu,update_gpu,accumulate_cpu,accumulate_gpu,calib_md5,calib_warn,sched,opcoes
+2026-11-01T16:26:47Z,starpu_hybrid,1,3200000,256,100,calibracao,1,3129.43,9.2988e+12,1,720,2280,2893,107,30,0,30,0,3000,0,,1,dmda,KMEANS_ASSIGN_CALC_JUNTOS=0
+2026-11-01T16:26:53Z,starpu_hybrid,1,3200000,256,100,calibracao,2,3116.53,9.2988e+12,1,720,2280,2970,30,30,0,30,0,3000,0,,0,dmda,KMEANS_ASSIGN_CALC_JUNTOS=0
+2026-11-01T16:27:00Z,starpu_hybrid,1,3200000,256,100,calibracao,3,3116.08,9.2988e+12,1,719,2280,2970,30,30,0,30,0,3000,0,,0,dmda,KMEANS_ASSIGN_CALC_JUNTOS=0
+2026-11-01T16:27:06Z,starpu_hybrid,1,3200000,256,100,metricas,1,3117.76,9.2988e+12,1,720,2280,2970,30,30,0,30,0,3000,0,,0,dmda,KMEANS_ASSIGN_CALC_JUNTOS=0
+2026-11-01T16:27:12Z,starpu_hybrid,1,3200000,256,100,metricas,2,3116.52,9.2988e+12,1,719,2280,2970,30,30,0,30,0,3000,0,,0,dmda,KMEANS_ASSIGN_CALC_JUNTOS=0
+2026-11-01T16:27:19Z,starpu_hybrid,1,3200000,256,100,metricas,3,3116.48,9.2988e+12,1,720,2280,2970,30,30,0,30,0,3000,0,,0,dmda,KMEANS_ASSIGN_CALC_JUNTOS=0

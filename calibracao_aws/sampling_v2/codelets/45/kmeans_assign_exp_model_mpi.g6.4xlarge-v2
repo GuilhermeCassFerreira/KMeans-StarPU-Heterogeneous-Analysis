@@ -1,0 +1,78 @@
+##################
+# Performance Model Version
+45
+
+####################
+# COMBs
+# number of combinations
+2
+####################
+# COMB_0
+# number of types devices
+1
+####################
+# DEV_0
+# device type (CPU - 0, CUDA - 1, OpenCL - 2, FPGA - 4, MPI_SC - 5, TCPIP_SC - 6, HIP - 7)
+1
+####################
+# DEV_0
+# device id 
+0
+####################
+# DEV_0
+# number of cores 
+1
+##########
+# number of implementations
+1
+#####
+# Model for cuda0_cores1_impl0 (Comb0)
+# number of entries
+4
+# sumlnx	sumlnx2		sumlny		sumlnxlny	alpha		beta		n	minx		maxx
+0.000000e+00   	0.000000e+00   	0.000000e+00   	0.000000e+00   	nan            	nan            	0	0              	0              
+# a		b		c
+nan            	nan            	nan            
+# not multiple-regression-base
+0
+# hash		size		flops		mean (us or J)	dev (us or J)	sum		sum2		n
+5e706e80	10542144       	0.000000e+00   	1.749600e+03   	6.431809e+00   	1.453918e+06   	2.543810e+09   	831
+ec18b7ba	1440680        	0.000000e+00   	2.425913e+02   	4.028104e+00   	1.465252e+05   	3.555553e+07   	604
+e525db28	16929032       	0.000000e+00   	2.806519e+03   	3.782622e+00   	1.608135e+06   	4.513270e+09   	573
+1463a8b4	7916608        	0.000000e+00   	1.332649e+03   	1.397954e+01   	2.185544e+06   	2.912884e+09   	1640
+
+####################
+# COMB_1
+# number of types devices
+1
+####################
+# DEV_0
+# device type (CPU - 0, CUDA - 1, OpenCL - 2, FPGA - 4, MPI_SC - 5, TCPIP_SC - 6, HIP - 7)
+0
+####################
+# DEV_0
+# device id 
+0
+####################
+# DEV_0
+# number of cores 
+1
+##########
+# number of implementations
+1
+#####
+# Model for cpu0_cores1_impl0 (Comb1)
+# number of entries
+4
+# sumlnx	sumlnx2		sumlny		sumlnxlny	alpha		beta		n	minx		maxx
+0.000000e+00   	0.000000e+00   	0.000000e+00   	0.000000e+00   	nan            	nan            	0	0              	0              
+# a		b		c
+nan            	nan            	nan            
+# not multiple-regression-base
+0
+# hash		size		flops		mean (us or J)	dev (us or J)	sum		sum2		n
+5e706e80	10542144       	0.000000e+00   	5.019191e+04   	2.990624e+02   	6.374372e+06   	3.199533e+11   	127
+ec18b7ba	1440680        	0.000000e+00   	7.596548e+03   	3.349796e+01   	9.062682e+06   	6.884644e+10   	1193
+e525db28	16929032       	0.000000e+00   	9.108637e+04   	4.541283e+01   	2.277159e+06   	2.074182e+11   	25
+1463a8b4	7916608        	0.000000e+00   	3.696512e+04   	3.237978e+02   	1.027630e+07   	3.798939e+11   	278
+
