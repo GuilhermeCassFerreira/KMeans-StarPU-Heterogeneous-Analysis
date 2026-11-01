@@ -15,35 +15,17 @@ using namespace std;
 using namespace std::chrono;
 
 /* ========================================================================== */
-/* Tracking de convergência via callback (rank 0)                             */
+/* Callback do Update (rank 0)                                                */
 /* ========================================================================== */
-/* O callback dispara quando uma task update_centroids termina no host.        */
-/* Capturamos o instante da primeira convergência detectada, o índice da      */
-/* iteração correspondente, e contamos quantas tasks update viraram ghost.    */
+/* Sem detecção de convergência: as iterações rodam sempre até o máximo, e o  */
+/* callback só imprime o progresso.                                           */
 
-static std::atomic<int>  g_update_calls{0};   // quantas tasks update já completaram
-std::atomic<int>  g_iter_converged{-1};       // iteração em que convergiu (-1 = não)
-std::atomic<bool> g_converge_captured{false};
-high_resolution_clock::time_point g_t_converge;
-high_resolution_clock::time_point g_t_start;
+static std::atomic<int> g_update_calls{0};   // quantas tasks update já completaram
 static int g_mpi_rank = 0;                    // rank MPI deste processo
 
-extern "C" void update_centroids_callback(void *arg) {
-    int *flag_ptr = (int *)arg;
-    int call_idx = g_update_calls.fetch_add(1) + 1;  // 1-based: qual iter terminou
-
-    bool just_converged = (*flag_ptr == 1 && !g_converge_captured.exchange(true));
-    if (just_converged) {
-        g_iter_converged.store(call_idx);
-        g_t_converge = high_resolution_clock::now();
-    }
-
-    // Imprime apenas no rank 0 e apenas para tasks reais (não ghost)
-    if (g_mpi_rank == 0) {
-        bool is_ghost = (*flag_ptr == 1 && !just_converged);
-        if (!is_ghost)
-            fprintf(stderr, "[StarPU] Iteracao %d\n", call_idx);
-    }
+extern "C" void update_centroids_callback(void *) {
+    int call_idx = g_update_calls.fetch_add(1) + 1;
+    if (g_mpi_rank == 0) fprintf(stderr, "[StarPU] Iteracao %d\n", call_idx);
 }
 
 /* ========================================================================== */
@@ -80,36 +62,15 @@ struct starpu_perfmodel accumulate_perf_model = {
 /* Codelets StarPU (definições atualizadas para Ghost Tasks)                  */
 /* ========================================================================== */
 
-/* REDUX codelets para h_changes (label-change counter) */
-static struct starpu_codelet cl_changes_init = {
-    .cpu_funcs = {changes_var_init_cpu},
-#ifdef STARPU_USE_CUDA
-    .cuda_funcs = {changes_var_init_cuda},
-    .cuda_flags = {STARPU_CUDA_ASYNC},
-#endif
-    .nbuffers = 1,
-    .modes = {STARPU_W}
-};
-
-static struct starpu_codelet cl_changes_reduce = {
-    .cpu_funcs = {changes_var_reduce_cpu},
-#ifdef STARPU_USE_CUDA
-    .cuda_funcs = {changes_var_reduce_cuda},
-    .cuda_flags = {STARPU_CUDA_ASYNC},
-#endif
-    .nbuffers = 2,
-    .modes = {STARPU_RW, STARPU_R}
-};
-
 struct starpu_codelet cl_assign_point_handles = {
     .cpu_funcs = {assign_point_to_cluster_handles},
 #ifdef STARPU_USE_CUDA
     .cuda_funcs = {assign_point_to_cluster_cuda},
     .cuda_flags = {STARPU_CUDA_ASYNC},
 #endif
-    .nbuffers = 5,
-    /* points R, centroids R, labels RW, converged R, h_changes REDUX */
-    .modes = {STARPU_R, STARPU_R, STARPU_RW, STARPU_R, STARPU_REDUX},
+    .nbuffers = 3,
+    /* points R, centroids R, labels RW */
+    .modes = {STARPU_R, STARPU_R, STARPU_RW},
     .model = &assign_perf_model
 };
 
@@ -119,10 +80,10 @@ struct starpu_codelet cl_calculate_partial_sums = {
     .cuda_funcs = {calculate_partial_sums_cuda},
     .cuda_flags = {STARPU_CUDA_ASYNC},
 #endif
-    .nbuffers = 5,
-    /* points R, labels R, chunk_sums W, chunk_counts W, converged R
+    .nbuffers = 4,
+    /* points R, labels R, chunk_sums W, chunk_counts W
      * W exclusivo por chunk → todas as 100 tasks rodam em paralelo sem contenção */
-    .modes = {STARPU_R, STARPU_R, STARPU_W, STARPU_W, STARPU_R},
+    .modes = {STARPU_R, STARPU_R, STARPU_W, STARPU_W},
     .model = &calculate_perf_model
 };
 
@@ -132,8 +93,8 @@ struct starpu_codelet cl_clean_buffers = {
     .cuda_funcs = {clean_buffers_cuda}, 
     .cuda_flags = {STARPU_CUDA_ASYNC},
 #endif
-    .nbuffers = 3, 
-    .modes = {STARPU_W, STARPU_W, STARPU_R},
+    .nbuffers = 2,
+    .modes = {STARPU_W, STARPU_W},
     .model = &clean_perf_model
 };
 
@@ -143,9 +104,9 @@ struct starpu_codelet cl_update_centroids = {
     .cuda_funcs = {update_centroids_cuda},
     .cuda_flags = {STARPU_CUDA_ASYNC},
 #endif
-    .nbuffers = 5,
-    /* sums R, counts R, centroids RW, converged RW, h_changes RW (read+reset) */
-    .modes = {STARPU_R, STARPU_R, STARPU_RW, STARPU_RW, STARPU_RW},
+    .nbuffers = 3,
+    /* sums R, counts R, centroids RW */
+    .modes = {STARPU_R, STARPU_R, STARPU_RW},
     .model = &update_perf_model
 };
 
@@ -155,10 +116,9 @@ struct starpu_codelet cl_accumulate_nodes = {
     .cuda_funcs = {accumulate_nodes_cuda},
     .cuda_flags = {STARPU_CUDA_ASYNC},
 #endif
-    .nbuffers = 5,
-    /* Sem COMMUTE: ordem determinística garante somas FP consistentes entre iterações,
-     * permitindo que update_centroids_cpu detecte convergência por comparação exata. */
-    .modes = {STARPU_RW, STARPU_RW, STARPU_R, STARPU_R, STARPU_R},
+    .nbuffers = 4,
+    /* Sem COMMUTE: ordem determinística das somas FP, mesmo resultado em toda execução */
+    .modes = {STARPU_RW, STARPU_RW, STARPU_R, STARPU_R},
     .name = "kmeans_accumulate_mpi"
 };
 
@@ -166,8 +126,8 @@ struct starpu_codelet cl_accumulate_nodes = {
  * chegam pela rede na memória da CPU; somá-las na GPU exige copiar cada uma pelo PCIe, em série. */
 struct starpu_codelet cl_accumulate_nodes_cpu = {
     .cpu_funcs = {accumulate_nodes_cpu},
-    .nbuffers = 5,
-    .modes = {STARPU_RW, STARPU_RW, STARPU_R, STARPU_R, STARPU_R},
+    .nbuffers = 4,
+    .modes = {STARPU_RW, STARPU_RW, STARPU_R, STARPU_R},
     .name = "kmeans_accumulate_nodes_cpu"
 };
 
@@ -183,8 +143,7 @@ static bool env_ligada(const char *nome, bool padrao) {
  * KMEANS_ACC_MODEL: modelo de desempenho no Accumulate, para o dmda escolher entre CPU e GPU nas
  * somas locais de cada nó sabendo o tempo de cada uma (a parcial de um Calculate na GPU já está
  * na GPU). KMEANS_ACC_NODES_CPU: soma entre nós no rank 0 só na CPU. KMEANS_UPDATE_CPU: Update
- * só na CPU; na GPU, a cópia de volta do flag de convergência (que os outros nós e as CPUs
- * esperam) levou ~8 ms por iteração no PQ com 32 nós. */
+ * só na CPU, com os centroides novos já na RAM para o envio aos outros nós. */
 static void aplicar_opcoes_accumulate(int rank) {
     if (env_ligada("KMEANS_ACC_MODEL", true)) {
         cl_accumulate_nodes.model = &accumulate_perf_model;
@@ -232,7 +191,7 @@ int KMeans::getChunkOwner(int chunk_id) {
     return std::min(chunk_id / std::max(cpr, 1), world_size - 1);
 }
 
-void KMeans::submitTasks(int N, starpu_data_handle_t converged_handle, int *converged_flag_ptr, starpu_data_handle_t h_changes_handle) {
+void KMeans::submitTasks(int N) {
     int zero = 0;
 
     for (int chunk_id = 0; chunk_id < num_chunks; chunk_id++) {
@@ -243,8 +202,6 @@ void KMeans::submitTasks(int N, starpu_data_handle_t converged_handle, int *conv
             STARPU_R,    points_children[chunk_id],
             STARPU_R,    centroids_handle,
             STARPU_RW,   outputs_children[chunk_id],
-            STARPU_R,    converged_handle,
-            STARPU_REDUX, h_changes_handle,
             STARPU_VALUE, &K, sizeof(int),
             STARPU_VALUE, &dimensions, sizeof(int),
             STARPU_VALUE, &this_chunk, sizeof(int),
@@ -256,7 +213,6 @@ void KMeans::submitTasks(int N, starpu_data_handle_t converged_handle, int *conv
         starpu_mpi_task_insert(MPI_COMM_WORLD, &cl_clean_buffers,
             STARPU_W, partial_sums_handle[n],
             STARPU_W, partial_counts_handle[n],
-            STARPU_R, converged_handle,
             STARPU_VALUE, &K, sizeof(int),
             STARPU_VALUE, &dimensions, sizeof(int),
             STARPU_VALUE, &zero, sizeof(int),
@@ -276,7 +232,6 @@ void KMeans::submitTasks(int N, starpu_data_handle_t converged_handle, int *conv
             STARPU_R, outputs_children[chunk_id],
             STARPU_W, chunk_sums_handle[chunk_id],
             STARPU_W, chunk_counts_handle[chunk_id],
-            STARPU_R, converged_handle,
             STARPU_VALUE, &K, sizeof(int),
             STARPU_VALUE, &dimensions, sizeof(int),
             STARPU_VALUE, &this_chunk, sizeof(int),
@@ -295,7 +250,6 @@ void KMeans::submitTasks(int N, starpu_data_handle_t converged_handle, int *conv
             STARPU_RW, partial_counts_handle[owners],
             STARPU_R, chunk_sums_handle[chunk_id],
             STARPU_R, chunk_counts_handle[chunk_id],
-            STARPU_R, converged_handle,
             STARPU_VALUE, &K, sizeof(int),
             STARPU_VALUE, &dimensions, sizeof(int),
             STARPU_EXECUTE_ON_NODE, owners,
@@ -309,7 +263,6 @@ void KMeans::submitTasks(int N, starpu_data_handle_t converged_handle, int *conv
                     STARPU_RW, partial_counts_handle[0], 
                     STARPU_R, partial_sums_handle[n],    
                     STARPU_R, partial_counts_handle[n],  
-                    STARPU_R, converged_handle, 
                     STARPU_VALUE, &K, sizeof(int),
                     STARPU_VALUE, &dimensions, sizeof(int),
                     STARPU_EXECUTE_ON_NODE, 0,    
@@ -318,32 +271,23 @@ void KMeans::submitTasks(int N, starpu_data_handle_t converged_handle, int *conv
         }
 
         // A ATUALIZAÇÃO DOS CENTRÓIDES RODA SEMPRE, seja com 1 ou 100 nodos!
-        // Callback no rank 0 captura o instante exato em que o flag vira 1
-        // (primeira iteração que detectou convergência) — usado pra separar
-        // tempo útil de tempo de ghost tasks.
+        // No rank 0, o callback imprime o progresso das iterações.
         if (mpi_rank == 0) {
             starpu_mpi_task_insert(MPI_COMM_WORLD, &cl_update_centroids,
                 STARPU_R,  partial_sums_handle[0],
                 STARPU_R,  partial_counts_handle[0],
                 STARPU_RW, centroids_handle,
-                STARPU_RW, converged_handle,
-                STARPU_RW, h_changes_handle,
                 STARPU_VALUE, &K, sizeof(int),
                 STARPU_VALUE, &dimensions, sizeof(int),
                 STARPU_VALUE, &zero, sizeof(int),
                 STARPU_EXECUTE_ON_NODE, 0,
-                // _NFREE: não deixe o StarPU dar free no callback_arg ao destruir
-                // a task. Sem isso, _starpu_task_destroy() libera converged_flag_ptr
-                // que ainda é usado por iterações futuras + pelo cleanup do run().
-                STARPU_CALLBACK_WITH_ARG_NFREE, update_centroids_callback, (void*)converged_flag_ptr,
+                STARPU_CALLBACK, update_centroids_callback,
                 0);
         } else {
             starpu_mpi_task_insert(MPI_COMM_WORLD, &cl_update_centroids,
                 STARPU_R,  partial_sums_handle[0],
                 STARPU_R,  partial_counts_handle[0],
                 STARPU_RW, centroids_handle,
-                STARPU_RW, converged_handle,
-                STARPU_RW, h_changes_handle,
                 STARPU_VALUE, &K, sizeof(int),
                 STARPU_VALUE, &dimensions, sizeof(int),
                 STARPU_VALUE, &zero, sizeof(int),
@@ -496,55 +440,13 @@ void KMeans::run(const vector<double> &all_values, int N) {
 
     auto t_loop_start = high_resolution_clock::now();
 
-    // IMPORTANTE: o flag de convergência precisa estar em memória heap pinada
-    // (acessível pelo driver CUDA). Antes estava na stack (`int converged_flag_local`),
-    // o que provocava `munmap_chunk(): invalid pointer` no shutdown e potencial
-    // segfault no driver CUDA quando ele tentava transferir/liberar o handle.
-    int *converged_flag_ptr_local = nullptr;
-    if (starpu_malloc((void**)&converged_flag_ptr_local, sizeof(int)) != 0) exit(1);
-    *converged_flag_ptr_local = 0;
-    starpu_data_handle_t converged_handle;
-    starpu_variable_data_register(&converged_handle, STARPU_MAIN_RAM, (uintptr_t)converged_flag_ptr_local, sizeof(int));
-    starpu_mpi_data_register(converged_handle, KMeansTags::CONVERGED_TAG, 0);
-
-    // h_changes: contador REDUX de mudanças de label por iteração
-    // update_centroids lê o total acumulado e reseta para a próxima iteração.
-    int *h_changes_ptr_local = nullptr;
-    if (starpu_malloc((void**)&h_changes_ptr_local, sizeof(int)) != 0) exit(1);
-    *h_changes_ptr_local = 0;
-    starpu_data_handle_t h_changes_handle;
-    starpu_variable_data_register(&h_changes_handle, STARPU_MAIN_RAM, (uintptr_t)h_changes_ptr_local, sizeof(int));
-    starpu_mpi_data_register(h_changes_handle, KMeansTags::CHANGES_TAG, 0);
-    starpu_data_set_reduction_methods(h_changes_handle, &cl_changes_reduce, &cl_changes_init);
-
-#ifdef STARPU_USE_CUDA
-    /* Permite que update_centroids_cuda copie o flag GPU→CPU na mesma stream,
-     * garantindo que o callback de convergência leia o valor correto. */
-    starpu_set_converged_cpu_ptr(converged_flag_ptr_local);
-#endif
-
     for (int it = 0; it < iters; ++it) {
-        submitTasks(N, converged_handle, converged_flag_ptr_local, h_changes_handle);
+        submitTasks(N);
     }
 
     starpu_task_wait_for_all();
     starpu_mpi_wait_for_all(MPI_COMM_WORLD);
     t_loop_ms_ = duration<double, milli>(high_resolution_clock::now() - t_loop_start).count();
-
-#ifdef STARPU_USE_CUDA
-    starpu_set_converged_cpu_ptr(nullptr); // evita acesso a ponteiro inválido pós-run
-#endif
-
-    if (mpi_rank == 0) {
-        if (*converged_flag_ptr_local) {
-            cout << "[INFO] Early Exit concluído com sucesso." << endl;
-        } else {
-            cout << "[INFO] Limite de iterações atingido sem convergência completa." << endl;
-        }
-    }
-
-    starpu_data_unregister(converged_handle);
-    starpu_data_unregister(h_changes_handle);
 
     // Antes do unpartition, em modo MPI distribuído precisamos trazer os
     // outputs (labels) dos chunks que pertencem a OUTROS ranks de volta para
@@ -619,6 +521,4 @@ void KMeans::run(const vector<double> &all_values, int N) {
     starpu_free_noflag(partial_sums_ptr, sums_bytes);
     starpu_free_noflag(partial_counts_ptr, counts_bytes);
     starpu_free_noflag(centroids_ptr_starpu, centroids_bytes);
-    starpu_free_noflag(converged_flag_ptr_local, sizeof(int));
-    starpu_free_noflag(h_changes_ptr_local, sizeof(int));
 }

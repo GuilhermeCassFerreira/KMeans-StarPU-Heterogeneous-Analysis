@@ -105,8 +105,7 @@ int main(int argc, char **argv) {
     m.t_loop_ms    = kmeans.getLoopMs();
     m.t_total_ms   = t_total_ms;
     m.iter_max     = iters;
-    m.iter_converged = (g_iter_converged.load() > 0)
-                       ? g_iter_converged.load() : iters;
+    m.iter_converged = iters;   // sem detecção de convergência: sempre o máximo
     m.mpi_ranks    = size;
 
     m.ncpu_workers   = starpu_worker_get_count_by_type(STARPU_CPU_WORKER);

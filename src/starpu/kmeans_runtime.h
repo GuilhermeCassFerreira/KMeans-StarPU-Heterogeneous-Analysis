@@ -28,7 +28,6 @@ extern "C" {
     extern volatile int cuda_update_calls;
     extern volatile int cuda_accumulate_calls;
     int get_cuda_kernel_calls();
-    void starpu_set_converged_cpu_ptr(int *ptr);
 }
 #endif
 
@@ -45,8 +44,6 @@ void redux_double_init_cpu(void *buffers[], void *cl_arg);
 void redux_double_reduce_cpu(void *buffers[], void *cl_arg);
 void redux_int_init_cpu(void *buffers[], void *cl_arg);
 void redux_int_reduce_cpu(void *buffers[], void *cl_arg);
-void changes_var_init_cpu(void *buffers[], void *cl_arg);
-void changes_var_reduce_cpu(void *buffers[], void *cl_arg);
 
 /* ========================================================================== */
 /* Declarações das funções CUDA (implementadas em kmeans_cuda.cu)            */
@@ -66,8 +63,6 @@ void redux_double_init_cuda(void *buffers[], void *cl_arg);
 void redux_double_reduce_cuda(void *buffers[], void *cl_arg);
 void redux_int_init_cuda(void *buffers[], void *cl_arg);
 void redux_int_reduce_cuda(void *buffers[], void *cl_arg);
-void changes_var_init_cuda(void *buffers[], void *cl_arg);
-void changes_var_reduce_cuda(void *buffers[], void *cl_arg);
 
 #ifdef __cplusplus
 }
@@ -145,7 +140,7 @@ private:
     void clearClusters();
     int getChunkOwner(int chunk_id);
 
-    void submitTasks(int N, starpu_data_handle_t converged_handle, int *converged_flag_ptr, starpu_data_handle_t h_changes_handle);
+    void submitTasks(int N);
 
 public:
     KMeans(int K, int iterations, std::string output_dir, int chunk_size, int rank, int size, int dims, int seed);
@@ -160,13 +155,5 @@ public:
     int    getK()          const { return K; }
     double getLoopMs()     const { return t_loop_ms_; }
 };
-
-/* ========================================================================== */
-/* Tracking de convergência (definidos em kmeans_mpi.cpp)                     */
-/* ========================================================================== */
-extern std::atomic<int>  g_iter_converged;        // -1 se não convergiu
-extern std::atomic<bool> g_converge_captured;
-extern std::chrono::high_resolution_clock::time_point g_t_converge;
-extern std::chrono::high_resolution_clock::time_point g_t_start;
 
 #endif // KMEANS_RUNTIME_H
