@@ -54,6 +54,11 @@ struct starpu_perfmodel update_perf_model = {
     .symbol = "kmeans_update_model_mpi"
 };
 
+struct starpu_perfmodel assign_calc_perf_model = {
+    .type = STARPU_HISTORY_BASED,
+    .symbol = "kmeans_assign_calc_model_mpi"
+};
+
 /* Desligado com KMEANS_ACC_MODEL=0 (ver aplicar_opcoes_accumulate) */
 struct starpu_perfmodel accumulate_perf_model = {
     .type = STARPU_HISTORY_BASED,
@@ -87,6 +92,22 @@ struct starpu_codelet cl_calculate_partial_sums = {
      * W exclusivo por chunk → todas as 100 tasks rodam em paralelo sem contenção */
     .modes = {STARPU_R, STARPU_R, STARPU_W, STARPU_W},
     .model = &calculate_perf_model
+};
+
+/* Assign + Calculate do chunk numa tarefa só (KMEANS_ASSIGN_CALC_JUNTOS=1): a soma do chunk sai
+ * no mesmo worker que fez o Assign, como no OpenMP. Separados, o dmda punha a maioria dos
+ * Calculate na CPU mesmo quando o Assign tinha rodado na GPU (traces da AWS: 54-65% com 1 nó,
+ * ~97% com 32), ocupando as CPUs e copiando os rótulos de volta para a RAM */
+struct starpu_codelet cl_assign_calc = {
+    .cpu_funcs = {assign_calc_cpu},
+#ifdef STARPU_USE_CUDA
+    .cuda_funcs = {assign_calc_cuda},
+    .cuda_flags = {STARPU_CUDA_ASYNC},
+#endif
+    .nbuffers = 5,
+    /* points R, centroids R, labels RW, chunk_sums W, chunk_counts W */
+    .modes = {STARPU_R, STARPU_R, STARPU_RW, STARPU_W, STARPU_W},
+    .model = &assign_calc_perf_model
 };
 
 struct starpu_codelet cl_clean_buffers = {
@@ -157,6 +178,7 @@ static int    g_rank0_menos_pequenos = 0;
  * AWS, PQ com 2 nós: ~500 somas e ~25 ms por iteração depois do fim do cálculo). A ordem das
  * somas em ponto flutuante muda, então o SSE pode variar na última casa entre execuções. */
 static bool   g_commute = true;
+static bool   g_assign_calc_juntos = false;   // KMEANS_ASSIGN_CALC_JUNTOS, ver cl_assign_calc
 
 /* Submissão que aborta em erro: sem worker capaz de rodar a tarefa (ex.: Update só na CPU com
  * STARPU_NCPUS=0), o starpu_mpi_task_insert devolve -ENODEV e, sem checagem, o programa seguia
@@ -203,6 +225,7 @@ static void aplicar_opcoes_accumulate(int rank) {
     const char *r0 = getenv("KMEANS_RANK0_MENOS_PEQUENOS");
     g_rank0_menos_pequenos = r0 ? std::max(atoi(r0), 0) : 0;
     g_commute = env_ligada("KMEANS_COMMUTE", true);
+    g_assign_calc_juntos = env_ligada("KMEANS_ASSIGN_CALC_JUNTOS", false);
     starpu_data_access_mode acc_modo = g_commute ? (starpu_data_access_mode)(STARPU_RW | STARPU_COMMUTE) : STARPU_RW;
     cl_accumulate_nodes.modes[0] = cl_accumulate_nodes.modes[1] = acc_modo;
     cl_accumulate_nodes_cpu.modes[0] = cl_accumulate_nodes_cpu.modes[1] = acc_modo;
@@ -216,6 +239,7 @@ static void aplicar_opcoes_accumulate(int rank) {
         std::cout << "[CHUNKS] pequenos por no: " << g_chunks_pequenos << " (fracao " << g_fracao_pequenos
                   << ") | rank 0 com menos pequenos: " << g_rank0_menos_pequenos
                   << " | somas em qualquer ordem: " << (g_commute ? "sim" : "nao")
+                  << " | Assign e Calculate juntos: " << (g_assign_calc_juntos ? "sim" : "nao")
                   << " | prioridade aos grandes: " << (g_prioridade_grandes ? "sim" : "nao")
                   << " | medicao por no: " << (g_medir_nos ? "sim" : "nao") << std::endl;
     }
@@ -363,7 +387,29 @@ void KMeans::submitTasks(int N, int it) {
     void (*pronta)(void *) = g_medir_nos ? medida_pronta : NULL;
     void (*fim)(void *)    = g_medir_nos ? medida_fim : NULL;
 
-    for (int chunk_id = 0; chunk_id < num_chunks; chunk_id++) {
+    for (int chunk_id = 0; chunk_id < num_chunks && g_assign_calc_juntos; chunk_id++) {
+        int this_chunk = starpu_vector_get_nx(points_children[chunk_id]);
+        if (this_chunk <= 0) break;
+        MedidaTarefa *med = &g_medidas[((size_t)it * num_chunks + chunk_id) * 2];
+
+        INSERIR(MPI_COMM_WORLD, &cl_assign_calc,
+            STARPU_R,    points_children[chunk_id],
+            STARPU_R,    centroids_handle,
+            STARPU_RW,   outputs_children[chunk_id],
+            STARPU_W,    chunk_sums_handle[chunk_id],
+            STARPU_W,    chunk_counts_handle[chunk_id],
+            STARPU_VALUE, &K, sizeof(int),
+            STARPU_VALUE, &dimensions, sizeof(int),
+            STARPU_VALUE, &this_chunk, sizeof(int),
+            STARPU_PRIORITY, prioridadeChunk(chunk_id),
+            STARPU_EXECUTE_ON_NODE, chunk_owners[chunk_id],
+            STARPU_PROLOGUE_CALLBACK, pronta,
+            STARPU_PROLOGUE_CALLBACK_ARG_NFREE, med,
+            STARPU_CALLBACK_WITH_ARG_NFREE, fim, med,
+            0);
+    }
+
+    for (int chunk_id = 0; chunk_id < num_chunks && !g_assign_calc_juntos; chunk_id++) {
         int this_chunk = starpu_vector_get_nx(points_children[chunk_id]);
         if (this_chunk <= 0) break;
         MedidaTarefa *med = &g_medidas[((size_t)it * num_chunks + chunk_id) * 2];
@@ -396,7 +442,7 @@ void KMeans::submitTasks(int N, int it) {
 
     /* CALCULATE: cada chunk escreve em buffer PRÓPRIO (W, sem contenção).
      * Todas as 100 tasks rodam em paralelo. */
-    for (int chunk_id = 0; chunk_id < num_chunks; ++chunk_id) {
+    for (int chunk_id = 0; chunk_id < num_chunks && !g_assign_calc_juntos; ++chunk_id) {
         int owners = chunk_owners[chunk_id];
         int this_chunk = starpu_vector_get_nx(points_children[chunk_id]);
         if (this_chunk <= 0) break;

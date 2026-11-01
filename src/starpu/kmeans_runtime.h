@@ -37,6 +37,7 @@ extern "C" {
 
 void assign_point_to_cluster_handles(void *buffers[], void *cl_arg);
 void calculate_partial_sums(void *buffers[], void *cl_arg);
+void assign_calc_cpu(void *buffers[], void *cl_arg);
 void clean_buffers_cpu(void *buffers[], void *cl_arg);
 void update_centroids_cpu(void *buffers[], void *cl_arg);
 void accumulate_nodes_cpu(void *buffers[], void *cl_arg);
@@ -56,6 +57,7 @@ extern "C" {
 
 void assign_point_to_cluster_cuda(void *buffers[], void *cl_arg);
 void calculate_partial_sums_cuda(void *buffers[], void *cl_arg);
+void assign_calc_cuda(void *buffers[], void *cl_arg);
 void clean_buffers_cuda(void *buffers[], void *cl_arg);
 void update_centroids_cuda(void *buffers[], void *cl_arg);
 void accumulate_nodes_cuda(void *buffers[], void *cl_arg);

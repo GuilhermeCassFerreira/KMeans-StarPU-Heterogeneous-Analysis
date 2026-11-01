@@ -84,6 +84,49 @@ void calculate_partial_sums(void *buffers[], void *cl_arg) {
     }
 }
 
+/* Assign + Calculate do chunk na mesma tarefa: uma passada só sobre os pontos, cada ponto
+ * vai para a soma do centroide mais próximo logo depois de rotulado (mesmas contas e mesma
+ * ordem das duas tarefas separadas) */
+void assign_calc_cpu(void *buffers[], void *cl_arg) {
+    cpu_kernel_calls++;
+    cpu_assign_calls++;
+    cpu_calculate_calls++;
+
+    int K, dimensions, chunk_size;
+    starpu_codelet_unpack_args(cl_arg, &K, &dimensions, &chunk_size);
+
+    double *points_values     = (double *)STARPU_VECTOR_GET_PTR(buffers[0]);
+    double *centroids         = (double *)STARPU_VECTOR_GET_PTR(buffers[1]);
+    int    *nearestClusterIds = (int *)   STARPU_VECTOR_GET_PTR(buffers[2]);
+    double *partial_sums      = (double *)STARPU_VECTOR_GET_PTR(buffers[3]);
+    int    *partial_counts    = (int *)   STARPU_VECTOR_GET_PTR(buffers[4]);
+
+    std::memset(partial_sums, 0, (size_t)K * dimensions * sizeof(double));
+    std::memset(partial_counts, 0, (size_t)K * sizeof(int));
+
+    for (int idx = 0; idx < chunk_size; idx++) {
+        double *point_values = points_values + idx * dimensions;
+        double min_dist2 = std::numeric_limits<double>::max();
+        int bestClusterId = -1;
+        for (int i = 0; i < K; i++) {
+            double dist2 = 0.0;
+            for (int j = 0; j < dimensions; j++) {
+                double diff = centroids[i * dimensions + j] - point_values[j];
+                dist2 += diff * diff;
+            }
+            if (dist2 < min_dist2) {
+                min_dist2 = dist2;
+                bestClusterId = i;
+            }
+        }
+        nearestClusterIds[idx] = bestClusterId + 1;
+        partial_counts[bestClusterId]++;
+        for (int d = 0; d < dimensions; ++d) {
+            partial_sums[bestClusterId * dimensions + d] += point_values[d];
+        }
+    }
+}
+
 void clean_buffers_cpu(void *buffers[], void *cl_arg) {
     cpu_kernel_calls++;
     cpu_clean_calls++;

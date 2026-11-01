@@ -122,19 +122,9 @@ static int assign_blocos_sm() {
     return v;
 }
 
-void assign_point_to_cluster_cuda(void *buffers[], void *cl_arg) {
-    int K, dimensions, chunk_size;
-    starpu_codelet_unpack_args(cl_arg, &K, &dimensions, &chunk_size);
-
-    double *points_values     = (double *)STARPU_VECTOR_GET_PTR(buffers[0]);
-    double *centroids         = (double *)STARPU_VECTOR_GET_PTR(buffers[1]);
-    int    *nearestClusterIds = (int *)   STARPU_VECTOR_GET_PTR(buffers[2]);
-
-    cuda_assign_calls++;
-    cuda_kernel_calls++;
-
-    cudaStream_t stream = starpu_cuda_get_local_stream();
-
+/* Lança o Assign de um chunk na stream (usado pelo Assign e pelo Assign+Calculate) */
+static void lancar_assign(cudaStream_t stream, const double *points_values, const double *centroids,
+                          int *nearestClusterIds, int K, int dimensions, int chunk_size) {
     // Poucas threads ativas por SM: cada thread relê o próprio ponto (D doubles)
     // a cada grupo de 4 centroides, e com a GPU cheia (1536 threads/SM) esses
     // pontos não cabem no cache e as releituras vão para a DRAM. Com 256
@@ -166,6 +156,21 @@ void assign_point_to_cluster_cuda(void *buffers[], void *cl_arg) {
         nearestClusterIds, pts_per_block);
 
     CUDA_CHECK(cudaGetLastError());
+}
+
+void assign_point_to_cluster_cuda(void *buffers[], void *cl_arg) {
+    int K, dimensions, chunk_size;
+    starpu_codelet_unpack_args(cl_arg, &K, &dimensions, &chunk_size);
+
+    double *points_values     = (double *)STARPU_VECTOR_GET_PTR(buffers[0]);
+    double *centroids         = (double *)STARPU_VECTOR_GET_PTR(buffers[1]);
+    int    *nearestClusterIds = (int *)   STARPU_VECTOR_GET_PTR(buffers[2]);
+
+    cuda_assign_calls++;
+    cuda_kernel_calls++;
+
+    lancar_assign(starpu_cuda_get_local_stream(), points_values, centroids, nearestClusterIds,
+                  K, dimensions, chunk_size);
 }
 
 /* ========================================================================== */
@@ -238,22 +243,9 @@ __global__ void calculate_partial_sums_global_kernel(
     }
 }
 
-void calculate_partial_sums_cuda(void *buffers[], void *cl_arg) {
-    int K, dimensions, chunk_size;
-    starpu_codelet_unpack_args(cl_arg, &K, &dimensions, &chunk_size);
-
-    double *points_values = (double *)STARPU_VECTOR_GET_PTR(buffers[0]);
-    int *nearestClusterIds = (int *)STARPU_VECTOR_GET_PTR(buffers[1]);
-    double *partial_sums = (double *)STARPU_VECTOR_GET_PTR(buffers[2]);
-    int *partial_counts = (int *)STARPU_VECTOR_GET_PTR(buffers[3]);
-
-    int npoints = chunk_size;
-
-    cuda_calculate_calls++;
-    cuda_kernel_calls++;
-
-    cudaStream_t stream = starpu_cuda_get_local_stream();
-
+/* Lança o Calculate de um chunk na stream (usado pelo Calculate e pelo Assign+Calculate) */
+static void lancar_calculate(cudaStream_t stream, const double *points_values, const int *nearestClusterIds,
+                             double *partial_sums, int *partial_counts, int K, int dimensions, int npoints) {
     /* STARPU_W não zera o buffer automaticamente; zeramos antes da acumulação
      * assim como calculate_partial_sums_cpu faz com memset. */
     CUDA_CHECK(cudaMemsetAsync(partial_sums,   0, (size_t)K * dimensions * sizeof(double), stream));
@@ -283,6 +275,44 @@ void calculate_partial_sums_cuda(void *buffers[], void *cl_arg) {
     }
 
     CUDA_CHECK(cudaGetLastError());
+}
+
+void calculate_partial_sums_cuda(void *buffers[], void *cl_arg) {
+    int K, dimensions, chunk_size;
+    starpu_codelet_unpack_args(cl_arg, &K, &dimensions, &chunk_size);
+
+    double *points_values = (double *)STARPU_VECTOR_GET_PTR(buffers[0]);
+    int *nearestClusterIds = (int *)STARPU_VECTOR_GET_PTR(buffers[1]);
+    double *partial_sums = (double *)STARPU_VECTOR_GET_PTR(buffers[2]);
+    int *partial_counts = (int *)STARPU_VECTOR_GET_PTR(buffers[3]);
+
+    cuda_calculate_calls++;
+    cuda_kernel_calls++;
+
+    lancar_calculate(starpu_cuda_get_local_stream(), points_values, nearestClusterIds,
+                     partial_sums, partial_counts, K, dimensions, chunk_size);
+}
+
+/* Assign + Calculate do chunk na mesma tarefa: os dois kernels em sequência na stream do
+ * worker, com os rótulos e a soma do chunk ficando na GPU que fez o Assign */
+void assign_calc_cuda(void *buffers[], void *cl_arg) {
+    int K, dimensions, chunk_size;
+    starpu_codelet_unpack_args(cl_arg, &K, &dimensions, &chunk_size);
+
+    double *points_values     = (double *)STARPU_VECTOR_GET_PTR(buffers[0]);
+    double *centroids         = (double *)STARPU_VECTOR_GET_PTR(buffers[1]);
+    int    *nearestClusterIds = (int *)   STARPU_VECTOR_GET_PTR(buffers[2]);
+    double *partial_sums      = (double *)STARPU_VECTOR_GET_PTR(buffers[3]);
+    int    *partial_counts    = (int *)   STARPU_VECTOR_GET_PTR(buffers[4]);
+
+    cuda_assign_calls++;
+    cuda_calculate_calls++;
+    cuda_kernel_calls++;
+
+    cudaStream_t stream = starpu_cuda_get_local_stream();
+    lancar_assign(stream, points_values, centroids, nearestClusterIds, K, dimensions, chunk_size);
+    lancar_calculate(stream, points_values, nearestClusterIds, partial_sums, partial_counts,
+                     K, dimensions, chunk_size);
 }
 
 /* ========================================================================== */
