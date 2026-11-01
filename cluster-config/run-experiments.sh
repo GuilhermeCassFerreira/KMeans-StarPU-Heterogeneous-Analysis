@@ -97,6 +97,7 @@ Opcoes:
   --no-generate          Reaproveita o arquivo de entrada ja gerado no no mestre
   --calib-hostname <h>   Nome de maquina dos arquivos de calibracao (substitui STARPU_HOSTNAME_FIXED)
   --calib-dir <dir>      Pasta da calibracao salva no repositorio (substitui CALIB_DIR)
+  --freeze-calibration   Reinstala a calibracao salva antes de cada execucao e nao grava de volta
   -h, --help             Mostrar ajuda
 USAGE
 }
@@ -130,6 +131,7 @@ parse_args() {
       --no-generate) DO_GENERATE=0;      shift   ;;
       --calib-hostname) STARPU_HOSTNAME_FIXED="$2"; shift 2 ;;
       --calib-dir)  CALIB_DIR="$2";      shift 2 ;;
+      --freeze-calibration) FREEZE_CALIBRATION=1; shift ;;
       -h|--help)    usage; exit 0 ;;
       *) die "Argumento desconhecido: $1" ;;
     esac

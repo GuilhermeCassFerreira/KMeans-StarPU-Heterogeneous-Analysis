@@ -100,6 +100,75 @@ __global__ void assign_point_to_cluster_cuda_kernel(
     }
 }
 
+/* Distância expandida (KMEANS_ASSIGN_EXPANDIDO=1, só para teste): ‖x−c‖² = ‖x‖² − 2·x·c + ‖c‖².
+ * ‖x‖² é o mesmo para todos os centroides e não muda a escolha, então basta comparar
+ * ‖c‖² − 2·x·c: 1 FMA de FP64 por dimensão em vez de subtração + FMA. O kernel é limitado
+ * pelo FP64, então o ganho vem direto daí. Cada bloco calcula os ‖c‖² na memória
+ * compartilhada no início. O arredondamento muda: em quase empates um ponto pode ir para
+ * outro centroide, então os centroides deixam de ser idênticos aos da versão normal. */
+__global__ void assign_expandido_cuda_kernel(
+    const double *points_values, const double *centroids,
+    int K, int dimensions, int npoints, int *nearestClusterIds, int pts_per_block)
+{
+    extern __shared__ double s_norma[];   // ‖c‖² de cada centroide
+    for (int c = threadIdx.x; c < K; c += blockDim.x) {
+        const double *cent = centroids + (size_t)c * dimensions;
+        double s = 0.0;
+        for (int d = 0; d < dimensions; ++d) s += cent[d] * cent[d];
+        s_norma[c] = s;
+    }
+    __syncthreads();
+
+    int first = 0, last = npoints, step = gridDim.x * blockDim.x;
+    if (pts_per_block > 0) {
+        first = blockIdx.x * pts_per_block;
+        last = min(first + pts_per_block, npoints);
+        step = blockDim.x;
+    } else {
+        first = blockIdx.x * blockDim.x;
+    }
+    for (int idx = first + threadIdx.x; idx < last; idx += step) {
+        const double *pv = points_values + (size_t)idx * dimensions;
+        double min_dist = 1e300;
+        int best = -1;
+        int c = 0;
+        for (; c + 3 < K; c += 4) {
+            const double *c0 = centroids + c * dimensions;
+            const double *c1 = c0 + dimensions;
+            const double *c2 = c1 + dimensions;
+            const double *c3 = c2 + dimensions;
+            double p0 = 0.0, p1 = 0.0, p2 = 0.0, p3 = 0.0;
+            for (int d = 0; d < dimensions; ++d) {
+                double p = pv[d];
+                p0 += p * c0[d]; p1 += p * c1[d]; p2 += p * c2[d]; p3 += p * c3[d];
+            }
+            double d0 = s_norma[c] - 2.0 * p0, d1 = s_norma[c + 1] - 2.0 * p1;
+            double d2 = s_norma[c + 2] - 2.0 * p2, d3 = s_norma[c + 3] - 2.0 * p3;
+            if (d0 < min_dist) { min_dist = d0; best = c; }
+            if (d1 < min_dist) { min_dist = d1; best = c + 1; }
+            if (d2 < min_dist) { min_dist = d2; best = c + 2; }
+            if (d3 < min_dist) { min_dist = d3; best = c + 3; }
+        }
+        for (; c < K; ++c) {
+            const double *cent = centroids + c * dimensions;
+            double prod = 0.0;
+            for (int d = 0; d < dimensions; ++d) prod += pv[d] * cent[d];
+            double dist = s_norma[c] - 2.0 * prod;
+            if (dist < min_dist) { min_dist = dist; best = c; }
+        }
+        nearestClusterIds[idx] = best + 1;
+    }
+}
+
+static bool assign_expandido() {
+    static int v = -1;
+    if (v < 0) {
+        const char *e = getenv("KMEANS_ASSIGN_EXPANDIDO");
+        v = e ? (atoi(e) == 1) : 0;
+    }
+    return v == 1;
+}
+
 /* KMEANS_ASSIGN_BALANCEADO=0 volta ao lançamento antigo (grid-stride), para comparar */
 static bool assign_balanceado() {
     static int v = -1;
@@ -151,9 +220,14 @@ static void lancar_assign(cudaStream_t stream, const double *points_values, cons
         if (blocks > max_blocks) blocks = max_blocks;
     }
 
-    assign_point_to_cluster_cuda_kernel<<<blocks, threads, 0, stream>>>(
-        points_values, centroids, K, dimensions, chunk_size,
-        nearestClusterIds, pts_per_block);
+    if (assign_expandido())
+        assign_expandido_cuda_kernel<<<blocks, threads, K * sizeof(double), stream>>>(
+            points_values, centroids, K, dimensions, chunk_size,
+            nearestClusterIds, pts_per_block);
+    else
+        assign_point_to_cluster_cuda_kernel<<<blocks, threads, 0, stream>>>(
+            points_values, centroids, K, dimensions, chunk_size,
+            nearestClusterIds, pts_per_block);
 
     CUDA_CHECK(cudaGetLastError());
 }

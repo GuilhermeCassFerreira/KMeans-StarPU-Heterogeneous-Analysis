@@ -1,0 +1,76 @@
+##################
+# Performance Model Version
+45
+
+####################
+# COMBs
+# number of combinations
+2
+####################
+# COMB_1
+# number of types devices
+1
+####################
+# DEV_0
+# device type (CPU - 0, CUDA - 1, OpenCL - 2, FPGA - 4, MPI_SC - 5, TCPIP_SC - 6, HIP - 7)
+0
+####################
+# DEV_0
+# device id 
+0
+####################
+# DEV_0
+# number of cores 
+1
+##########
+# number of implementations
+1
+#####
+# Model for cpu0_cores1_impl0 (Comb1)
+# number of entries
+3
+# sumlnx	sumlnx2		sumlny		sumlnxlny	alpha		beta		n	minx		maxx
+0.000000e+00   	0.000000e+00   	0.000000e+00   	0.000000e+00   	nan            	nan            	0	0              	0              
+# a		b		c
+nan            	nan            	nan            
+# not multiple-regression-base
+0
+# hash		size		flops		mean (us or J)	dev (us or J)	sum		sum2		n
+be5cae67	395264         	0.000000e+00   	9.720691e+00   	1.383422e+00   	9.642925e+04   	9.563443e+05   	9920
+0cc3aa09	67584          	0.000000e+00   	2.128782e+00   	2.867177e-01   	7.676386e+04   	1.663779e+05   	36060
+0f1d5461	526336         	0.000000e+00   	2.541775e+01   	3.537506e+00   	1.106435e+05   	2.866782e+06   	4353
+
+####################
+# COMB_0
+# number of types devices
+1
+####################
+# DEV_0
+# device type (CPU - 0, CUDA - 1, OpenCL - 2, FPGA - 4, MPI_SC - 5, TCPIP_SC - 6, HIP - 7)
+1
+####################
+# DEV_0
+# device id 
+0
+####################
+# DEV_0
+# number of cores 
+1
+##########
+# number of implementations
+1
+#####
+# Model for cuda0_cores1_impl0 (Comb0)
+# number of entries
+3
+# sumlnx	sumlnx2		sumlny		sumlnxlny	alpha		beta		n	minx		maxx
+0.000000e+00   	0.000000e+00   	0.000000e+00   	0.000000e+00   	nan            	nan            	0	0              	0              
+# a		b		c
+nan            	nan            	nan            
+# not multiple-regression-base
+0
+# hash		size		flops		mean (us or J)	dev (us or J)	sum		sum2		n
+be5cae67	395264         	0.000000e+00   	8.731534e+00   	4.435921e-01   	2.271334e+05   	1.988341e+06   	26013
+0cc3aa09	67584          	0.000000e+00   	1.021941e+01   	2.030623e+00   	6.744810e+02   	7.164944e+03   	66
+0f1d5461	526336         	0.000000e+00   	9.035351e+00   	4.402784e-01   	2.261639e+05   	2.048322e+06   	25031
+

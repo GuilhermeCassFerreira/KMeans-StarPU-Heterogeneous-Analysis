@@ -226,6 +226,13 @@ static void aplicar_opcoes_accumulate(int rank) {
     g_rank0_menos_pequenos = r0 ? std::max(atoi(r0), 0) : 0;
     g_commute = env_ligada("KMEANS_COMMUTE", true);
     g_assign_calc_juntos = env_ligada("KMEANS_ASSIGN_CALC_JUNTOS", false);
+    // Kernel do Assign com a distância expandida (só teste, ver kmeans_cuda.cu): GPU com outro
+    // tempo, então modelos com nome próprio, sem misturar com a calibração do kernel normal
+    bool expandido = env_ligada("KMEANS_ASSIGN_EXPANDIDO", false);
+    if (expandido) {
+        assign_perf_model.symbol = "kmeans_assign_exp_model_mpi";
+        assign_calc_perf_model.symbol = "kmeans_assign_calc_exp_model_mpi";
+    }
     starpu_data_access_mode acc_modo = g_commute ? (starpu_data_access_mode)(STARPU_RW | STARPU_COMMUTE) : STARPU_RW;
     cl_accumulate_nodes.modes[0] = cl_accumulate_nodes.modes[1] = acc_modo;
     cl_accumulate_nodes_cpu.modes[0] = cl_accumulate_nodes_cpu.modes[1] = acc_modo;
@@ -235,7 +242,8 @@ static void aplicar_opcoes_accumulate(int rank) {
                   << " | soma entre nos so na CPU: " << (g_acc_nodes_cpu ? "sim" : "nao")
                   << " | Update so na CPU: " << (update_cpu ? "sim" : "nao")
                   << " | Assign GPU balanceado: " << (env_ligada("KMEANS_ASSIGN_BALANCEADO", true) ? "sim" : "nao")
-                  << " | blocos por SM: " << (blocos ? blocos : "2") << std::endl;
+                  << " | blocos por SM: " << (blocos ? blocos : "2")
+                  << " | distancia expandida (teste): " << (expandido ? "sim" : "nao") << std::endl;
         std::cout << "[CHUNKS] pequenos por no: " << g_chunks_pequenos << " (fracao " << g_fracao_pequenos
                   << ") | rank 0 com menos pequenos: " << g_rank0_menos_pequenos
                   << " | somas em qualquer ordem: " << (g_commute ? "sim" : "nao")

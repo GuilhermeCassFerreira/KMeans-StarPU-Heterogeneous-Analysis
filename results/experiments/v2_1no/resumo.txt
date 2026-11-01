@@ -1,0 +1,30 @@
+== Calibração (todos os pontos, 1024 chunks)
+sessao                        n         loop (s)    var Assign GPU  Calc GPU avisos
+calib_deep                    2  117.470 ± 0.024   0.0%      70.7%     61.1%      0
+calib_pq                      2   95.833 ± 0.033   0.0%      75.4%     47.9%      0
+calib_sift                    2   79.250 ± 0.021   0.0%      70.7%     67.5%      0
+
+== Teste de chunks (pontos de um nó do cluster de 32); dif = em relação aos 32 iguais, mesmo modo
+sessao                        n         loop (s)    var Assign GPU  Calc GPU avisos     dif  opcoes
+chunks_deep_c25_j0            3    3.810 ± 0.160   8.4%      75.4%      4.7%      0   -7.9%  KMEANS_ASSIGN_CALC_JUNTOS=0
+chunks_deep_c25_j1            3    3.812 ± 0.186  10.2%      75.5%     75.5%      0   -9.1%  KMEANS_ASSIGN_CALC_JUNTOS=1
+chunks_deep_c32_j0            3    4.137 ± 0.014   0.6%      81.0%      3.2%      0   +0.0%  KMEANS_ASSIGN_CALC_JUNTOS=0
+chunks_deep_c32_j1            3    4.195 ± 0.016   0.8%      81.1%     81.1%      0   +0.0%  KMEANS_ASSIGN_CALC_JUNTOS=1
+chunks_deep_c64_j0            3    3.681 ± 0.004   0.2%      71.9%     14.2%      0  -11.0%  KMEANS_ASSIGN_CALC_JUNTOS=0
+chunks_deep_c64_j1            3    3.721 ± 0.000   0.0%      71.9%     71.9%      0  -11.3%  KMEANS_ASSIGN_CALC_JUNTOS=1
+chunks_deep_g16p16_j0         3    3.789 ± 0.053   2.5%      62.3%      7.1%      0   -8.4%  KMEANS_ASSIGN_CALC_JUNTOS=0;KMEANS_CHUNKS_PEQUENOS=16;KMEANS_FRACAO_PEQUENOS=0.25
+chunks_deep_g16p16_j1         3    3.836 ± 0.050   2.6%      62.6%     62.6%      0   -8.6%  KMEANS_ASSIGN_CALC_JUNTOS=1;KMEANS_CHUNKS_PEQUENOS=16;KMEANS_FRACAO_PEQUENOS=0.25
+chunks_pq_c32_j0              3    3.196 ± 0.041   2.6%      81.0%      3.2%      0   +0.0%  KMEANS_ASSIGN_CALC_JUNTOS=0
+chunks_pq_c32_j1              3    3.389 ± 0.051   3.0%      80.9%     80.9%      0   +0.0%  KMEANS_ASSIGN_CALC_JUNTOS=1
+chunks_pq_g20p30_j0           3    3.178 ± 0.052   3.0%      34.3%      2.4%      0   -0.6%  KMEANS_ASSIGN_CALC_JUNTOS=0;KMEANS_CHUNKS_PEQUENOS=30;KMEANS_FRACAO_PEQUENOS=0.1
+chunks_pq_g20p30_j1           3    3.171 ± 0.119   6.7%      43.6%     43.6%      0   -6.4%  KMEANS_ASSIGN_CALC_JUNTOS=1;KMEANS_CHUNKS_PEQUENOS=30;KMEANS_FRACAO_PEQUENOS=0.1
+chunks_pq_g20p60_j0           3    3.074 ± 0.047   2.7%      51.2%     11.2%      0   -3.8%  KMEANS_ASSIGN_CALC_JUNTOS=0;KMEANS_CHUNKS_PEQUENOS=60;KMEANS_FRACAO_PEQUENOS=0.2
+chunks_pq_g20p60_j1           3    3.224 ± 0.002   0.1%      57.4%     57.4%      0   -4.9%  KMEANS_ASSIGN_CALC_JUNTOS=1;KMEANS_CHUNKS_PEQUENOS=60;KMEANS_FRACAO_PEQUENOS=0.2
+chunks_sift_c20_j0            3    2.833 ± 0.055   3.5%      69.7%     13.8%      0   +1.9%  KMEANS_ASSIGN_CALC_JUNTOS=0
+chunks_sift_c20_j1            3    2.839 ± 0.090   5.8%      69.6%     69.6%      0   -0.5%  KMEANS_ASSIGN_CALC_JUNTOS=1
+chunks_sift_c32_j0            3    2.779 ± 0.010   0.7%      81.1%      3.2%      0   +0.0%  KMEANS_ASSIGN_CALC_JUNTOS=0
+chunks_sift_c32_j1            3    2.853 ± 0.015   0.9%      80.9%     80.9%      0   +0.0%  KMEANS_ASSIGN_CALC_JUNTOS=1
+chunks_sift_g12p8_j0          3    2.799 ± 0.025   1.6%      69.2%      5.2%      0   +0.7%  KMEANS_ASSIGN_CALC_JUNTOS=0;KMEANS_CHUNKS_PEQUENOS=8;KMEANS_FRACAO_PEQUENOS=0.25
+chunks_sift_g12p8_j1          3    2.836 ± 0.022   1.5%      69.4%     69.4%      0   -0.6%  KMEANS_ASSIGN_CALC_JUNTOS=1;KMEANS_CHUNKS_PEQUENOS=8;KMEANS_FRACAO_PEQUENOS=0.25
+
+Sessões repetidas (a primeira tentativa ficou em *_descartada): chunks_deep_c25_j0_descartada, chunks_deep_c25_j1_descartada, chunks_pq_c32_j1_descartada, chunks_pq_g20p30_j0_descartada, chunks_pq_g20p30_j1_descartada, chunks_pq_g20p60_j1_descartada, chunks_sift_c20_j0_descartada, chunks_sift_c20_j1_descartada
