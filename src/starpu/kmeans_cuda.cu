@@ -4,6 +4,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <climits>
 
 /* ========================================================================== */
 /* CONFIGURAÇÕES E UTILITÁRIOS                                                */
@@ -160,6 +161,77 @@ __global__ void assign_expandido_cuda_kernel(
     }
 }
 
+/* Vários threads por ponto (KMEANS_ASSIGN_THREADS_PONTO = 2 ou 4): cada um dos tpp threads
+ * de um ponto calcula um subconjunto dos grupos de 4 centroides, e no fim eles trocam o melhor
+ * resultado pelo warp. Cada distância é calculada com as mesmas operações, na mesma ordem, do
+ * kernel normal, e o desempate continua indo para o menor índice, então os rótulos são
+ * idênticos. Serve para chunks pequenos (SIFT com 64 chunks por nó): com um thread por ponto,
+ * um chunk de 5 mil pontos deixa poucos threads por SM. */
+__global__ void assign_multi_cuda_kernel(
+    const double *points_values, const double *centroids,
+    int K, int dimensions, int npoints, int *nearestClusterIds, int pts_per_block, int tpp)
+{
+    int sub = threadIdx.x % tpp;          // qual parte dos centroides este thread calcula
+    int pts_passo = blockDim.x / tpp;     // pontos que o bloco processa por passada
+    int first = blockIdx.x * pts_per_block;
+    int last = min(first + pts_per_block, npoints);
+    int ngrupos = K / 4;
+    // base é igual em todo o bloco, então todos os threads de um warp chegam juntos ao shuffle
+    for (int base = first; base < last; base += pts_passo) {
+        int idx = base + threadIdx.x / tpp;
+        double min_dist = 1e300;
+        int best = INT_MAX;
+        if (idx < last) {
+            const double *pv = points_values + (size_t)idx * dimensions;
+            for (int g = sub; g < ngrupos; g += tpp) {
+                int c = 4 * g;
+                const double *c0 = centroids + c * dimensions;
+                const double *c1 = c0 + dimensions;
+                const double *c2 = c1 + dimensions;
+                const double *c3 = c2 + dimensions;
+                double d0 = 0.0, d1 = 0.0, d2 = 0.0, d3 = 0.0;
+                for (int d = 0; d < dimensions; ++d) {
+                    double p = pv[d];
+                    double e0 = p - c0[d], e1 = p - c1[d], e2 = p - c2[d], e3 = p - c3[d];
+                    d0 += e0 * e0; d1 += e1 * e1; d2 += e2 * e2; d3 += e3 * e3;
+                }
+                if (d0 < min_dist) { min_dist = d0; best = c; }
+                if (d1 < min_dist) { min_dist = d1; best = c + 1; }
+                if (d2 < min_dist) { min_dist = d2; best = c + 2; }
+                if (d3 < min_dist) { min_dist = d3; best = c + 3; }
+            }
+            if (sub == 0) {   // centroides que sobram fora dos grupos de 4 (os de maior índice)
+                for (int c = 4 * ngrupos; c < K; ++c) {
+                    double dist = 0.0;
+                    const double *cent = centroids + c * dimensions;
+                    for (int d = 0; d < dimensions; ++d) {
+                        double diff = pv[d] - cent[d];
+                        dist += diff * diff;
+                    }
+                    if (dist < min_dist) { min_dist = dist; best = c; }
+                }
+            }
+        }
+        // Menor distância entre os tpp threads do ponto; no empate, o menor índice
+        for (int off = tpp / 2; off > 0; off >>= 1) {
+            double od = __shfl_xor_sync(0xffffffff, min_dist, off, tpp);
+            int ob = __shfl_xor_sync(0xffffffff, best, off, tpp);
+            if (od < min_dist || (od == min_dist && ob < best)) { min_dist = od; best = ob; }
+        }
+        if (idx < last && sub == 0) nearestClusterIds[idx] = best + 1;
+    }
+}
+
+static int assign_threads_ponto() {
+    static int v = 0;
+    if (v == 0) {
+        const char *e = getenv("KMEANS_ASSIGN_THREADS_PONTO");
+        v = e ? atoi(e) : 1;
+        if (v != 2 && v != 4) v = 1;
+    }
+    return v;
+}
+
 static bool assign_expandido() {
     static int v = -1;
     if (v < 0) {
@@ -220,7 +292,17 @@ static void lancar_assign(cudaStream_t stream, const double *points_values, cons
         if (blocks > max_blocks) blocks = max_blocks;
     }
 
-    if (assign_expandido())
+    int tpp = assign_expandido() ? 1 : assign_threads_ponto();
+    if (tpp > 1) {
+        // Mesma divisão balanceada de pontos por bloco, com tpp threads por ponto
+        pts_per_block = (chunk_size + max_blocks - 1) / max_blocks;
+        threads = (pts_per_block * tpp + 31) / 32 * 32;
+        if (threads > 128) threads = 128;
+        blocks = (chunk_size + pts_per_block - 1) / pts_per_block;
+        assign_multi_cuda_kernel<<<blocks, threads, 0, stream>>>(
+            points_values, centroids, K, dimensions, chunk_size,
+            nearestClusterIds, pts_per_block, tpp);
+    } else if (assign_expandido())
         assign_expandido_cuda_kernel<<<blocks, threads, K * sizeof(double), stream>>>(
             points_values, centroids, K, dimensions, chunk_size,
             nearestClusterIds, pts_per_block);

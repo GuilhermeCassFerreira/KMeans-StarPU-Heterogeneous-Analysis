@@ -167,6 +167,12 @@ static bool g_acc_nodes_cpu = false;
 static int    g_chunks_pequenos = 0;
 static double g_fracao_pequenos = 0.2;
 static bool   g_prioridade_grandes = false;
+/* KMEANS_PODAR=1: cada nó submete só as tarefas que envolvem seus dados (seção "Pruning MPI
+ * Task Insertion" da documentação do StarPU-MPI). O rank 0 submete todos os Assign, porque é
+ * o dono dos centroides e precisa mandá-los aos outros nós, e todos os Clean, para o cache do
+ * StarPU-MPI saber que as parciais que ele recebe mudaram; o Update todos submetem, pelo mesmo
+ * motivo com os centroides. Sem a poda, cada nó submete as tarefas de todos */
+static bool   g_podar = false;
 static bool   g_medir_nos = false;
 /* KMEANS_RANK0_MENOS_PEQUENOS=k (com chunks mistos): o rank 0 fica com k chunks pequenos a menos,
  * e os nós 1..k com um a mais cada. O rank 0 também recebe as parciais, soma entre nós e faz o
@@ -229,10 +235,22 @@ static void aplicar_opcoes_accumulate(int rank) {
     // Kernel do Assign com a distância expandida (só teste, ver kmeans_cuda.cu): GPU com outro
     // tempo, então modelos com nome próprio, sem misturar com a calibração do kernel normal
     bool expandido = env_ligada("KMEANS_ASSIGN_EXPANDIDO", false);
+    // Assign com 2 ou 4 threads por ponto (kmeans_cuda.cu): mesmo resultado, outro tempo na GPU,
+    // então modelos com nome próprio. A distância expandida tem prioridade sobre ele
+    const char *tpp_env = getenv("KMEANS_ASSIGN_THREADS_PONTO");
+    int tpp = tpp_env ? atoi(tpp_env) : 1;
+    if (expandido || (tpp != 2 && tpp != 4)) tpp = 1;
     if (expandido) {
         assign_perf_model.symbol = "kmeans_assign_exp_model_mpi";
         assign_calc_perf_model.symbol = "kmeans_assign_calc_exp_model_mpi";
+    } else if (tpp == 2) {
+        assign_perf_model.symbol = "kmeans_assign_t2_model_mpi";
+        assign_calc_perf_model.symbol = "kmeans_assign_calc_t2_model_mpi";
+    } else if (tpp == 4) {
+        assign_perf_model.symbol = "kmeans_assign_t4_model_mpi";
+        assign_calc_perf_model.symbol = "kmeans_assign_calc_t4_model_mpi";
     }
+    g_podar = env_ligada("KMEANS_PODAR", false);
     starpu_data_access_mode acc_modo = g_commute ? (starpu_data_access_mode)(STARPU_RW | STARPU_COMMUTE) : STARPU_RW;
     cl_accumulate_nodes.modes[0] = cl_accumulate_nodes.modes[1] = acc_modo;
     cl_accumulate_nodes_cpu.modes[0] = cl_accumulate_nodes_cpu.modes[1] = acc_modo;
@@ -243,13 +261,15 @@ static void aplicar_opcoes_accumulate(int rank) {
                   << " | Update so na CPU: " << (update_cpu ? "sim" : "nao")
                   << " | Assign GPU balanceado: " << (env_ligada("KMEANS_ASSIGN_BALANCEADO", true) ? "sim" : "nao")
                   << " | blocos por SM: " << (blocos ? blocos : "2")
-                  << " | distancia expandida (teste): " << (expandido ? "sim" : "nao") << std::endl;
+                  << " | distancia expandida (teste): " << (expandido ? "sim" : "nao")
+                  << " | threads por ponto: " << tpp << std::endl;
         std::cout << "[CHUNKS] pequenos por no: " << g_chunks_pequenos << " (fracao " << g_fracao_pequenos
                   << ") | rank 0 com menos pequenos: " << g_rank0_menos_pequenos
                   << " | somas em qualquer ordem: " << (g_commute ? "sim" : "nao")
                   << " | Assign e Calculate juntos: " << (g_assign_calc_juntos ? "sim" : "nao")
                   << " | prioridade aos grandes: " << (g_prioridade_grandes ? "sim" : "nao")
-                  << " | medicao por no: " << (g_medir_nos ? "sim" : "nao") << std::endl;
+                  << " | medicao por no: " << (g_medir_nos ? "sim" : "nao")
+                  << " | submissao so das tarefas do no: " << (g_podar ? "sim" : "nao") << std::endl;
     }
 }
 
@@ -394,10 +414,15 @@ void KMeans::submitTasks(int N, int it) {
     int zero = 0;
     void (*pronta)(void *) = g_medir_nos ? medida_pronta : NULL;
     void (*fim)(void *)    = g_medir_nos ? medida_fim : NULL;
+    bool podar = g_podar && world_size > 1;
+    // Com a poda, o nó só submete a tarefa se ela usa dados dele (o dono do chunk ou do acumulador)
+    auto meu = [&](int dono) { return !podar || dono == mpi_rank; };
+    bool todos_assign = !podar || mpi_rank == 0;   // o rank 0 manda os centroides a todos
 
     for (int chunk_id = 0; chunk_id < num_chunks && g_assign_calc_juntos; chunk_id++) {
         int this_chunk = starpu_vector_get_nx(points_children[chunk_id]);
         if (this_chunk <= 0) break;
+        if (!todos_assign && !meu(chunk_owners[chunk_id])) continue;
         MedidaTarefa *med = &g_medidas[((size_t)it * num_chunks + chunk_id) * 2];
 
         INSERIR(MPI_COMM_WORLD, &cl_assign_calc,
@@ -420,6 +445,7 @@ void KMeans::submitTasks(int N, int it) {
     for (int chunk_id = 0; chunk_id < num_chunks && !g_assign_calc_juntos; chunk_id++) {
         int this_chunk = starpu_vector_get_nx(points_children[chunk_id]);
         if (this_chunk <= 0) break;
+        if (!todos_assign && !meu(chunk_owners[chunk_id])) continue;
         MedidaTarefa *med = &g_medidas[((size_t)it * num_chunks + chunk_id) * 2];
 
         INSERIR(MPI_COMM_WORLD, &cl_assign_point_handles,
@@ -438,6 +464,10 @@ void KMeans::submitTasks(int N, int it) {
 
     /* CLEAN: zera acumulador de cada nó antes das somas parciais */
     for (int n = 0; n < world_size; n++) {
+        // O rank 0 também submete o Clean de todos os nós: recebe a parcial de cada um a cada
+        // iteração e, sem ver uma tarefa que a escreve, o cache do StarPU-MPI reaproveitaria a
+        // cópia da iteração anterior
+        if (!meu(n) && mpi_rank != 0) continue;
         INSERIR(MPI_COMM_WORLD, &cl_clean_buffers,
             STARPU_W, partial_sums_handle[n],
             STARPU_W, partial_counts_handle[n],
@@ -454,6 +484,7 @@ void KMeans::submitTasks(int N, int it) {
         int owners = chunk_owners[chunk_id];
         int this_chunk = starpu_vector_get_nx(points_children[chunk_id]);
         if (this_chunk <= 0) break;
+        if (!meu(owners)) continue;
 
         INSERIR(MPI_COMM_WORLD, &cl_calculate_partial_sums,
             STARPU_R, points_children[chunk_id],
@@ -473,6 +504,7 @@ void KMeans::submitTasks(int N, int it) {
         int owners = chunk_owners[chunk_id];
         int this_chunk = starpu_vector_get_nx(points_children[chunk_id]);
         if (this_chunk <= 0) break;
+        if (!meu(owners)) continue;
 
         INSERIR(MPI_COMM_WORLD, &cl_accumulate_nodes,
             cl_accumulate_nodes.modes[0], partial_sums_handle[owners],
@@ -488,6 +520,7 @@ void KMeans::submitTasks(int N, int it) {
 
     if (world_size > 1) {
             for (int n = 1; n < world_size; n++) {
+                if (podar && mpi_rank != 0 && mpi_rank != n) continue;   // só quem manda e quem recebe
                 INSERIR(MPI_COMM_WORLD, g_acc_nodes_cpu ? &cl_accumulate_nodes_cpu : &cl_accumulate_nodes,
                     cl_accumulate_nodes.modes[0], partial_sums_handle[0],
                     cl_accumulate_nodes.modes[1], partial_counts_handle[0],
@@ -744,10 +777,17 @@ void KMeans::run(const vector<double> &all_values, int N) {
     for (int it = 0; it < iters; ++it) {
         submitTasks(N, it);
     }
+    // Tempo que a thread principal levou para submeter as tarefas das iterações
+    double t_submissao = duration<double, milli>(high_resolution_clock::now() - t_loop_start).count();
 
     starpu_task_wait_for_all();
     starpu_mpi_wait_for_all(MPI_COMM_WORLD);
     t_loop_ms_ = duration<double, milli>(high_resolution_clock::now() - t_loop_start).count();
+    double sub_max = t_submissao;
+    if (world_size > 1) MPI_Reduce(&t_submissao, &sub_max, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
+    if (mpi_rank == 0)
+        cout << "[SUBMISSAO] rank 0: " << t_submissao << " ms | mais lento: " << sub_max
+             << " ms (loop " << t_loop_ms_ << " ms)" << endl;
     if (g_medir_nos) reportar_nos(mpi_rank, world_size, iters, output_dir);
 
     // Antes do unpartition, em modo MPI distribuído precisamos trazer os
