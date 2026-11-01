@@ -146,7 +146,7 @@ static bool g_acc_nodes_cpu = false;
 static int    g_chunks_pequenos = 0;
 static double g_fracao_pequenos = 0.2;
 static bool   g_prioridade_grandes = false;
-static bool   g_medir_nos = true;
+static bool   g_medir_nos = false;
 /* KMEANS_RANK0_MENOS_PEQUENOS=k (com chunks mistos): o rank 0 fica com k chunks pequenos a menos,
  * e os nós 1..k com um a mais cada. O rank 0 também recebe as parciais, soma entre nós e faz o
  * Update; nos traces da AWS (PQ, 32 nós) ele calculava em média 7 ms mais devagar que os outros.
@@ -157,6 +157,17 @@ static int    g_rank0_menos_pequenos = 0;
  * AWS, PQ com 2 nós: ~500 somas e ~25 ms por iteração depois do fim do cálculo). A ordem das
  * somas em ponto flutuante muda, então o SSE pode variar na última casa entre execuções. */
 static bool   g_commute = true;
+
+/* Submissão que aborta em erro: sem worker capaz de rodar a tarefa (ex.: Update só na CPU com
+ * STARPU_NCPUS=0), o starpu_mpi_task_insert devolve -ENODEV e, sem checagem, o programa seguia
+ * com os centroides iniciais e terminava com rc=0 */
+static void checar_insert(int ret, int linha) {
+    if (ret != 0) {
+        fprintf(stderr, "[ERRO] starpu_mpi_task_insert falhou (%d) em kmeans_mpi.cpp:%d\n", ret, linha);
+        MPI_Abort(MPI_COMM_WORLD, 1);
+    }
+}
+#define INSERIR(...) checar_insert(starpu_mpi_task_insert(__VA_ARGS__), __LINE__)
 
 /* Valor 0/1 da variável de ambiente; sem a variável, vale o padrão */
 static bool env_ligada(const char *nome, bool padrao) {
@@ -176,13 +187,19 @@ static void aplicar_opcoes_accumulate(int rank) {
     }
     g_acc_nodes_cpu = env_ligada("KMEANS_ACC_NODES_CPU", true);
     bool update_cpu = env_ligada("KMEANS_UPDATE_CPU", true);
+    if (starpu_cpu_worker_get_count() == 0 && (update_cpu || g_acc_nodes_cpu)) {
+        // Sem worker de CPU (ex.: STARPU_NCPUS=0), Update e soma entre nós ficam onde der
+        if (rank == 0) std::cout << "[AVISO] Sem workers de CPU: Update e soma entre nos tambem na GPU" << std::endl;
+        update_cpu = false;
+        g_acc_nodes_cpu = false;
+    }
     if (update_cpu) cl_update_centroids.where = STARPU_CPU;
     const char *peq = getenv("KMEANS_CHUNKS_PEQUENOS");
     const char *frac = getenv("KMEANS_FRACAO_PEQUENOS");
     g_chunks_pequenos = peq ? std::max(atoi(peq), 0) : 0;
     g_fracao_pequenos = frac ? atof(frac) : 0.2;
     g_prioridade_grandes = env_ligada("KMEANS_PRIORIDADE_GRANDES", false);
-    g_medir_nos = env_ligada("KMEANS_MEDIR_NOS", true);
+    g_medir_nos = env_ligada("KMEANS_MEDIR_NOS", false);
     const char *r0 = getenv("KMEANS_RANK0_MENOS_PEQUENOS");
     g_rank0_menos_pequenos = r0 ? std::max(atoi(r0), 0) : 0;
     g_commute = env_ligada("KMEANS_COMMUTE", true);
@@ -205,7 +222,8 @@ static void aplicar_opcoes_accumulate(int rank) {
 }
 
 /* ========================================================================== */
-/* Medição por nó (KMEANS_MEDIR_NOS, padrão 1)                                */
+/* Medição por nó (KMEANS_MEDIR_NOS=1; desligada por padrão porque os callbacks */
+/* custaram ~2% no SIFT só na GPU, numa RTX 2050)                             */
 /* ========================================================================== */
 /* Por iteração, no relógio de cada nó: quando o primeiro Assign ficou pronto  */
 /* (centroides chegaram), quando o último Accumulate local terminou (parcial   */
@@ -274,10 +292,10 @@ static void reportar_nos(int rank, int size, int iters, const string &output_dir
     double soma_atraso = 0, max_atraso = 0, soma_med = 0, soma_lento = 0;
     double lento_gpu = 0, lento_cpumax = 0, med_gpu = 0, med_cpumax = 0;
     int n_it = 0;
-    for (int it = 1; it < iters; it++) { // a 1ª iteração inclui a carga dos dados nas GPUs
+    for (int it = 1; it < iters; it++) { // sem a 1ª iteração, que inclui a carga dos dados nas GPUs (CSV: 2..iters)
         std::vector<std::pair<double, int>> d;
         for (int r = 0; r < size; r++) {
-            csv << it << "," << r << "," << v(r, it, 0) << "," << v(r, it, 1) << "," << v(r, it, 2) << "," << v(r, it, 3) << "\n";
+            csv << it + 1 << "," << r << "," << v(r, it, 0) << "," << v(r, it, 1) << "," << v(r, it, 2) << "," << v(r, it, 3) << "\n";
             if (v(r, it, 0) >= 0) d.push_back({v(r, it, 0), r});
         }
         if (d.empty()) continue;
@@ -350,7 +368,7 @@ void KMeans::submitTasks(int N, int it) {
         if (this_chunk <= 0) break;
         MedidaTarefa *med = &g_medidas[((size_t)it * num_chunks + chunk_id) * 2];
 
-        starpu_mpi_task_insert(MPI_COMM_WORLD, &cl_assign_point_handles,
+        INSERIR(MPI_COMM_WORLD, &cl_assign_point_handles,
             STARPU_R,    points_children[chunk_id],
             STARPU_R,    centroids_handle,
             STARPU_RW,   outputs_children[chunk_id],
@@ -366,7 +384,7 @@ void KMeans::submitTasks(int N, int it) {
 
     /* CLEAN: zera acumulador de cada nó antes das somas parciais */
     for (int n = 0; n < world_size; n++) {
-        starpu_mpi_task_insert(MPI_COMM_WORLD, &cl_clean_buffers,
+        INSERIR(MPI_COMM_WORLD, &cl_clean_buffers,
             STARPU_W, partial_sums_handle[n],
             STARPU_W, partial_counts_handle[n],
             STARPU_VALUE, &K, sizeof(int),
@@ -383,7 +401,7 @@ void KMeans::submitTasks(int N, int it) {
         int this_chunk = starpu_vector_get_nx(points_children[chunk_id]);
         if (this_chunk <= 0) break;
 
-        starpu_mpi_task_insert(MPI_COMM_WORLD, &cl_calculate_partial_sums,
+        INSERIR(MPI_COMM_WORLD, &cl_calculate_partial_sums,
             STARPU_R, points_children[chunk_id],
             STARPU_R, outputs_children[chunk_id],
             STARPU_W, chunk_sums_handle[chunk_id],
@@ -402,7 +420,7 @@ void KMeans::submitTasks(int N, int it) {
         int this_chunk = starpu_vector_get_nx(points_children[chunk_id]);
         if (this_chunk <= 0) break;
 
-        starpu_mpi_task_insert(MPI_COMM_WORLD, &cl_accumulate_nodes,
+        INSERIR(MPI_COMM_WORLD, &cl_accumulate_nodes,
             cl_accumulate_nodes.modes[0], partial_sums_handle[owners],
             cl_accumulate_nodes.modes[1], partial_counts_handle[owners],
             STARPU_R, chunk_sums_handle[chunk_id],
@@ -416,7 +434,7 @@ void KMeans::submitTasks(int N, int it) {
 
     if (world_size > 1) {
             for (int n = 1; n < world_size; n++) {
-                starpu_mpi_task_insert(MPI_COMM_WORLD, g_acc_nodes_cpu ? &cl_accumulate_nodes_cpu : &cl_accumulate_nodes,
+                INSERIR(MPI_COMM_WORLD, g_acc_nodes_cpu ? &cl_accumulate_nodes_cpu : &cl_accumulate_nodes,
                     cl_accumulate_nodes.modes[0], partial_sums_handle[0],
                     cl_accumulate_nodes.modes[1], partial_counts_handle[0],
                     STARPU_R, partial_sums_handle[n],    
@@ -431,7 +449,7 @@ void KMeans::submitTasks(int N, int it) {
         // A ATUALIZAÇÃO DOS CENTRÓIDES RODA SEMPRE, seja com 1 ou 100 nodos!
         // No rank 0, o callback imprime o progresso das iterações.
         if (mpi_rank == 0) {
-            starpu_mpi_task_insert(MPI_COMM_WORLD, &cl_update_centroids,
+            INSERIR(MPI_COMM_WORLD, &cl_update_centroids,
                 STARPU_R,  partial_sums_handle[0],
                 STARPU_R,  partial_counts_handle[0],
                 STARPU_RW, centroids_handle,
@@ -442,7 +460,7 @@ void KMeans::submitTasks(int N, int it) {
                 STARPU_CALLBACK, update_centroids_callback,
                 0);
         } else {
-            starpu_mpi_task_insert(MPI_COMM_WORLD, &cl_update_centroids,
+            INSERIR(MPI_COMM_WORLD, &cl_update_centroids,
                 STARPU_R,  partial_sums_handle[0],
                 STARPU_R,  partial_counts_handle[0],
                 STARPU_RW, centroids_handle,
