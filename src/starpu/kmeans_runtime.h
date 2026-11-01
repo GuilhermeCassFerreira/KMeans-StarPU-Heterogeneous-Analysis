@@ -135,12 +135,15 @@ private:
     double *points_ptr;
     int *labels_ptr;
     std::vector<int> chunk_owners;
+    std::vector<uint32_t> chunk_tamanhos;  // tamanho de cada chunk com chunks mistos (vazio = iguais)
+    std::vector<char> chunk_grande;        // 1 = chunk grande, 0 = pequeno (chunks mistos)
     double t_loop_ms_ = 0.0;
 
     void clearClusters();
     int getChunkOwner(int chunk_id);
 
-    void submitTasks(int N);
+    int prioridadeChunk(int chunk_id);
+    void submitTasks(int N, int it);
 
 public:
     KMeans(int K, int iterations, std::string output_dir, int chunk_size, int rank, int size, int dims, int seed);

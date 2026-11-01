@@ -9,6 +9,8 @@
 #include <fstream> 
 #include <atomic>
 #include <chrono>
+#include <cstdint>
+#include <mutex>
 #include "kmeans_mpi_tags.h"
 
 using namespace std;
@@ -133,6 +135,19 @@ struct starpu_codelet cl_accumulate_nodes_cpu = {
 
 static bool g_acc_nodes_cpu = false;
 
+/* Chunks mistos. KMEANS_CHUNKS_PEQUENOS=P (padrão 0 = desligado): além dos chunks do argumento,
+ * que viram os "grandes", cada nó ganha P chunks pequenos com KMEANS_FRACAO_PEQUENOS (padrão 0,2)
+ * dos seus pontos, depois dos grandes. Com chunks grandes iguais, uma tarefa de CPU dura boa parte
+ * da iteração: quando um nó dá um chunk a mais para uma CPU, ele atrasa todos os outros (traces da
+ * AWS, PQ com 32 nós: ~31 ms por iteração esperando o nó mais lento). Com chunks pequenos no fim,
+ * esse erro custa um chunk pequeno. KMEANS_PRIORIDADE_GRANDES=1: Assign e Calculate dos chunks
+ * grandes com prioridade máxima e dos pequenos com a mínima (só vale em escalonador com
+ * prioridade, como o dmdas). */
+static int    g_chunks_pequenos = 0;
+static double g_fracao_pequenos = 0.2;
+static bool   g_prioridade_grandes = false;
+static bool   g_medir_nos = true;
+
 /* Valor 0/1 da variável de ambiente; sem a variável, vale o padrão */
 static bool env_ligada(const char *nome, bool padrao) {
     const char *v = getenv(nome);
@@ -152,6 +167,12 @@ static void aplicar_opcoes_accumulate(int rank) {
     g_acc_nodes_cpu = env_ligada("KMEANS_ACC_NODES_CPU", true);
     bool update_cpu = env_ligada("KMEANS_UPDATE_CPU", true);
     if (update_cpu) cl_update_centroids.where = STARPU_CPU;
+    const char *peq = getenv("KMEANS_CHUNKS_PEQUENOS");
+    const char *frac = getenv("KMEANS_FRACAO_PEQUENOS");
+    g_chunks_pequenos = peq ? std::max(atoi(peq), 0) : 0;
+    g_fracao_pequenos = frac ? atof(frac) : 0.2;
+    g_prioridade_grandes = env_ligada("KMEANS_PRIORIDADE_GRANDES", false);
+    g_medir_nos = env_ligada("KMEANS_MEDIR_NOS", true);
     if (rank == 0) {
         const char *blocos = getenv("KMEANS_ASSIGN_BLOCOS_SM");
         std::cout << "[ACCUMULATE] modelo de desempenho: " << (cl_accumulate_nodes.model ? "sim" : "nao")
@@ -159,7 +180,109 @@ static void aplicar_opcoes_accumulate(int rank) {
                   << " | Update so na CPU: " << (update_cpu ? "sim" : "nao")
                   << " | Assign GPU balanceado: " << (env_ligada("KMEANS_ASSIGN_BALANCEADO", true) ? "sim" : "nao")
                   << " | blocos por SM: " << (blocos ? blocos : "2") << std::endl;
+        std::cout << "[CHUNKS] pequenos por no: " << g_chunks_pequenos << " (fracao " << g_fracao_pequenos
+                  << ") | prioridade aos grandes: " << (g_prioridade_grandes ? "sim" : "nao")
+                  << " | medicao por no: " << (g_medir_nos ? "sim" : "nao") << std::endl;
     }
+}
+
+/* ========================================================================== */
+/* Medição por nó (KMEANS_MEDIR_NOS, padrão 1)                                */
+/* ========================================================================== */
+/* Por iteração, no relógio de cada nó: quando o primeiro Assign ficou pronto  */
+/* (centroides chegaram), quando o último Accumulate local terminou (parcial   */
+/* do nó pronta) e quantos Assign cada worker fez. No fim, o rank 0 junta os   */
+/* nós e mostra quanto o mais lento atrasou os outros.                         */
+
+struct MedidaTarefa { int iter; bool assign; };
+static std::vector<MedidaTarefa> g_medidas;            // uma por (iteração, chunk, tipo)
+static std::mutex g_medida_mtx;
+static high_resolution_clock::time_point g_medida_t0;
+static std::vector<double> g_t_pronto, g_t_parcial;   // por iteração, ms
+static std::vector<int> g_assign_worker;              // [iteração * g_nworkers + worker]
+static int g_nworkers = 0;
+
+static double medida_agora() {
+    return duration<double, milli>(high_resolution_clock::now() - g_medida_t0).count();
+}
+
+/* Prólogo do Assign: a tarefa ficou pronta (dependências satisfeitas) */
+static void medida_pronta(void *arg) {
+    auto *m = (MedidaTarefa *)arg;
+    double t = medida_agora();
+    std::lock_guard<std::mutex> l(g_medida_mtx);
+    g_t_pronto[m->iter] = std::min(g_t_pronto[m->iter], t);
+}
+
+/* Fim do Assign (conta o worker) ou do Accumulate local (parcial do nó) */
+static void medida_fim(void *arg) {
+    auto *m = (MedidaTarefa *)arg;
+    double t = medida_agora();
+    int w = starpu_worker_get_id();
+    std::lock_guard<std::mutex> l(g_medida_mtx);
+    if (m->assign) {
+        if (w >= 0 && w < g_nworkers) g_assign_worker[m->iter * g_nworkers + w]++;
+    } else {
+        g_t_parcial[m->iter] = std::max(g_t_parcial[m->iter], t);
+    }
+}
+
+/* Junta as medidas no rank 0, imprime o resumo e grava <saída>/nos.csv */
+static void reportar_nos(int rank, int size, int iters, const string &output_dir) {
+    const int NV = 4; // duração, Assign na GPU, Assign na CPU, máximo de Assign num worker de CPU
+    std::vector<double> local(iters * NV, 0.0);
+    for (int it = 0; it < iters; it++) {
+        int gpu = 0, cpu = 0, cpu_max = 0;
+        for (int w = 0; w < g_nworkers; w++) {
+            int c = g_assign_worker[it * g_nworkers + w];
+            if (starpu_worker_get_type(w) == STARPU_CUDA_WORKER) gpu += c;
+            else if (starpu_worker_get_type(w) == STARPU_CPU_WORKER) { cpu += c; cpu_max = std::max(cpu_max, c); }
+        }
+        bool ok = g_t_parcial[it] >= 0 && g_t_pronto[it] < 1e299;
+        local[it * NV + 0] = ok ? g_t_parcial[it] - g_t_pronto[it] : -1.0;
+        local[it * NV + 1] = gpu;
+        local[it * NV + 2] = cpu;
+        local[it * NV + 3] = cpu_max;
+    }
+    std::vector<double> todos(rank == 0 ? (size_t)size * iters * NV : 0);
+    MPI_Gather(local.data(), iters * NV, MPI_DOUBLE, todos.data(), iters * NV, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+    if (rank != 0) return;
+
+    auto v = [&](int r, int it, int k) { return todos[((size_t)r * iters + it) * NV + k]; };
+    string mk = "mkdir -p " + output_dir;
+    if (system(mk.c_str()) != 0) cerr << "[AVISO] Falha ao criar " << output_dir << endl;
+    ofstream csv(output_dir + "/nos.csv");
+    csv << "iteracao,rank,calculo_ms,assign_gpu,assign_cpu,assign_cpu_max_worker\n";
+    double soma_atraso = 0, max_atraso = 0, soma_med = 0, soma_lento = 0;
+    double lento_gpu = 0, lento_cpumax = 0, med_gpu = 0, med_cpumax = 0;
+    int n_it = 0;
+    for (int it = 1; it < iters; it++) { // a 1ª iteração inclui a carga dos dados nas GPUs
+        std::vector<std::pair<double, int>> d;
+        for (int r = 0; r < size; r++) {
+            csv << it << "," << r << "," << v(r, it, 0) << "," << v(r, it, 1) << "," << v(r, it, 2) << "," << v(r, it, 3) << "\n";
+            if (v(r, it, 0) >= 0) d.push_back({v(r, it, 0), r});
+        }
+        if (d.empty()) continue;
+        std::sort(d.begin(), d.end());
+        auto med = d[(d.size() - 1) / 2];   // mediana de baixo: com 2 nós, o mais rápido
+        auto lento = d.back();
+        soma_atraso += lento.first - med.first;
+        max_atraso = std::max(max_atraso, lento.first - med.first);
+        soma_med += med.first;
+        soma_lento += lento.first;
+        lento_gpu += v(lento.second, it, 1); lento_cpumax += v(lento.second, it, 3);
+        med_gpu += v(med.second, it, 1);     med_cpumax += v(med.second, it, 3);
+        n_it++;
+    }
+    if (n_it == 0) return;
+    cout << fixed << setprecision(2)
+         << "[NOS] calculo por iteracao (centroides chegam -> parcial pronta): mediana dos nos " << soma_med / n_it
+         << " ms, no mais lento " << soma_lento / n_it << " ms" << endl
+         << "[NOS] atraso do no mais lento sobre a mediana: media " << soma_atraso / n_it
+         << " ms, maximo " << max_atraso << " ms" << endl
+         << "[NOS] Assign por iteracao, no mais lento: GPU " << lento_gpu / n_it << ", maximo num worker de CPU "
+         << lento_cpumax / n_it << " | no mediano: GPU " << med_gpu / n_it << ", maximo num worker de CPU "
+         << med_cpumax / n_it << defaultfloat << endl;
 }
 
 /* ========================================================================== */
@@ -191,12 +314,22 @@ int KMeans::getChunkOwner(int chunk_id) {
     return std::min(chunk_id / std::max(cpr, 1), world_size - 1);
 }
 
-void KMeans::submitTasks(int N) {
+/* Prioridade das tarefas do chunk: máxima nos grandes e mínima nos pequenos com
+ * KMEANS_PRIORIDADE_GRANDES=1; senão a padrão */
+int KMeans::prioridadeChunk(int chunk_id) {
+    if (!g_prioridade_grandes) return STARPU_DEFAULT_PRIO;
+    return chunk_grande[chunk_id] ? starpu_sched_get_max_priority() : starpu_sched_get_min_priority();
+}
+
+void KMeans::submitTasks(int N, int it) {
     int zero = 0;
+    void (*pronta)(void *) = g_medir_nos ? medida_pronta : NULL;
+    void (*fim)(void *)    = g_medir_nos ? medida_fim : NULL;
 
     for (int chunk_id = 0; chunk_id < num_chunks; chunk_id++) {
         int this_chunk = starpu_vector_get_nx(points_children[chunk_id]);
         if (this_chunk <= 0) break;
+        MedidaTarefa *med = &g_medidas[((size_t)it * num_chunks + chunk_id) * 2];
 
         starpu_mpi_task_insert(MPI_COMM_WORLD, &cl_assign_point_handles,
             STARPU_R,    points_children[chunk_id],
@@ -205,6 +338,10 @@ void KMeans::submitTasks(int N) {
             STARPU_VALUE, &K, sizeof(int),
             STARPU_VALUE, &dimensions, sizeof(int),
             STARPU_VALUE, &this_chunk, sizeof(int),
+            STARPU_PRIORITY, prioridadeChunk(chunk_id),
+            STARPU_PROLOGUE_CALLBACK, pronta,
+            STARPU_PROLOGUE_CALLBACK_ARG_NFREE, med,
+            STARPU_CALLBACK_WITH_ARG_NFREE, fim, med,
             0);
     }
 
@@ -235,6 +372,7 @@ void KMeans::submitTasks(int N) {
             STARPU_VALUE, &K, sizeof(int),
             STARPU_VALUE, &dimensions, sizeof(int),
             STARPU_VALUE, &this_chunk, sizeof(int),
+            STARPU_PRIORITY, prioridadeChunk(chunk_id),
             STARPU_EXECUTE_ON_NODE, owners,
             0);
     }
@@ -253,6 +391,7 @@ void KMeans::submitTasks(int N) {
             STARPU_VALUE, &K, sizeof(int),
             STARPU_VALUE, &dimensions, sizeof(int),
             STARPU_EXECUTE_ON_NODE, owners,
+            STARPU_CALLBACK_WITH_ARG_NFREE, fim, &g_medidas[((size_t)it * num_chunks + chunk_id) * 2 + 1],
             0);
     }
 
@@ -299,6 +438,36 @@ void KMeans::submitTasks(int N) {
 void KMeans::run(const vector<double> &all_values, int N) {
     aplicar_opcoes_accumulate(mpi_rank);
     total_points = N;
+
+    // Chunks mistos: os chunks do argumento viram os grandes de cada nó, seguidos de
+    // g_chunks_pequenos chunks pequenos com g_fracao_pequenos dos pontos do nó
+    chunk_tamanhos.clear();
+    chunk_grande.assign(num_chunks, 1);
+    if (g_chunks_pequenos > 0) {
+        int grandes = std::max(num_chunks / world_size, 1);
+        long local_n = N / world_size;
+        long peq = (long)(g_fracao_pequenos * local_n) / g_chunks_pequenos;
+        if (N % world_size != 0 || peq < 1 || peq * g_chunks_pequenos >= local_n) {
+            if (mpi_rank == 0) cerr << "[ERRO] Chunks mistos invalidos (N divisivel pelos nos e 0 < fracao < 1)" << endl;
+            exit(1);
+        }
+        long resto = local_n - peq * g_chunks_pequenos;
+        chunk_grande.clear();
+        for (int r = 0; r < world_size; r++) {
+            for (int g = 0; g < grandes; g++) {
+                chunk_tamanhos.push_back((uint32_t)(resto / grandes + (g < resto % grandes ? 1 : 0)));
+                chunk_grande.push_back(1);
+            }
+            for (int p = 0; p < g_chunks_pequenos; p++) {
+                chunk_tamanhos.push_back((uint32_t)peq);
+                chunk_grande.push_back(0);
+            }
+        }
+        num_chunks = world_size * (grandes + g_chunks_pequenos);
+        if (mpi_rank == 0)
+            cout << "[CHUNKS] por no: " << grandes << " grandes de ~" << resto / grandes << " pontos + "
+                 << g_chunks_pequenos << " pequenos de " << peq << " pontos (" << num_chunks << " no total)" << endl;
+    }
     points_ptr = nullptr;
     labels_ptr = nullptr;
     partial_sums_ptr = nullptr;
@@ -373,6 +542,10 @@ void KMeans::run(const vector<double> &all_values, int N) {
             .nchildren = (unsigned)this->num_chunks 
         };
 
+    if (!chunk_tamanhos.empty()) {
+        filterChunks.filter_func = starpu_vector_filter_list;
+        filterChunks.filter_arg_ptr = chunk_tamanhos.data();
+    }
     starpu_data_partition(points_handle, &filterChunks);
     starpu_data_partition(output_handle, &filterChunks);
 
@@ -440,13 +613,26 @@ void KMeans::run(const vector<double> &all_values, int N) {
 
     auto t_loop_start = high_resolution_clock::now();
 
+    g_nworkers = starpu_worker_get_count();
+    g_t_pronto.assign(iters, 1e300);
+    g_t_parcial.assign(iters, -1.0);
+    g_assign_worker.assign((size_t)iters * g_nworkers, 0);
+    g_medidas.resize((size_t)iters * num_chunks * 2);
+    for (int it = 0; it < iters; ++it)
+        for (int c = 0; c < num_chunks; ++c) {
+            g_medidas[((size_t)it * num_chunks + c) * 2]     = {it, true};
+            g_medidas[((size_t)it * num_chunks + c) * 2 + 1] = {it, false};
+        }
+    g_medida_t0 = t_loop_start;
+
     for (int it = 0; it < iters; ++it) {
-        submitTasks(N);
+        submitTasks(N, it);
     }
 
     starpu_task_wait_for_all();
     starpu_mpi_wait_for_all(MPI_COMM_WORLD);
     t_loop_ms_ = duration<double, milli>(high_resolution_clock::now() - t_loop_start).count();
+    if (g_medir_nos) reportar_nos(mpi_rank, world_size, iters, output_dir);
 
     // Antes do unpartition, em modo MPI distribuído precisamos trazer os
     // outputs (labels) dos chunks que pertencem a OUTROS ranks de volta para
