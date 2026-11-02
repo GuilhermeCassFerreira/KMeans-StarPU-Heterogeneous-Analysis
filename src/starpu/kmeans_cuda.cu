@@ -222,6 +222,106 @@ __global__ void assign_multi_cuda_kernel(
     }
 }
 
+/* Kernel otimizado (KMEANS_ASSIGN_OTIMIZADO=1, série "StarPU otimizado"): a distância expandida
+ * do kernel acima, com os centroides em blocos na memória compartilhada. Cada thread acumula
+ * OT_BN produtos x·c em registradores, lendo o ponto da memória global uma vez a cada OT_BN
+ * centroides e os centroides da memória compartilhada (todos os threads leem o mesmo endereço,
+ * sem conflito de banco). No kernel expandido cada FMA de FP64 precisava de ~1,25 leituras da
+ * memória global; aqui são ~0,07. Cada produto é somado na mesma ordem (d crescente) e com as
+ * mesmas operações do kernel expandido, e o desempate vai para o menor índice, então os rótulos
+ * são idênticos aos dele. Com tpp > 1, os threads de um ponto dividem os blocos de centroides
+ * e trocam o melhor resultado pelo warp, como no assign_multi_cuda_kernel. */
+#define OT_BN 16                      // centroides por bloco
+#define OT_BK 16                      // dimensões por bloco
+#define OT_TS (OT_BN * OT_BK + 1)     // passo entre os blocos de cada sub (+1 evita conflito de banco)
+
+__global__ void assign_otimizado_cuda_kernel(
+    const double *points_values, const double *centroids,
+    int K, int dimensions, int npoints, int *nearestClusterIds, int pts_per_block, int tpp)
+{
+    extern __shared__ double s_mem[];
+    double *s_norma = s_mem;          // ‖c‖² de cada centroide
+    double *s_cent = s_mem + K;       // tpp blocos de OT_BN centroides × OT_BK dimensões
+    for (int c = threadIdx.x; c < K; c += blockDim.x) {
+        const double *cent = centroids + (size_t)c * dimensions;
+        double s = 0.0;
+        for (int d = 0; d < dimensions; ++d) s += cent[d] * cent[d];
+        s_norma[c] = s;
+    }
+    // (o __syncthreads antes da primeira carga de bloco também garante os ‖c‖² prontos)
+
+    int sub = threadIdx.x % tpp;
+    int pts_passo = blockDim.x / tpp;
+    int first = blockIdx.x * pts_per_block;
+    int last = min(first + pts_per_block, npoints);
+    int nblocos_c = (K + OT_BN - 1) / OT_BN;
+    int ngrupos = (nblocos_c + tpp - 1) / tpp;   // a cada grupo, o bloco carrega tpp blocos
+    int elems = tpp * OT_BN * OT_BK;
+    // base é igual em todo o bloco: todos os threads passam pelos mesmos __syncthreads e shuffles
+    for (int base = first; base < last; base += pts_passo) {
+        int idx = base + threadIdx.x / tpp;
+        bool ativo = idx < last;
+        const double *pv = points_values + (size_t)(ativo ? idx : first) * dimensions;
+        double min_dist = 1e300;
+        int best = INT_MAX;
+        for (int g = 0; g < ngrupos; ++g) {
+            int c0 = (g * tpp + sub) * OT_BN;   // primeiro centroide do bloco deste thread
+            double acc[OT_BN];
+            #pragma unroll
+            for (int j = 0; j < OT_BN; ++j) acc[j] = 0.0;
+            for (int d0 = 0; d0 < dimensions; d0 += OT_BK) {
+                __syncthreads();
+                // Carga coalescida: elementos seguidos são dimensões seguidas de um centroide.
+                // Fora de K ou de D entra 0, que não muda as somas
+                for (int e = threadIdx.x; e < elems; e += blockDim.x) {
+                    int s = e / (OT_BN * OT_BK), r = e % (OT_BN * OT_BK);
+                    int c = (g * tpp + s) * OT_BN + r / OT_BK, d = d0 + r % OT_BK;
+                    s_cent[s * OT_TS + r] = (c < K && d < dimensions)
+                        ? centroids[(size_t)c * dimensions + d] : 0.0;
+                }
+                __syncthreads();
+                if (ativo) {
+                    double p[OT_BK];
+                    #pragma unroll
+                    for (int k = 0; k < OT_BK; ++k) p[k] = (d0 + k < dimensions) ? pv[d0 + k] : 0.0;
+                    const double *t = s_cent + sub * OT_TS;
+                    #pragma unroll
+                    for (int k = 0; k < OT_BK; ++k) {
+                        #pragma unroll
+                        for (int j = 0; j < OT_BN; ++j) acc[j] += p[k] * t[j * OT_BK + k];
+                    }
+                }
+            }
+            if (ativo) {
+                #pragma unroll
+                for (int j = 0; j < OT_BN; ++j) {
+                    int c = c0 + j;
+                    if (c < K) {
+                        double dist = s_norma[c] - 2.0 * acc[j];
+                        if (dist < min_dist) { min_dist = dist; best = c; }
+                    }
+                }
+            }
+        }
+        // Menor distância entre os tpp threads do ponto; no empate, o menor índice
+        for (int off = tpp / 2; off > 0; off >>= 1) {
+            double od = __shfl_xor_sync(0xffffffff, min_dist, off, tpp);
+            int ob = __shfl_xor_sync(0xffffffff, best, off, tpp);
+            if (od < min_dist || (od == min_dist && ob < best)) { min_dist = od; best = ob; }
+        }
+        if (ativo && sub == 0) nearestClusterIds[idx] = best + 1;
+    }
+}
+
+static bool assign_otimizado() {
+    static int v = -1;
+    if (v < 0) {
+        const char *e = getenv("KMEANS_ASSIGN_OTIMIZADO");
+        v = e ? (atoi(e) == 1) : 0;
+    }
+    return v == 1;
+}
+
 static int assign_threads_ponto() {
     static int v = 0;
     if (v == 0) {
@@ -290,6 +390,23 @@ static void lancar_assign(cudaStream_t stream, const double *points_values, cons
     } else {
         blocks = (chunk_size + threads - 1) / threads;
         if (blocks > max_blocks) blocks = max_blocks;
+    }
+
+    if (assign_otimizado()) {
+        // Mesma divisão balanceada de pontos por bloco. Até 4 threads por ponto enquanto o
+        // bloco couber em 128 threads (chunks pequenos, como o SIFT com 64 por nó), e o número
+        // de threads ajustado para a última passada pelos pontos do bloco não ficar quase vazia
+        pts_per_block = (chunk_size + max_blocks - 1) / max_blocks;
+        int tpp_o = pts_per_block * 4 <= 128 ? 4 : (pts_per_block * 2 <= 128 ? 2 : 1);
+        int passadas = (pts_per_block * tpp_o + 127) / 128;
+        threads = ((pts_per_block * tpp_o + passadas - 1) / passadas + 31) / 32 * 32;
+        blocks = (chunk_size + pts_per_block - 1) / pts_per_block;
+        size_t smem = (size_t)(K + tpp_o * OT_TS) * sizeof(double);
+        assign_otimizado_cuda_kernel<<<blocks, threads, smem, stream>>>(
+            points_values, centroids, K, dimensions, chunk_size,
+            nearestClusterIds, pts_per_block, tpp_o);
+        CUDA_CHECK(cudaGetLastError());
+        return;
     }
 
     int tpp = assign_expandido() ? 1 : assign_threads_ponto();

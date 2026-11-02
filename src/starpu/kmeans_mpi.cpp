@@ -234,13 +234,18 @@ static void aplicar_opcoes_accumulate(int rank) {
     g_assign_calc_juntos = env_ligada("KMEANS_ASSIGN_CALC_JUNTOS", false);
     // Kernel do Assign com a distância expandida (só teste, ver kmeans_cuda.cu): GPU com outro
     // tempo, então modelos com nome próprio, sem misturar com a calibração do kernel normal
-    bool expandido = env_ligada("KMEANS_ASSIGN_EXPANDIDO", false);
+    // Kernel otimizado (série "StarPU otimizado", ver kmeans_cuda.cu): prioridade sobre os outros
+    bool otimizado = env_ligada("KMEANS_ASSIGN_OTIMIZADO", false);
+    bool expandido = !otimizado && env_ligada("KMEANS_ASSIGN_EXPANDIDO", false);
     // Assign com 2 ou 4 threads por ponto (kmeans_cuda.cu): mesmo resultado, outro tempo na GPU,
     // então modelos com nome próprio. A distância expandida tem prioridade sobre ele
     const char *tpp_env = getenv("KMEANS_ASSIGN_THREADS_PONTO");
     int tpp = tpp_env ? atoi(tpp_env) : 1;
-    if (expandido || (tpp != 2 && tpp != 4)) tpp = 1;
-    if (expandido) {
+    if (otimizado || expandido || (tpp != 2 && tpp != 4)) tpp = 1;
+    if (otimizado) {
+        assign_perf_model.symbol = "kmeans_assign_otim_model_mpi";
+        assign_calc_perf_model.symbol = "kmeans_assign_calc_otim_model_mpi";
+    } else if (expandido) {
         assign_perf_model.symbol = "kmeans_assign_exp_model_mpi";
         assign_calc_perf_model.symbol = "kmeans_assign_calc_exp_model_mpi";
     } else if (tpp == 2) {
@@ -262,7 +267,8 @@ static void aplicar_opcoes_accumulate(int rank) {
                   << " | Assign GPU balanceado: " << (env_ligada("KMEANS_ASSIGN_BALANCEADO", true) ? "sim" : "nao")
                   << " | blocos por SM: " << (blocos ? blocos : "2")
                   << " | distancia expandida (teste): " << (expandido ? "sim" : "nao")
-                  << " | threads por ponto: " << tpp << std::endl;
+                  << " | threads por ponto: " << tpp
+                  << " | kernel otimizado: " << (otimizado ? "sim" : "nao") << std::endl;
         std::cout << "[CHUNKS] pequenos por no: " << g_chunks_pequenos << " (fracao " << g_fracao_pequenos
                   << ") | rank 0 com menos pequenos: " << g_rank0_menos_pequenos
                   << " | somas em qualquer ordem: " << (g_commute ? "sim" : "nao")
