@@ -1,0 +1,1701 @@
+[run] launch host: 10.0.0.10
+[run] hostfile: /home/ec2-user/KMeans-StarPU-Heterogeneous-Analysis/cluster-config/.cluster/hostfile
+[run] np: 32
+[run] mpirun args: --bind-to none --tag-output -x KMEANS_ASSIGN_CALC_JUNTOS=0 -x STARPU_MPI_NDETACHED_SEND=0 -x STARPU_MPI_NREADY_PROCESS=64 -x STARPU_DISPLAY_BINDINGS=1 -x STARPU_SCHED=dmda -x STARPU_NOPENCL=1 -x STARPU_RESERVE_NCPU=1 -x STARPU_HOSTNAME=g6.4xlarge-v2 -x STARPU_CALIBRATE=0 -x STARPU_NCPUS=7 -x STARPU_NCUDA=1 -x STARPU_WORKERS_CPUID=0,1,2,3,4,5,6,7
+[run] preparing MPI SSH from launch host 10.0.0.10 ...
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.12' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.13' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.14' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.15' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.16' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.17' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.18' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.19' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.20' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.21' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.22' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.23' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.24' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.25' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.26' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.27' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.28' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.29' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.30' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.31' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.32' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.33' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.34' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.35' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.36' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.37' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.38' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.39' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.40' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.41' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+[ip-10-0-0-10.ec2.internal:14852] plm:ssh: Warning: setpgid(14877,14877) failed in parent with errno=Permission denied(13)
+Warning: Permanently added '10.0.0.23' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.12' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.22' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.17' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.14' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.19' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.15' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.18' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.20' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.29' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.13' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.27' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.21' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.26' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.32' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.30' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.37' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.34' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.41' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.38' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.36' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.25' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.31' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.35' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.33' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.39' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.40' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.24' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.28' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.16' (ED25519) to the list of known hosts.
+[1,0]<stdout>: [RANK 0/32] Host: ip-10-0-0-10.ec2.internal
+[1,5]<stdout>: [RANK 5/32] Host: ip-10-0-0-15.ec2.internal
+[1,25]<stdout>: [RANK 25/32] Host: ip-10-0-0-35.ec2.internal
+[1,1]<stdout>: [RANK 1/32] Host: ip-10-0-0-11.ec2.internal
+[1,3]<stdout>: [RANK 3/32] Host: ip-10-0-0-13.ec2.internal
+[1,6]<stdout>: [RANK 6/32] Host: ip-10-0-0-16.ec2.internal
+[1,24]<stdout>: [RANK 24/32] Host: ip-10-0-0-34.ec2.internal
+[1,22]<stdout>: [RANK 22/32] Host: ip-10-0-0-32.ec2.internal
+[1,12]<stdout>: [RANK 12/32] Host: ip-10-0-0-22.ec2.internal
+[1,18]<stdout>: [RANK 18/32] Host: ip-10-0-0-28.ec2.internal
+[1,4]<stdout>: [RANK 4/32] Host: ip-10-0-0-14.ec2.internal
+[1,23]<stdout>: [RANK 23/32] Host: ip-10-0-0-33.ec2.internal
+[1,8]<stdout>: [RANK 8/32] Host: ip-10-0-0-18.ec2.internal
+[1,26]<stdout>: [RANK 26/32] Host: ip-10-0-0-36.ec2.internal
+[1,29]<stdout>: [RANK 29/32] Host: ip-10-0-0-39.ec2.internal
+[1,16]<stdout>: [RANK 16/32] Host: ip-10-0-0-26.ec2.internal
+[1,2]<stdout>: [RANK 2/32] Host: ip-10-0-0-12.ec2.internal
+[1,13]<stdout>: [RANK 13/32] Host: ip-10-0-0-23.ec2.internal
+[1,9]<stdout>: [RANK 9/32] Host: ip-10-0-0-19.ec2.internal
+[1,7]<stdout>: [RANK 7/32] Host: ip-10-0-0-17.ec2.internal
+[1,10]<stdout>: [RANK 10/32] Host: ip-10-0-0-20.ec2.internal
+[1,15]<stdout>: [RANK 15/32] Host: ip-10-0-0-25.ec2.internal
+[1,31]<stdout>: [RANK 31/32] Host: ip-10-0-0-41.ec2.internal
+[1,28]<stdout>: [RANK 28/32] Host: ip-10-0-0-38.ec2.internal
+[1,14]<stdout>: [RANK 14/32] Host: ip-10-0-0-24.ec2.internal
+[1,21]<stdout>: [RANK 21/32] Host: ip-10-0-0-31.ec2.internal
+[1,30]<stdout>: [RANK 30/32] Host: ip-10-0-0-40.ec2.internal
+[1,11]<stdout>: [RANK 11/32] Host: ip-10-0-0-21.ec2.internal
+[1,17]<stdout>: [RANK 17/32] Host: ip-10-0-0-27.ec2.internal
+[1,19]<stdout>: [RANK 19/32] Host: ip-10-0-0-29.ec2.internal
+[1,20]<stdout>: [RANK 20/32] Host: ip-10-0-0-30.ec2.internal
+[1,27]<stdout>: [RANK 27/32] Host: ip-10-0-0-37.ec2.internal
+[1,0]<stdout>: [COMPILADOR] nvc++ 26.3
+[1,0]<stdout>: [MODO] Escalonamento ESTATICO (Manual via EXECUTE_ON_NODE)
+[1,0]<stdout>: == Binding for rank 0 on node ip-10-0-0-10.ec2.internal ==
+[1,0]<stderr>: hwloc: Cannot find discovery component `windows'
+[1,0]<stderr>: hwloc: Cannot find discovery component `darwin'
+[1,0]<stdout>: 6319	0x000000ff		/usr/lib/systemd/systemd
+[1,0]<stdout>: 6321	0x000000ff		(sd-pam)
+[1,0]<stdout>: 6962	0x000000ff		tmux
+[1,0]<stdout>: 6963	0x000000ff		bash
+[1,0]<stdout>: 6964	0x000000ff		bash
+[1,0]<stdout>: 6966	0x000000ff		tee
+[1,0]<stdout>: 11241	0x000000ff		timeout
+[1,0]<stdout>: 11242	0x000000ff		bash
+[1,0]<stdout>: 13004	0x000000ff		bash
+[1,0]<stdout>: 13005	0x000000ff		bash
+[1,0]<stdout>: 14811	0x000000ff		ssh
+[1,0]<stdout>: 14815	0x000000ff		sshd: ec2-user@notty
+[1,0]<stdout>: 14816	0x000000ff		bash
+[1,0]<stdout>: 14852	0x000000ff		prterun
+[1,0]<stdout>:  14852	0x000000ff		prterun
+[1,0]<stdout>:  14853	0x000000ff		cuda00002c0000c
+[1,0]<stdout>:  14857	0x000000ff		prterun
+[1,0]<stdout>:  14858	0x000000ff		prterun
+[1,0]<stdout>: 14859	0x000000ff		/usr/bin/ssh
+[1,0]<stdout>: 14860	0x000000ff		/usr/bin/ssh
+[1,0]<stdout>: 14861	0x000000ff		/usr/bin/ssh
+[1,0]<stdout>: 14862	0x000000ff		/usr/bin/ssh
+[1,0]<stdout>: 14863	0x000000ff		/usr/bin/ssh
+[1,0]<stdout>: 14864	0x000000ff		/usr/bin/ssh
+[1,0]<stdout>: 14865	0x000000ff		/usr/bin/ssh
+[1,0]<stdout>: 14866	0x000000ff		/usr/bin/ssh
+[1,0]<stdout>: 14867	0x000000ff		/usr/bin/ssh
+[1,0]<stdout>: 14868	0x000000ff		/usr/bin/ssh
+[1,0]<stdout>: 14869	0x000000ff		/usr/bin/ssh
+[1,0]<stdout>: 14870	0x000000ff		/usr/bin/ssh
+[1,0]<stdout>: 14871	0x000000ff		/usr/bin/ssh
+[1,0]<stdout>: 14872	0x000000ff		/usr/bin/ssh
+[1,0]<stdout>: 14873	0x000000ff		/usr/bin/ssh
+[1,0]<stdout>: 14874	0x000000ff		/usr/bin/ssh
+[1,0]<stdout>: 14875	0x000000ff		/usr/bin/ssh
+[1,0]<stdout>: 14876	0x000000ff		/usr/bin/ssh
+[1,0]<stdout>: 14877	0x000000ff		/usr/bin/ssh
+[1,0]<stdout>: 14878	0x000000ff		/usr/bin/ssh
+[1,0]<stdout>: 14879	0x000000ff		/usr/bin/ssh
+[1,0]<stdout>: 14880	0x000000ff		/usr/bin/ssh
+[1,0]<stdout>: 14881	0x000000ff		/usr/bin/ssh
+[1,0]<stdout>: 14882	0x000000ff		/usr/bin/ssh
+[1,0]<stdout>: 14883	0x000000ff		/usr/bin/ssh
+[1,0]<stdout>: 14884	0x000000ff		/usr/bin/ssh
+[1,0]<stdout>: 14885	0x000000ff		/usr/bin/ssh
+[1,0]<stdout>: 14886	0x000000ff		/usr/bin/ssh
+[1,0]<stdout>: 14887	0x000000ff		/usr/bin/ssh
+[1,0]<stdout>: 14888	0x000000ff		/usr/bin/ssh
+[1,0]<stdout>: 14889	0x000000ff		/usr/bin/ssh
+[1,0]<stdout>: 14890	0x000000ff		./kmeans_starpu
+[1,0]<stdout>:  14890	0x000000ff		kmeans_starpu
+[1,0]<stdout>:  14891	0x000000ff		kmeans_starpu
+[1,0]<stdout>:  14894	0x000000ff		cuda00005800017
+[1,0]<stdout>:  14895	0x00000001		CUDA 0
+[1,0]<stdout>:  14896	0x00000002		CPU 0
+[1,0]<stdout>:  14897	0x00000004		CPU 1
+[1,0]<stdout>:  14898	0x00000008		CPU 2
+[1,0]<stdout>:  14899	0x00000010		CPU 3
+[1,0]<stdout>:  14900	0x00000020		CPU 4
+[1,0]<stdout>:  14901	0x00000040		CPU 5
+[1,0]<stdout>:  14902	0x00000001		cuda-EvtHandlr
+[1,0]<stdout>:  14903	0x00000001		kmeans_starpu
+[1,0]<stdout>:  14904	0x00000080		MPI
+[1,0]<stdout>: 14905	0x000000ff		hwloc-ps
+[1,1]<stdout>: == Binding for rank 1 on node ip-10-0-0-11.ec2.internal ==
+[1,1]<stderr>: hwloc: Cannot find discovery component `windows'
+[1,1]<stderr>: hwloc: Cannot find discovery component `darwin'
+[1,1]<stdout>: 7044	0x000000ff		/usr/lib/systemd/systemd
+[1,1]<stdout>: 7047	0x000000ff		(sd-pam)
+[1,1]<stdout>: 7054	0x000000ff		sshd: ec2-user@notty
+[1,1]<stdout>: 7055	0x000000ff		/usr/local/bin/prted
+[1,1]<stdout>: 7073	0x000000ff		/usr/local/bin/prted
+[1,1]<stdout>:  7073	0x000000ff		prted
+[1,1]<stdout>:  7074	0x000000ff		cuda0000280000b
+[1,1]<stdout>:  7082	0x000000ff		prted
+[1,1]<stdout>:  7083	0x000000ff		prted
+[1,1]<stdout>:  7084	0x000000ff		prted
+[1,1]<stdout>:  7085	0x000000ff		prted
+[1,1]<stdout>:  7086	0x000000ff		prted
+[1,1]<stdout>:  7087	0x000000ff		prted
+[1,1]<stdout>:  7088	0x000000ff		prted
+[1,1]<stdout>:  7089	0x000000ff		prted
+[1,1]<stdout>:  7090	0x000000ff		prted
+[1,1]<stdout>:  7091	0x000000ff		prted
+[1,1]<stdout>:  7092	0x000000ff		prted
+[1,1]<stdout>:  7093	0x000000ff		prted
+[1,1]<stdout>:  7094	0x000000ff		prted
+[1,1]<stdout>:  7095	0x000000ff		prted
+[1,1]<stdout>:  7096	0x000000ff		prted
+[1,1]<stdout>:  7097	0x000000ff		prted
+[1,1]<stdout>:  7098	0x000000ff		prted
+[1,1]<stdout>: 7099	0x000000ff		./kmeans_starpu
+[1,1]<stdout>:  7099	0x000000ff		kmeans_starpu
+[1,1]<stdout>:  7103	0x000000ff		kmeans_starpu
+[1,1]<stdout>:  7104	0x000000ff		cuda00005800017
+[1,1]<stdout>:  7105	0x00000001		CUDA 0
+[1,1]<stdout>:  7106	0x00000002		CPU 0
+[1,1]<stdout>:  7107	0x00000004		CPU 1
+[1,1]<stdout>:  7108	0x00000008		CPU 2
+[1,1]<stdout>:  7109	0x00000010		CPU 3
+[1,1]<stdout>:  7110	0x00000020		CPU 4
+[1,1]<stdout>:  7111	0x00000040		CPU 5
+[1,1]<stdout>:  7112	0x00000001		cuda-EvtHandlr
+[1,1]<stdout>:  7113	0x00000001		kmeans_starpu
+[1,1]<stdout>:  7114	0x00000080		MPI
+[1,1]<stdout>: 7115	0x000000ff		hwloc-ps
+[1,2]<stdout>: == Binding for rank 2 on node ip-10-0-0-12.ec2.internal ==
+[1,2]<stderr>: hwloc: Cannot find discovery component `windows'
+[1,2]<stderr>: hwloc: Cannot find discovery component `darwin'
+[1,2]<stdout>: 6999	0x000000ff		/usr/lib/systemd/systemd
+[1,2]<stdout>: 7001	0x000000ff		(sd-pam)
+[1,2]<stdout>: 7008	0x000000ff		sshd: ec2-user@notty
+[1,2]<stdout>: 7009	0x000000ff		/usr/local/bin/prted
+[1,2]<stdout>: 7027	0x000000ff		/usr/local/bin/prted
+[1,2]<stdout>:  7027	0x000000ff		prted
+[1,2]<stdout>:  7028	0x000000ff		cuda0000280000b
+[1,2]<stdout>:  7037	0x000000ff		prted
+[1,2]<stdout>:  7038	0x000000ff		prted
+[1,2]<stdout>:  7039	0x000000ff		prted
+[1,2]<stdout>:  7040	0x000000ff		prted
+[1,2]<stdout>:  7041	0x000000ff		prted
+[1,2]<stdout>:  7042	0x000000ff		prted
+[1,2]<stdout>:  7043	0x000000ff		prted
+[1,2]<stdout>:  7044	0x000000ff		prted
+[1,2]<stdout>:  7045	0x000000ff		prted
+[1,2]<stdout>:  7046	0x000000ff		prted
+[1,2]<stdout>:  7047	0x000000ff		prted
+[1,2]<stdout>:  7048	0x000000ff		prted
+[1,2]<stdout>:  7049	0x000000ff		prted
+[1,2]<stdout>:  7050	0x000000ff		prted
+[1,2]<stdout>:  7051	0x000000ff		prted
+[1,2]<stdout>:  7052	0x000000ff		prted
+[1,2]<stdout>:  7053	0x000000ff		prted
+[1,2]<stdout>: 7054	0x000000ff		./kmeans_starpu
+[1,2]<stdout>:  7054	0x000000ff		kmeans_starpu
+[1,2]<stdout>:  7055	0x000000ff		kmeans_starpu
+[1,2]<stdout>:  7059	0x000000ff		cuda00005800017
+[1,2]<stdout>:  7060	0x00000001		CUDA 0
+[1,2]<stdout>:  7061	0x00000002		CPU 0
+[1,2]<stdout>:  7062	0x00000004		CPU 1
+[1,2]<stdout>:  7063	0x00000008		CPU 2
+[1,2]<stdout>:  7064	0x00000010		CPU 3
+[1,2]<stdout>:  7065	0x00000020		CPU 4
+[1,2]<stdout>:  7066	0x00000040		CPU 5
+[1,2]<stdout>:  7067	0x00000001		cuda-EvtHandlr
+[1,2]<stdout>:  7068	0x00000001		kmeans_starpu
+[1,2]<stdout>:  7069	0x00000080		MPI
+[1,2]<stdout>: 7070	0x000000ff		hwloc-ps
+[1,3]<stdout>: == Binding for rank 3 on node ip-10-0-0-13.ec2.internal ==
+[1,3]<stderr>: hwloc: Cannot find discovery component `windows'
+[1,3]<stderr>: hwloc: Cannot find discovery component `darwin'
+[1,3]<stdout>: 6971	0x000000ff		/usr/lib/systemd/systemd
+[1,3]<stdout>: 6974	0x000000ff		(sd-pam)
+[1,3]<stdout>: 6981	0x000000ff		sshd: ec2-user@notty
+[1,3]<stdout>: 6982	0x000000ff		/usr/local/bin/prted
+[1,3]<stdout>: 7000	0x000000ff		/usr/local/bin/prted
+[1,3]<stdout>:  7000	0x000000ff		prted
+[1,3]<stdout>:  7001	0x000000ff		cuda0000280000b
+[1,3]<stdout>:  7009	0x000000ff		prted
+[1,3]<stdout>:  7010	0x000000ff		prted
+[1,3]<stdout>:  7011	0x000000ff		prted
+[1,3]<stdout>:  7012	0x000000ff		prted
+[1,3]<stdout>:  7013	0x000000ff		prted
+[1,3]<stdout>:  7014	0x000000ff		prted
+[1,3]<stdout>:  7015	0x000000ff		prted
+[1,3]<stdout>:  7016	0x000000ff		prted
+[1,3]<stdout>:  7017	0x000000ff		prted
+[1,3]<stdout>:  7018	0x000000ff		prted
+[1,3]<stdout>:  7019	0x000000ff		prted
+[1,3]<stdout>:  7020	0x000000ff		prted
+[1,3]<stdout>:  7021	0x000000ff		prted
+[1,3]<stdout>:  7022	0x000000ff		prted
+[1,3]<stdout>:  7023	0x000000ff		prted
+[1,3]<stdout>:  7024	0x000000ff		prted
+[1,3]<stdout>:  7025	0x000000ff		prted
+[1,3]<stdout>: 7026	0x000000ff		./kmeans_starpu
+[1,3]<stdout>:  7026	0x000000ff		kmeans_starpu
+[1,3]<stdout>:  7027	0x000000ff		kmeans_starpu
+[1,3]<stdout>:  7030	0x000000ff		cuda00005800017
+[1,3]<stdout>:  7031	0x00000001		CUDA 0
+[1,3]<stdout>:  7032	0x00000002		CPU 0
+[1,3]<stdout>:  7033	0x00000004		CPU 1
+[1,3]<stdout>:  7034	0x00000008		CPU 2
+[1,3]<stdout>:  7035	0x00000010		CPU 3
+[1,3]<stdout>:  7036	0x00000020		CPU 4
+[1,3]<stdout>:  7037	0x00000040		CPU 5
+[1,3]<stdout>:  7038	0x00000001		cuda-EvtHandlr
+[1,3]<stdout>:  7039	0x00000001		kmeans_starpu
+[1,3]<stdout>:  7040	0x00000080		MPI
+[1,3]<stdout>: 7041	0x000000ff		hwloc-ps
+[1,4]<stdout>: == Binding for rank 4 on node ip-10-0-0-14.ec2.internal ==
+[1,4]<stderr>: hwloc: Cannot find discovery component `windows'
+[1,4]<stderr>: hwloc: Cannot find discovery component `darwin'
+[1,4]<stdout>: 7052	0x000000ff		/usr/lib/systemd/systemd
+[1,4]<stdout>: 7054	0x000000ff		(sd-pam)
+[1,4]<stdout>: 7061	0x000000ff		sshd: ec2-user@notty
+[1,4]<stdout>: 7062	0x000000ff		/usr/local/bin/prted
+[1,4]<stdout>: 7080	0x000000ff		/usr/local/bin/prted
+[1,4]<stdout>:  7080	0x000000ff		prted
+[1,4]<stdout>:  7081	0x000000ff		cuda0000280000b
+[1,4]<stdout>:  7089	0x000000ff		prted
+[1,4]<stdout>:  7090	0x000000ff		prted
+[1,4]<stdout>:  7091	0x000000ff		prted
+[1,4]<stdout>:  7092	0x000000ff		prted
+[1,4]<stdout>:  7093	0x000000ff		prted
+[1,4]<stdout>:  7094	0x000000ff		prted
+[1,4]<stdout>:  7095	0x000000ff		prted
+[1,4]<stdout>:  7096	0x000000ff		prted
+[1,4]<stdout>:  7097	0x000000ff		prted
+[1,4]<stdout>:  7098	0x000000ff		prted
+[1,4]<stdout>:  7099	0x000000ff		prted
+[1,4]<stdout>:  7100	0x000000ff		prted
+[1,4]<stdout>:  7101	0x000000ff		prted
+[1,4]<stdout>:  7102	0x000000ff		prted
+[1,4]<stdout>:  7103	0x000000ff		prted
+[1,4]<stdout>:  7104	0x000000ff		prted
+[1,4]<stdout>:  7105	0x000000ff		prted
+[1,4]<stdout>: 7106	0x000000ff		./kmeans_starpu
+[1,4]<stdout>:  7106	0x000000ff		kmeans_starpu
+[1,4]<stdout>:  7107	0x000000ff		kmeans_starpu
+[1,4]<stdout>:  7110	0x000000ff		cuda00005800017
+[1,4]<stdout>:  7111	0x00000001		CUDA 0
+[1,4]<stdout>:  7112	0x00000002		CPU 0
+[1,4]<stdout>:  7113	0x00000004		CPU 1
+[1,4]<stdout>:  7114	0x00000008		CPU 2
+[1,4]<stdout>:  7115	0x00000010		CPU 3
+[1,4]<stdout>:  7116	0x00000020		CPU 4
+[1,4]<stdout>:  7117	0x00000040		CPU 5
+[1,4]<stdout>:  7118	0x00000001		cuda-EvtHandlr
+[1,4]<stdout>:  7119	0x00000001		kmeans_starpu
+[1,4]<stdout>:  7120	0x00000080		MPI
+[1,4]<stdout>: 7121	0x000000ff		hwloc-ps
+[1,5]<stdout>: == Binding for rank 5 on node ip-10-0-0-15.ec2.internal ==
+[1,5]<stderr>: hwloc: Cannot find discovery component `windows'
+[1,5]<stderr>: hwloc: Cannot find discovery component `darwin'
+[1,5]<stdout>: 7094	0x000000ff		/usr/lib/systemd/systemd
+[1,5]<stdout>: 7097	0x000000ff		(sd-pam)
+[1,5]<stdout>: 7104	0x000000ff		sshd: ec2-user@notty
+[1,5]<stdout>: 7105	0x000000ff		/usr/local/bin/prted
+[1,5]<stdout>: 7123	0x000000ff		/usr/local/bin/prted
+[1,5]<stdout>:  7123	0x000000ff		prted
+[1,5]<stdout>:  7125	0x000000ff		cuda0000280000b
+[1,5]<stdout>:  7133	0x000000ff		prted
+[1,5]<stdout>:  7134	0x000000ff		prted
+[1,5]<stdout>:  7135	0x000000ff		prted
+[1,5]<stdout>:  7136	0x000000ff		prted
+[1,5]<stdout>:  7137	0x000000ff		prted
+[1,5]<stdout>:  7138	0x000000ff		prted
+[1,5]<stdout>:  7139	0x000000ff		prted
+[1,5]<stdout>:  7140	0x000000ff		prted
+[1,5]<stdout>:  7141	0x000000ff		prted
+[1,5]<stdout>:  7142	0x000000ff		prted
+[1,5]<stdout>:  7143	0x000000ff		prted
+[1,5]<stdout>:  7144	0x000000ff		prted
+[1,5]<stdout>:  7145	0x000000ff		prted
+[1,5]<stdout>:  7146	0x000000ff		prted
+[1,5]<stdout>:  7147	0x000000ff		prted
+[1,5]<stdout>:  7148	0x000000ff		prted
+[1,5]<stdout>:  7149	0x000000ff		prted
+[1,5]<stdout>: 7150	0x000000ff		./kmeans_starpu
+[1,5]<stdout>:  7150	0x000000ff		kmeans_starpu
+[1,5]<stdout>:  7151	0x000000ff		kmeans_starpu
+[1,5]<stdout>:  7154	0x000000ff		cuda00005800017
+[1,5]<stdout>:  7155	0x00000001		CUDA 0
+[1,5]<stdout>:  7156	0x00000002		CPU 0
+[1,5]<stdout>:  7157	0x00000004		CPU 1
+[1,5]<stdout>:  7158	0x00000008		CPU 2
+[1,5]<stdout>:  7159	0x00000010		CPU 3
+[1,5]<stdout>:  7160	0x00000020		CPU 4
+[1,5]<stdout>:  7161	0x00000040		CPU 5
+[1,5]<stdout>:  7162	0x00000001		cuda-EvtHandlr
+[1,5]<stdout>:  7163	0x00000001		kmeans_starpu
+[1,5]<stdout>:  7164	0x00000080		MPI
+[1,5]<stdout>: 7165	0x000000ff		hwloc-ps
+[1,6]<stdout>: == Binding for rank 6 on node ip-10-0-0-16.ec2.internal ==
+[1,6]<stderr>: hwloc: Cannot find discovery component `windows'
+[1,6]<stderr>: hwloc: Cannot find discovery component `darwin'
+[1,6]<stdout>: 7065	0x000000ff		/usr/lib/systemd/systemd
+[1,6]<stdout>: 7067	0x000000ff		(sd-pam)
+[1,6]<stdout>: 7074	0x000000ff		sshd: ec2-user@notty
+[1,6]<stdout>: 7075	0x000000ff		/usr/local/bin/prted
+[1,6]<stdout>: 7093	0x000000ff		/usr/local/bin/prted
+[1,6]<stdout>:  7093	0x000000ff		prted
+[1,6]<stdout>:  7094	0x000000ff		cuda0000280000b
+[1,6]<stdout>:  7102	0x000000ff		prted
+[1,6]<stdout>:  7103	0x000000ff		prted
+[1,6]<stdout>:  7104	0x000000ff		prted
+[1,6]<stdout>:  7105	0x000000ff		prted
+[1,6]<stdout>:  7106	0x000000ff		prted
+[1,6]<stdout>:  7107	0x000000ff		prted
+[1,6]<stdout>:  7108	0x000000ff		prted
+[1,6]<stdout>:  7109	0x000000ff		prted
+[1,6]<stdout>:  7110	0x000000ff		prted
+[1,6]<stdout>:  7111	0x000000ff		prted
+[1,6]<stdout>:  7112	0x000000ff		prted
+[1,6]<stdout>:  7113	0x000000ff		prted
+[1,6]<stdout>:  7114	0x000000ff		prted
+[1,6]<stdout>:  7115	0x000000ff		prted
+[1,6]<stdout>:  7116	0x000000ff		prted
+[1,6]<stdout>:  7117	0x000000ff		prted
+[1,6]<stdout>:  7118	0x000000ff		prted
+[1,6]<stdout>: 7119	0x000000ff		./kmeans_starpu
+[1,6]<stdout>:  7119	0x000000ff		kmeans_starpu
+[1,6]<stdout>:  7120	0x000000ff		kmeans_starpu
+[1,6]<stdout>:  7123	0x000000ff		cuda00005800017
+[1,6]<stdout>:  7124	0x00000001		CUDA 0
+[1,6]<stdout>:  7125	0x00000002		CPU 0
+[1,6]<stdout>:  7126	0x00000004		CPU 1
+[1,6]<stdout>:  7127	0x00000008		CPU 2
+[1,6]<stdout>:  7128	0x00000010		CPU 3
+[1,6]<stdout>:  7129	0x00000020		CPU 4
+[1,6]<stdout>:  7130	0x00000040		CPU 5
+[1,6]<stdout>:  7131	0x00000001		cuda-EvtHandlr
+[1,6]<stdout>:  7132	0x00000001		kmeans_starpu
+[1,6]<stdout>:  7133	0x00000080		MPI
+[1,6]<stdout>: 7134	0x000000ff		hwloc-ps
+[1,7]<stdout>: == Binding for rank 7 on node ip-10-0-0-17.ec2.internal ==
+[1,7]<stderr>: hwloc: Cannot find discovery component `windows'
+[1,7]<stderr>: hwloc: Cannot find discovery component `darwin'
+[1,7]<stdout>: 7007	0x000000ff		/usr/lib/systemd/systemd
+[1,7]<stdout>: 7009	0x000000ff		(sd-pam)
+[1,7]<stdout>: 7016	0x000000ff		sshd: ec2-user@notty
+[1,7]<stdout>: 7017	0x000000ff		/usr/local/bin/prted
+[1,7]<stdout>: 7035	0x000000ff		/usr/local/bin/prted
+[1,7]<stdout>:  7035	0x000000ff		prted
+[1,7]<stdout>:  7036	0x000000ff		cuda0000280000b
+[1,7]<stdout>:  7045	0x000000ff		prted
+[1,7]<stdout>:  7046	0x000000ff		prted
+[1,7]<stdout>:  7047	0x000000ff		prted
+[1,7]<stdout>:  7048	0x000000ff		prted
+[1,7]<stdout>:  7049	0x000000ff		prted
+[1,7]<stdout>:  7050	0x000000ff		prted
+[1,7]<stdout>:  7051	0x000000ff		prted
+[1,7]<stdout>:  7052	0x000000ff		prted
+[1,7]<stdout>:  7053	0x000000ff		prted
+[1,7]<stdout>:  7054	0x000000ff		prted
+[1,7]<stdout>:  7055	0x000000ff		prted
+[1,7]<stdout>:  7056	0x000000ff		prted
+[1,7]<stdout>:  7057	0x000000ff		prted
+[1,7]<stdout>:  7058	0x000000ff		prted
+[1,7]<stdout>:  7059	0x000000ff		prted
+[1,7]<stdout>:  7060	0x000000ff		prted
+[1,7]<stdout>:  7061	0x000000ff		prted
+[1,7]<stdout>: 7062	0x000000ff		./kmeans_starpu
+[1,7]<stdout>:  7062	0x000000ff		kmeans_starpu
+[1,7]<stdout>:  7063	0x000000ff		kmeans_starpu
+[1,7]<stdout>:  7066	0x000000ff		cuda00005800017
+[1,7]<stdout>:  7067	0x00000001		CUDA 0
+[1,7]<stdout>:  7068	0x00000002		CPU 0
+[1,7]<stdout>:  7069	0x00000004		CPU 1
+[1,7]<stdout>:  7070	0x00000008		CPU 2
+[1,7]<stdout>:  7071	0x00000010		CPU 3
+[1,7]<stdout>:  7072	0x00000020		CPU 4
+[1,7]<stdout>:  7073	0x00000040		CPU 5
+[1,7]<stdout>:  7074	0x00000001		cuda-EvtHandlr
+[1,7]<stdout>:  7075	0x00000001		kmeans_starpu
+[1,7]<stdout>:  7076	0x00000080		MPI
+[1,7]<stdout>: 7077	0x000000ff		hwloc-ps
+[1,8]<stdout>: == Binding for rank 8 on node ip-10-0-0-18.ec2.internal ==
+[1,8]<stderr>: hwloc: Cannot find discovery component `windows'
+[1,8]<stderr>: hwloc: Cannot find discovery component `darwin'
+[1,8]<stdout>: 7013	0x000000ff		/usr/lib/systemd/systemd
+[1,8]<stdout>: 7015	0x000000ff		(sd-pam)
+[1,8]<stdout>: 7022	0x000000ff		sshd: ec2-user@notty
+[1,8]<stdout>: 7023	0x000000ff		/usr/local/bin/prted
+[1,8]<stdout>: 7041	0x000000ff		/usr/local/bin/prted
+[1,8]<stdout>:  7041	0x000000ff		prted
+[1,8]<stdout>:  7042	0x000000ff		cuda0000280000b
+[1,8]<stdout>:  7050	0x000000ff		prted
+[1,8]<stdout>:  7051	0x000000ff		prted
+[1,8]<stdout>:  7052	0x000000ff		prted
+[1,8]<stdout>:  7053	0x000000ff		prted
+[1,8]<stdout>:  7054	0x000000ff		prted
+[1,8]<stdout>:  7055	0x000000ff		prted
+[1,8]<stdout>:  7056	0x000000ff		prted
+[1,8]<stdout>:  7057	0x000000ff		prted
+[1,8]<stdout>:  7058	0x000000ff		prted
+[1,8]<stdout>:  7059	0x000000ff		prted
+[1,8]<stdout>:  7060	0x000000ff		prted
+[1,8]<stdout>:  7061	0x000000ff		prted
+[1,8]<stdout>:  7062	0x000000ff		prted
+[1,8]<stdout>:  7063	0x000000ff		prted
+[1,8]<stdout>:  7064	0x000000ff		prted
+[1,8]<stdout>:  7065	0x000000ff		prted
+[1,8]<stdout>:  7066	0x000000ff		prted
+[1,8]<stdout>: 7067	0x000000ff		./kmeans_starpu
+[1,8]<stdout>:  7067	0x000000ff		kmeans_starpu
+[1,8]<stdout>:  7068	0x000000ff		kmeans_starpu
+[1,8]<stdout>:  7071	0x000000ff		cuda00005800017
+[1,8]<stdout>:  7072	0x00000001		CUDA 0
+[1,8]<stdout>:  7073	0x00000002		CPU 0
+[1,8]<stdout>:  7074	0x00000004		CPU 1
+[1,8]<stdout>:  7075	0x00000008		CPU 2
+[1,8]<stdout>:  7076	0x00000010		CPU 3
+[1,8]<stdout>:  7077	0x00000020		CPU 4
+[1,8]<stdout>:  7078	0x00000040		CPU 5
+[1,8]<stdout>:  7079	0x00000001		cuda-EvtHandlr
+[1,8]<stdout>:  7080	0x00000001		kmeans_starpu
+[1,8]<stdout>:  7081	0x00000080		MPI
+[1,8]<stdout>: 7082	0x000000ff		hwloc-ps
+[1,9]<stdout>: == Binding for rank 9 on node ip-10-0-0-19.ec2.internal ==
+[1,9]<stderr>: hwloc: Cannot find discovery component `windows'
+[1,9]<stderr>: hwloc: Cannot find discovery component `darwin'
+[1,9]<stdout>: 7060	0x000000ff		/usr/lib/systemd/systemd
+[1,9]<stdout>: 7062	0x000000ff		(sd-pam)
+[1,9]<stdout>: 7069	0x000000ff		sshd: ec2-user@notty
+[1,9]<stdout>: 7070	0x000000ff		/usr/local/bin/prted
+[1,9]<stdout>: 7088	0x000000ff		/usr/local/bin/prted
+[1,9]<stdout>:  7088	0x000000ff		prted
+[1,9]<stdout>:  7089	0x000000ff		cuda0000280000b
+[1,9]<stdout>:  7097	0x000000ff		prted
+[1,9]<stdout>:  7099	0x000000ff		prted
+[1,9]<stdout>:  7100	0x000000ff		prted
+[1,9]<stdout>:  7101	0x000000ff		prted
+[1,9]<stdout>:  7102	0x000000ff		prted
+[1,9]<stdout>:  7103	0x000000ff		prted
+[1,9]<stdout>:  7104	0x000000ff		prted
+[1,9]<stdout>:  7105	0x000000ff		prted
+[1,9]<stdout>:  7106	0x000000ff		prted
+[1,9]<stdout>:  7107	0x000000ff		prted
+[1,9]<stdout>:  7108	0x000000ff		prted
+[1,9]<stdout>:  7109	0x000000ff		prted
+[1,9]<stdout>:  7110	0x000000ff		prted
+[1,9]<stdout>:  7111	0x000000ff		prted
+[1,9]<stdout>:  7112	0x000000ff		prted
+[1,9]<stdout>:  7113	0x000000ff		prted
+[1,9]<stdout>:  7114	0x000000ff		prted
+[1,9]<stdout>: 7115	0x000000ff		./kmeans_starpu
+[1,9]<stdout>:  7115	0x000000ff		kmeans_starpu
+[1,9]<stdout>:  7116	0x000000ff		kmeans_starpu
+[1,9]<stdout>:  7120	0x000000ff		cuda00005800017
+[1,9]<stdout>:  7121	0x00000001		CUDA 0
+[1,9]<stdout>:  7122	0x00000002		CPU 0
+[1,9]<stdout>:  7123	0x00000004		CPU 1
+[1,9]<stdout>:  7124	0x00000008		CPU 2
+[1,9]<stdout>:  7125	0x00000010		CPU 3
+[1,9]<stdout>:  7126	0x00000020		CPU 4
+[1,9]<stdout>:  7127	0x00000040		CPU 5
+[1,9]<stdout>:  7128	0x00000001		cuda-EvtHandlr
+[1,9]<stdout>:  7129	0x00000001		kmeans_starpu
+[1,9]<stdout>:  7130	0x00000080		MPI
+[1,9]<stdout>: 7131	0x000000ff		hwloc-ps
+[1,10]<stdout>: == Binding for rank 10 on node ip-10-0-0-20.ec2.internal ==
+[1,10]<stderr>: hwloc: Cannot find discovery component `windows'
+[1,10]<stderr>: hwloc: Cannot find discovery component `darwin'
+[1,10]<stdout>: 7058	0x000000ff		/usr/lib/systemd/systemd
+[1,10]<stdout>: 7060	0x000000ff		(sd-pam)
+[1,10]<stdout>: 7067	0x000000ff		sshd: ec2-user@notty
+[1,10]<stdout>: 7068	0x000000ff		/usr/local/bin/prted
+[1,10]<stdout>: 7086	0x000000ff		/usr/local/bin/prted
+[1,10]<stdout>:  7086	0x000000ff		prted
+[1,10]<stdout>:  7087	0x000000ff		cuda0000280000b
+[1,10]<stdout>:  7095	0x000000ff		prted
+[1,10]<stdout>:  7096	0x000000ff		prted
+[1,10]<stdout>:  7097	0x000000ff		prted
+[1,10]<stdout>:  7098	0x000000ff		prted
+[1,10]<stdout>:  7099	0x000000ff		prted
+[1,10]<stdout>:  7100	0x000000ff		prted
+[1,10]<stdout>:  7101	0x000000ff		prted
+[1,10]<stdout>:  7102	0x000000ff		prted
+[1,10]<stdout>:  7103	0x000000ff		prted
+[1,10]<stdout>:  7104	0x000000ff		prted
+[1,10]<stdout>:  7105	0x000000ff		prted
+[1,10]<stdout>:  7106	0x000000ff		prted
+[1,10]<stdout>:  7107	0x000000ff		prted
+[1,10]<stdout>:  7108	0x000000ff		prted
+[1,10]<stdout>:  7109	0x000000ff		prted
+[1,10]<stdout>:  7110	0x000000ff		prted
+[1,10]<stdout>:  7111	0x000000ff		prted
+[1,11]<stdout>: == Binding for rank 11 on node ip-10-0-0-21.ec2.internal ==
+[1,11]<stderr>: hwloc: Cannot find discovery component `windows'
+[1,11]<stderr>: hwloc: Cannot find discovery component `darwin'
+[1,10]<stdout>: 7112	0x000000ff		./kmeans_starpu
+[1,10]<stdout>:  7112	0x000000ff		kmeans_starpu
+[1,10]<stdout>:  7113	0x000000ff		kmeans_starpu
+[1,10]<stdout>:  7117	0x000000ff		cuda00005800017
+[1,10]<stdout>:  7118	0x00000001		CUDA 0
+[1,10]<stdout>:  7119	0x00000002		CPU 0
+[1,10]<stdout>:  7120	0x00000004		CPU 1
+[1,10]<stdout>:  7121	0x00000008		CPU 2
+[1,10]<stdout>:  7122	0x00000010		CPU 3
+[1,10]<stdout>:  7123	0x00000020		CPU 4
+[1,10]<stdout>:  7124	0x00000040		CPU 5
+[1,10]<stdout>:  7125	0x00000001		cuda-EvtHandlr
+[1,10]<stdout>:  7126	0x00000001		kmeans_starpu
+[1,10]<stdout>:  7127	0x00000080		MPI
+[1,10]<stdout>: 7128	0x000000ff		hwloc-ps
+[1,11]<stdout>: 7070	0x000000ff		/usr/lib/systemd/systemd
+[1,11]<stdout>: 7072	0x000000ff		(sd-pam)
+[1,11]<stdout>: 7079	0x000000ff		sshd: ec2-user@notty
+[1,11]<stdout>: 7080	0x000000ff		/usr/local/bin/prted
+[1,11]<stdout>: 7098	0x000000ff		/usr/local/bin/prted
+[1,11]<stdout>:  7098	0x000000ff		prted
+[1,11]<stdout>:  7099	0x000000ff		cuda0000280000b
+[1,11]<stdout>:  7107	0x000000ff		prted
+[1,11]<stdout>:  7108	0x000000ff		prted
+[1,11]<stdout>:  7109	0x000000ff		prted
+[1,11]<stdout>:  7110	0x000000ff		prted
+[1,11]<stdout>:  7111	0x000000ff		prted
+[1,11]<stdout>:  7112	0x000000ff		prted
+[1,11]<stdout>:  7113	0x000000ff		prted
+[1,11]<stdout>:  7114	0x000000ff		prted
+[1,11]<stdout>:  7115	0x000000ff		prted
+[1,11]<stdout>:  7116	0x000000ff		prted
+[1,11]<stdout>:  7117	0x000000ff		prted
+[1,11]<stdout>:  7118	0x000000ff		prted
+[1,11]<stdout>:  7119	0x000000ff		prted
+[1,11]<stdout>:  7120	0x000000ff		prted
+[1,11]<stdout>:  7121	0x000000ff		prted
+[1,11]<stdout>:  7122	0x000000ff		prted
+[1,11]<stdout>:  7123	0x000000ff		prted
+[1,11]<stdout>: 7124	0x000000ff		./kmeans_starpu
+[1,11]<stdout>:  7124	0x000000ff		kmeans_starpu
+[1,11]<stdout>:  7125	0x000000ff		kmeans_starpu
+[1,11]<stdout>:  7128	0x000000ff		cuda00005800017
+[1,11]<stdout>:  7129	0x00000001		CUDA 0
+[1,11]<stdout>:  7130	0x00000002		CPU 0
+[1,11]<stdout>:  7131	0x00000004		CPU 1
+[1,11]<stdout>:  7132	0x00000008		CPU 2
+[1,11]<stdout>:  7133	0x00000010		CPU 3
+[1,11]<stdout>:  7134	0x00000020		CPU 4
+[1,11]<stdout>:  7135	0x00000040		CPU 5
+[1,11]<stdout>:  7136	0x00000001		cuda-EvtHandlr
+[1,11]<stdout>:  7137	0x00000001		kmeans_starpu
+[1,11]<stdout>:  7138	0x00000080		MPI
+[1,11]<stdout>: 7139	0x000000ff		hwloc-ps
+[1,12]<stdout>: == Binding for rank 12 on node ip-10-0-0-22.ec2.internal ==
+[1,12]<stderr>: hwloc: Cannot find discovery component `windows'
+[1,12]<stderr>: hwloc: Cannot find discovery component `darwin'
+[1,12]<stdout>: 7009	0x000000ff		/usr/lib/systemd/systemd
+[1,12]<stdout>: 7011	0x000000ff		(sd-pam)
+[1,12]<stdout>: 7018	0x000000ff		sshd: ec2-user@notty
+[1,12]<stdout>: 7019	0x000000ff		/usr/local/bin/prted
+[1,12]<stdout>: 7037	0x000000ff		/usr/local/bin/prted
+[1,12]<stdout>:  7037	0x000000ff		prted
+[1,12]<stdout>:  7038	0x000000ff		cuda0000280000b
+[1,12]<stdout>:  7047	0x000000ff		prted
+[1,12]<stdout>:  7048	0x000000ff		prted
+[1,12]<stdout>:  7049	0x000000ff		prted
+[1,12]<stdout>:  7050	0x000000ff		prted
+[1,12]<stdout>:  7051	0x000000ff		prted
+[1,12]<stdout>:  7052	0x000000ff		prted
+[1,12]<stdout>:  7053	0x000000ff		prted
+[1,12]<stdout>:  7054	0x000000ff		prted
+[1,12]<stdout>:  7055	0x000000ff		prted
+[1,12]<stdout>:  7056	0x000000ff		prted
+[1,12]<stdout>:  7057	0x000000ff		prted
+[1,12]<stdout>:  7058	0x000000ff		prted
+[1,12]<stdout>:  7059	0x000000ff		prted
+[1,12]<stdout>:  7060	0x000000ff		prted
+[1,12]<stdout>:  7061	0x000000ff		prted
+[1,12]<stdout>:  7062	0x000000ff		prted
+[1,12]<stdout>:  7063	0x000000ff		prted
+[1,12]<stdout>: 7064	0x000000ff		./kmeans_starpu
+[1,12]<stdout>:  7064	0x000000ff		kmeans_starpu
+[1,12]<stdout>:  7065	0x000000ff		kmeans_starpu
+[1,12]<stdout>:  7068	0x000000ff		cuda00005800017
+[1,12]<stdout>:  7069	0x00000001		CUDA 0
+[1,12]<stdout>:  7070	0x00000002		CPU 0
+[1,12]<stdout>:  7071	0x00000004		CPU 1
+[1,12]<stdout>:  7072	0x00000008		CPU 2
+[1,12]<stdout>:  7073	0x00000010		CPU 3
+[1,12]<stdout>:  7074	0x00000020		CPU 4
+[1,12]<stdout>:  7075	0x00000040		CPU 5
+[1,12]<stdout>:  7076	0x00000001		cuda-EvtHandlr
+[1,12]<stdout>:  7077	0x00000001		kmeans_starpu
+[1,12]<stdout>:  7078	0x00000080		MPI
+[1,12]<stdout>: 7079	0x000000ff		hwloc-ps
+[1,13]<stdout>: == Binding for rank 13 on node ip-10-0-0-23.ec2.internal ==
+[1,13]<stderr>: hwloc: Cannot find discovery component `windows'
+[1,13]<stderr>: hwloc: Cannot find discovery component `darwin'
+[1,13]<stdout>: 7020	0x000000ff		/usr/lib/systemd/systemd
+[1,13]<stdout>: 7022	0x000000ff		(sd-pam)
+[1,13]<stdout>: 7029	0x000000ff		sshd: ec2-user@notty
+[1,13]<stdout>: 7030	0x000000ff		/usr/local/bin/prted
+[1,13]<stdout>: 7048	0x000000ff		/usr/local/bin/prted
+[1,13]<stdout>:  7048	0x000000ff		prted
+[1,13]<stdout>:  7049	0x000000ff		cuda0000280000b
+[1,13]<stdout>:  7057	0x000000ff		prted
+[1,13]<stdout>:  7058	0x000000ff		prted
+[1,13]<stdout>:  7059	0x000000ff		prted
+[1,13]<stdout>:  7060	0x000000ff		prted
+[1,13]<stdout>:  7061	0x000000ff		prted
+[1,13]<stdout>:  7062	0x000000ff		prted
+[1,13]<stdout>:  7063	0x000000ff		prted
+[1,13]<stdout>:  7064	0x000000ff		prted
+[1,13]<stdout>:  7065	0x000000ff		prted
+[1,13]<stdout>:  7066	0x000000ff		prted
+[1,13]<stdout>:  7067	0x000000ff		prted
+[1,13]<stdout>:  7068	0x000000ff		prted
+[1,13]<stdout>:  7069	0x000000ff		prted
+[1,13]<stdout>:  7070	0x000000ff		prted
+[1,13]<stdout>:  7071	0x000000ff		prted
+[1,13]<stdout>:  7072	0x000000ff		prted
+[1,13]<stdout>:  7073	0x000000ff		prted
+[1,13]<stdout>: 7074	0x000000ff		./kmeans_starpu
+[1,13]<stdout>:  7074	0x000000ff		kmeans_starpu
+[1,13]<stdout>:  7075	0x000000ff		kmeans_starpu
+[1,13]<stdout>:  7078	0x000000ff		cuda00005800017
+[1,13]<stdout>:  7079	0x00000001		CUDA 0
+[1,13]<stdout>:  7080	0x00000002		CPU 0
+[1,13]<stdout>:  7081	0x00000004		CPU 1
+[1,13]<stdout>:  7082	0x00000008		CPU 2
+[1,13]<stdout>:  7083	0x00000010		CPU 3
+[1,13]<stdout>:  7084	0x00000020		CPU 4
+[1,13]<stdout>:  7085	0x00000040		CPU 5
+[1,13]<stdout>:  7086	0x00000001		cuda-EvtHandlr
+[1,13]<stdout>:  7087	0x00000001		kmeans_starpu
+[1,13]<stdout>:  7088	0x00000080		MPI
+[1,13]<stdout>: 7089	0x000000ff		hwloc-ps
+[1,14]<stdout>: == Binding for rank 14 on node ip-10-0-0-24.ec2.internal ==
+[1,14]<stderr>: hwloc: Cannot find discovery component `windows'
+[1,14]<stderr>: hwloc: Cannot find discovery component `darwin'
+[1,14]<stdout>: 7000	0x000000ff		/usr/lib/systemd/systemd
+[1,14]<stdout>: 7002	0x000000ff		(sd-pam)
+[1,14]<stdout>: 7009	0x000000ff		sshd: ec2-user@notty
+[1,14]<stdout>: 7010	0x000000ff		/usr/local/bin/prted
+[1,14]<stdout>: 7029	0x000000ff		/usr/local/bin/prted
+[1,14]<stdout>:  7029	0x000000ff		prted
+[1,14]<stdout>:  7030	0x000000ff		cuda0000280000b
+[1,14]<stdout>:  7038	0x000000ff		prted
+[1,14]<stdout>:  7039	0x000000ff		prted
+[1,14]<stdout>:  7040	0x000000ff		prted
+[1,14]<stdout>:  7041	0x000000ff		prted
+[1,14]<stdout>:  7042	0x000000ff		prted
+[1,14]<stdout>:  7043	0x000000ff		prted
+[1,14]<stdout>:  7044	0x000000ff		prted
+[1,14]<stdout>:  7045	0x000000ff		prted
+[1,14]<stdout>:  7046	0x000000ff		prted
+[1,14]<stdout>:  7047	0x000000ff		prted
+[1,14]<stdout>:  7048	0x000000ff		prted
+[1,14]<stdout>:  7049	0x000000ff		prted
+[1,14]<stdout>:  7050	0x000000ff		prted
+[1,14]<stdout>:  7051	0x000000ff		prted
+[1,14]<stdout>:  7052	0x000000ff		prted
+[1,14]<stdout>:  7053	0x000000ff		prted
+[1,14]<stdout>:  7054	0x000000ff		prted
+[1,14]<stdout>: 7055	0x000000ff		./kmeans_starpu
+[1,14]<stdout>:  7055	0x000000ff		kmeans_starpu
+[1,14]<stdout>:  7056	0x000000ff		kmeans_starpu
+[1,14]<stdout>:  7059	0x000000ff		cuda00005800017
+[1,14]<stdout>:  7060	0x00000001		CUDA 0
+[1,14]<stdout>:  7061	0x00000002		CPU 0
+[1,14]<stdout>:  7062	0x00000004		CPU 1
+[1,14]<stdout>:  7063	0x00000008		CPU 2
+[1,14]<stdout>:  7064	0x00000010		CPU 3
+[1,14]<stdout>:  7065	0x00000020		CPU 4
+[1,14]<stdout>:  7066	0x00000040		CPU 5
+[1,14]<stdout>:  7067	0x00000001		cuda-EvtHandlr
+[1,14]<stdout>:  7068	0x00000001		kmeans_starpu
+[1,14]<stdout>:  7069	0x00000080		MPI
+[1,14]<stdout>: 7070	0x000000ff		hwloc-ps
+[1,15]<stdout>: == Binding for rank 15 on node ip-10-0-0-25.ec2.internal ==
+[1,15]<stderr>: hwloc: Cannot find discovery component `windows'
+[1,15]<stderr>: hwloc: Cannot find discovery component `darwin'
+[1,15]<stdout>: 7082	0x000000ff		/usr/lib/systemd/systemd
+[1,15]<stdout>: 7084	0x000000ff		(sd-pam)
+[1,15]<stdout>: 7091	0x000000ff		sshd: ec2-user@notty
+[1,15]<stdout>: 7092	0x000000ff		/usr/local/bin/prted
+[1,15]<stdout>: 7110	0x000000ff		/usr/local/bin/prted
+[1,15]<stdout>:  7110	0x000000ff		prted
+[1,15]<stdout>:  7111	0x000000ff		cuda0000280000b
+[1,15]<stdout>:  7119	0x000000ff		prted
+[1,15]<stdout>:  7120	0x000000ff		prted
+[1,15]<stdout>:  7121	0x000000ff		prted
+[1,15]<stdout>:  7122	0x000000ff		prted
+[1,15]<stdout>:  7123	0x000000ff		prted
+[1,15]<stdout>:  7124	0x000000ff		prted
+[1,15]<stdout>:  7125	0x000000ff		prted
+[1,15]<stdout>:  7126	0x000000ff		prted
+[1,15]<stdout>:  7127	0x000000ff		prted
+[1,15]<stdout>:  7128	0x000000ff		prted
+[1,15]<stdout>:  7129	0x000000ff		prted
+[1,15]<stdout>:  7130	0x000000ff		prted
+[1,15]<stdout>:  7131	0x000000ff		prted
+[1,15]<stdout>:  7132	0x000000ff		prted
+[1,15]<stdout>:  7133	0x000000ff		prted
+[1,15]<stdout>:  7134	0x000000ff		prted
+[1,15]<stdout>:  7135	0x000000ff		prted
+[1,15]<stdout>: 7136	0x000000ff		./kmeans_starpu
+[1,15]<stdout>:  7136	0x000000ff		kmeans_starpu
+[1,15]<stdout>:  7137	0x000000ff		kmeans_starpu
+[1,15]<stdout>:  7140	0x000000ff		cuda00005800017
+[1,15]<stdout>:  7141	0x00000001		CUDA 0
+[1,15]<stdout>:  7142	0x00000002		CPU 0
+[1,15]<stdout>:  7143	0x00000004		CPU 1
+[1,15]<stdout>:  7144	0x00000008		CPU 2
+[1,15]<stdout>:  7145	0x00000010		CPU 3
+[1,15]<stdout>:  7146	0x00000020		CPU 4
+[1,15]<stdout>:  7147	0x00000040		CPU 5
+[1,15]<stdout>:  7148	0x00000001		cuda-EvtHandlr
+[1,15]<stdout>:  7149	0x00000001		kmeans_starpu
+[1,15]<stdout>:  7150	0x00000080		MPI
+[1,15]<stdout>: 7151	0x000000ff		hwloc-ps
+[1,16]<stdout>: == Binding for rank 16 on node ip-10-0-0-26.ec2.internal ==
+[1,16]<stderr>: hwloc: Cannot find discovery component `windows'
+[1,16]<stderr>: hwloc: Cannot find discovery component `darwin'
+[1,16]<stdout>: 7061	0x000000ff		/usr/lib/systemd/systemd
+[1,16]<stdout>: 7063	0x000000ff		(sd-pam)
+[1,16]<stdout>: 7070	0x000000ff		sshd: ec2-user@notty
+[1,16]<stdout>: 7071	0x000000ff		/usr/local/bin/prted
+[1,16]<stdout>: 7089	0x000000ff		/usr/local/bin/prted
+[1,16]<stdout>:  7089	0x000000ff		prted
+[1,16]<stdout>:  7090	0x000000ff		cuda0000280000b
+[1,16]<stdout>:  7098	0x000000ff		prted
+[1,16]<stdout>:  7099	0x000000ff		prted
+[1,16]<stdout>:  7100	0x000000ff		prted
+[1,16]<stdout>:  7101	0x000000ff		prted
+[1,16]<stdout>:  7102	0x000000ff		prted
+[1,16]<stdout>:  7103	0x000000ff		prted
+[1,16]<stdout>:  7104	0x000000ff		prted
+[1,16]<stdout>:  7105	0x000000ff		prted
+[1,16]<stdout>:  7106	0x000000ff		prted
+[1,16]<stdout>:  7107	0x000000ff		prted
+[1,16]<stdout>:  7108	0x000000ff		prted
+[1,16]<stdout>:  7109	0x000000ff		prted
+[1,16]<stdout>:  7110	0x000000ff		prted
+[1,16]<stdout>:  7111	0x000000ff		prted
+[1,16]<stdout>:  7112	0x000000ff		prted
+[1,16]<stdout>:  7113	0x000000ff		prted
+[1,16]<stdout>:  7114	0x000000ff		prted
+[1,16]<stdout>: 7115	0x000000ff		./kmeans_starpu
+[1,16]<stdout>:  7115	0x000000ff		kmeans_starpu
+[1,16]<stdout>:  7116	0x000000ff		kmeans_starpu
+[1,16]<stdout>:  7120	0x000000ff		cuda00005800017
+[1,16]<stdout>:  7121	0x00000001		CUDA 0
+[1,16]<stdout>:  7122	0x00000002		CPU 0
+[1,16]<stdout>:  7123	0x00000004		CPU 1
+[1,16]<stdout>:  7124	0x00000008		CPU 2
+[1,16]<stdout>:  7125	0x00000010		CPU 3
+[1,16]<stdout>:  7126	0x00000020		CPU 4
+[1,16]<stdout>:  7127	0x00000040		CPU 5
+[1,16]<stdout>:  7128	0x00000001		cuda-EvtHandlr
+[1,16]<stdout>:  7129	0x00000001		kmeans_starpu
+[1,16]<stdout>:  7130	0x00000080		MPI
+[1,16]<stdout>: 7131	0x000000ff		hwloc-ps
+[1,17]<stdout>: == Binding for rank 17 on node ip-10-0-0-27.ec2.internal ==
+[1,17]<stderr>: hwloc: Cannot find discovery component `windows'
+[1,17]<stderr>: hwloc: Cannot find discovery component `darwin'
+[1,17]<stdout>: 7017	0x000000ff		/usr/lib/systemd/systemd
+[1,17]<stdout>: 7019	0x000000ff		(sd-pam)
+[1,17]<stdout>: 7026	0x000000ff		sshd: ec2-user@notty
+[1,17]<stdout>: 7027	0x000000ff		/usr/local/bin/prted
+[1,17]<stdout>: 7045	0x000000ff		/usr/local/bin/prted
+[1,17]<stdout>:  7045	0x000000ff		prted
+[1,17]<stdout>:  7046	0x000000ff		cuda0000280000b
+[1,17]<stdout>:  7054	0x000000ff		prted
+[1,17]<stdout>:  7055	0x000000ff		prted
+[1,17]<stdout>:  7056	0x000000ff		prted
+[1,17]<stdout>:  7057	0x000000ff		prted
+[1,17]<stdout>:  7058	0x000000ff		prted
+[1,17]<stdout>:  7059	0x000000ff		prted
+[1,17]<stdout>:  7060	0x000000ff		prted
+[1,17]<stdout>:  7061	0x000000ff		prted
+[1,17]<stdout>:  7062	0x000000ff		prted
+[1,17]<stdout>:  7063	0x000000ff		prted
+[1,17]<stdout>:  7064	0x000000ff		prted
+[1,17]<stdout>:  7065	0x000000ff		prted
+[1,17]<stdout>:  7066	0x000000ff		prted
+[1,17]<stdout>:  7067	0x000000ff		prted
+[1,17]<stdout>:  7068	0x000000ff		prted
+[1,17]<stdout>:  7069	0x000000ff		prted
+[1,17]<stdout>:  7070	0x000000ff		prted
+[1,17]<stdout>: 7071	0x000000ff		./kmeans_starpu
+[1,17]<stdout>:  7071	0x000000ff		kmeans_starpu
+[1,17]<stdout>:  7072	0x000000ff		kmeans_starpu
+[1,17]<stdout>:  7075	0x000000ff		cuda00005800017
+[1,17]<stdout>:  7076	0x00000001		CUDA 0
+[1,17]<stdout>:  7077	0x00000002		CPU 0
+[1,17]<stdout>:  7078	0x00000004		CPU 1
+[1,17]<stdout>:  7079	0x00000008		CPU 2
+[1,17]<stdout>:  7080	0x00000010		CPU 3
+[1,17]<stdout>:  7081	0x00000020		CPU 4
+[1,17]<stdout>:  7082	0x00000040		CPU 5
+[1,17]<stdout>:  7083	0x00000001		cuda-EvtHandlr
+[1,17]<stdout>:  7084	0x00000001		kmeans_starpu
+[1,18]<stdout>: == Binding for rank 18 on node ip-10-0-0-28.ec2.internal ==
+[1,17]<stdout>:  7085	0x00000080		MPI
+[1,17]<stdout>: 7086	0x000000ff		hwloc-ps
+[1,18]<stderr>: hwloc: Cannot find discovery component `windows'
+[1,18]<stderr>: hwloc: Cannot find discovery component `darwin'
+[1,18]<stdout>: 7021	0x000000ff		/usr/lib/systemd/systemd
+[1,18]<stdout>: 7023	0x000000ff		(sd-pam)
+[1,18]<stdout>: 7030	0x000000ff		sshd: ec2-user@notty
+[1,18]<stdout>: 7031	0x000000ff		/usr/local/bin/prted
+[1,18]<stdout>: 7049	0x000000ff		/usr/local/bin/prted
+[1,18]<stdout>:  7049	0x000000ff		prted
+[1,18]<stdout>:  7050	0x000000ff		cuda0000280000b
+[1,18]<stdout>:  7058	0x000000ff		prted
+[1,18]<stdout>:  7059	0x000000ff		prted
+[1,18]<stdout>:  7060	0x000000ff		prted
+[1,18]<stdout>:  7061	0x000000ff		prted
+[1,18]<stdout>:  7062	0x000000ff		prted
+[1,18]<stdout>:  7063	0x000000ff		prted
+[1,18]<stdout>:  7064	0x000000ff		prted
+[1,18]<stdout>:  7065	0x000000ff		prted
+[1,18]<stdout>:  7066	0x000000ff		prted
+[1,18]<stdout>:  7067	0x000000ff		prted
+[1,18]<stdout>:  7068	0x000000ff		prted
+[1,18]<stdout>:  7069	0x000000ff		prted
+[1,18]<stdout>:  7070	0x000000ff		prted
+[1,18]<stdout>:  7071	0x000000ff		prted
+[1,18]<stdout>:  7072	0x000000ff		prted
+[1,18]<stdout>:  7073	0x000000ff		prted
+[1,18]<stdout>:  7074	0x000000ff		prted
+[1,18]<stdout>: 7075	0x000000ff		./kmeans_starpu
+[1,18]<stdout>:  7075	0x000000ff		kmeans_starpu
+[1,18]<stdout>:  7076	0x000000ff		kmeans_starpu
+[1,18]<stdout>:  7077	0x000000ff		cuda00005800017
+[1,18]<stdout>:  7078	0x00000001		CUDA 0
+[1,18]<stdout>:  7079	0x00000002		CPU 0
+[1,18]<stdout>:  7080	0x00000004		CPU 1
+[1,18]<stdout>:  7081	0x00000008		CPU 2
+[1,18]<stdout>:  7082	0x00000010		CPU 3
+[1,18]<stdout>:  7083	0x00000020		CPU 4
+[1,18]<stdout>:  7084	0x00000040		CPU 5
+[1,18]<stdout>:  7085	0x00000001		cuda-EvtHandlr
+[1,18]<stdout>:  7086	0x00000001		kmeans_starpu
+[1,18]<stdout>:  7087	0x00000080		MPI
+[1,18]<stdout>: 7091	0x000000ff		hwloc-ps
+[1,19]<stdout>: == Binding for rank 19 on node ip-10-0-0-29.ec2.internal ==
+[1,19]<stderr>: hwloc: Cannot find discovery component `windows'
+[1,19]<stderr>: hwloc: Cannot find discovery component `darwin'
+[1,19]<stdout>: 7019	0x000000ff		/usr/lib/systemd/systemd
+[1,19]<stdout>: 7021	0x000000ff		(sd-pam)
+[1,19]<stdout>: 7028	0x000000ff		sshd: ec2-user@notty
+[1,19]<stdout>: 7029	0x000000ff		/usr/local/bin/prted
+[1,19]<stdout>: 7047	0x000000ff		/usr/local/bin/prted
+[1,19]<stdout>:  7047	0x000000ff		prted
+[1,19]<stdout>:  7048	0x000000ff		cuda0000280000b
+[1,19]<stdout>:  7056	0x000000ff		prted
+[1,19]<stdout>:  7057	0x000000ff		prted
+[1,19]<stdout>:  7058	0x000000ff		prted
+[1,19]<stdout>:  7059	0x000000ff		prted
+[1,19]<stdout>:  7060	0x000000ff		prted
+[1,19]<stdout>:  7061	0x000000ff		prted
+[1,19]<stdout>:  7062	0x000000ff		prted
+[1,19]<stdout>:  7063	0x000000ff		prted
+[1,19]<stdout>:  7064	0x000000ff		prted
+[1,19]<stdout>:  7065	0x000000ff		prted
+[1,19]<stdout>:  7066	0x000000ff		prted
+[1,19]<stdout>:  7067	0x000000ff		prted
+[1,19]<stdout>:  7068	0x000000ff		prted
+[1,19]<stdout>:  7069	0x000000ff		prted
+[1,19]<stdout>:  7070	0x000000ff		prted
+[1,19]<stdout>:  7071	0x000000ff		prted
+[1,19]<stdout>:  7072	0x000000ff		prted
+[1,20]<stdout>: == Binding for rank 20 on node ip-10-0-0-30.ec2.internal ==
+[1,19]<stdout>: 7073	0x000000ff		./kmeans_starpu
+[1,19]<stdout>:  7073	0x000000ff		kmeans_starpu
+[1,19]<stdout>:  7074	0x000000ff		kmeans_starpu
+[1,19]<stdout>:  7075	0x000000ff		cuda00005800017
+[1,19]<stdout>:  7076	0x00000001		CUDA 0
+[1,19]<stdout>:  7077	0x00000002		CPU 0
+[1,19]<stdout>:  7078	0x00000004		CPU 1
+[1,19]<stdout>:  7079	0x00000008		CPU 2
+[1,19]<stdout>:  7080	0x00000010		CPU 3
+[1,19]<stdout>:  7081	0x00000020		CPU 4
+[1,19]<stdout>:  7082	0x00000040		CPU 5
+[1,19]<stdout>:  7083	0x00000001		cuda-EvtHandlr
+[1,19]<stdout>:  7084	0x00000001		kmeans_starpu
+[1,19]<stdout>:  7085	0x00000080		MPI
+[1,19]<stdout>: 7088	0x000000ff		hwloc-ps
+[1,20]<stderr>: hwloc: Cannot find discovery component `windows'
+[1,20]<stderr>: hwloc: Cannot find discovery component `darwin'
+[1,20]<stdout>: 7009	0x000000ff		/usr/lib/systemd/systemd
+[1,20]<stdout>: 7011	0x000000ff		(sd-pam)
+[1,20]<stdout>: 7018	0x000000ff		sshd: ec2-user@notty
+[1,20]<stdout>: 7019	0x000000ff		/usr/local/bin/prted
+[1,20]<stdout>: 7037	0x000000ff		/usr/local/bin/prted
+[1,20]<stdout>:  7037	0x000000ff		prted
+[1,20]<stdout>:  7038	0x000000ff		cuda0000280000b
+[1,20]<stdout>:  7046	0x000000ff		prted
+[1,20]<stdout>:  7047	0x000000ff		prted
+[1,20]<stdout>:  7048	0x000000ff		prted
+[1,20]<stdout>:  7049	0x000000ff		prted
+[1,20]<stdout>:  7050	0x000000ff		prted
+[1,20]<stdout>:  7051	0x000000ff		prted
+[1,20]<stdout>:  7052	0x000000ff		prted
+[1,20]<stdout>:  7053	0x000000ff		prted
+[1,20]<stdout>:  7054	0x000000ff		prted
+[1,20]<stdout>:  7055	0x000000ff		prted
+[1,20]<stdout>:  7056	0x000000ff		prted
+[1,20]<stdout>:  7057	0x000000ff		prted
+[1,20]<stdout>:  7058	0x000000ff		prted
+[1,20]<stdout>:  7059	0x000000ff		prted
+[1,20]<stdout>:  7060	0x000000ff		prted
+[1,20]<stdout>:  7061	0x000000ff		prted
+[1,20]<stdout>:  7062	0x000000ff		prted
+[1,20]<stdout>: 7063	0x000000ff		./kmeans_starpu
+[1,20]<stdout>:  7063	0x000000ff		kmeans_starpu
+[1,20]<stdout>:  7064	0x000000ff		kmeans_starpu
+[1,20]<stdout>:  7065	0x000000ff		cuda00005800017
+[1,20]<stdout>:  7066	0x00000001		CUDA 0
+[1,20]<stdout>:  7067	0x00000002		CPU 0
+[1,20]<stdout>:  7068	0x00000004		CPU 1
+[1,20]<stdout>:  7069	0x00000008		CPU 2
+[1,20]<stdout>:  7070	0x00000010		CPU 3
+[1,20]<stdout>:  7071	0x00000020		CPU 4
+[1,20]<stdout>:  7072	0x00000040		CPU 5
+[1,20]<stdout>:  7073	0x00000001		cuda-EvtHandlr
+[1,20]<stdout>:  7074	0x00000001		kmeans_starpu
+[1,20]<stdout>:  7075	0x00000080		MPI
+[1,20]<stdout>: 7076	0x000000ff		hwloc-ps
+[1,21]<stdout>: == Binding for rank 21 on node ip-10-0-0-31.ec2.internal ==
+[1,21]<stderr>: hwloc: Cannot find discovery component `windows'
+[1,21]<stderr>: hwloc: Cannot find discovery component `darwin'
+[1,21]<stdout>: 7010	0x000000ff		/usr/lib/systemd/systemd
+[1,21]<stdout>: 7012	0x000000ff		(sd-pam)
+[1,21]<stdout>: 7019	0x000000ff		sshd: ec2-user@notty
+[1,21]<stdout>: 7020	0x000000ff		/usr/local/bin/prted
+[1,21]<stdout>: 7038	0x000000ff		/usr/local/bin/prted
+[1,21]<stdout>:  7038	0x000000ff		prted
+[1,21]<stdout>:  7039	0x000000ff		cuda0000280000b
+[1,21]<stdout>:  7047	0x000000ff		prted
+[1,21]<stdout>:  7048	0x000000ff		prted
+[1,21]<stdout>:  7049	0x000000ff		prted
+[1,21]<stdout>:  7050	0x000000ff		prted
+[1,21]<stdout>:  7051	0x000000ff		prted
+[1,21]<stdout>:  7052	0x000000ff		prted
+[1,21]<stdout>:  7053	0x000000ff		prted
+[1,21]<stdout>:  7054	0x000000ff		prted
+[1,21]<stdout>:  7055	0x000000ff		prted
+[1,21]<stdout>:  7056	0x000000ff		prted
+[1,21]<stdout>:  7057	0x000000ff		prted
+[1,21]<stdout>:  7058	0x000000ff		prted
+[1,21]<stdout>:  7059	0x000000ff		prted
+[1,21]<stdout>:  7060	0x000000ff		prted
+[1,21]<stdout>:  7061	0x000000ff		prted
+[1,21]<stdout>:  7062	0x000000ff		prted
+[1,21]<stdout>:  7063	0x000000ff		prted
+[1,21]<stdout>: 7064	0x000000ff		./kmeans_starpu
+[1,21]<stdout>:  7064	0x000000ff		kmeans_starpu
+[1,21]<stdout>:  7065	0x000000ff		kmeans_starpu
+[1,21]<stdout>:  7066	0x000000ff		cuda00005800017
+[1,21]<stdout>:  7067	0x00000001		CUDA 0
+[1,21]<stdout>:  7068	0x00000002		CPU 0
+[1,21]<stdout>:  7069	0x00000004		CPU 1
+[1,21]<stdout>:  7070	0x00000008		CPU 2
+[1,21]<stdout>:  7071	0x00000010		CPU 3
+[1,21]<stdout>:  7072	0x00000020		CPU 4
+[1,21]<stdout>:  7073	0x00000040		CPU 5
+[1,21]<stdout>:  7074	0x00000001		cuda-EvtHandlr
+[1,21]<stdout>:  7075	0x00000001		kmeans_starpu
+[1,21]<stdout>:  7076	0x00000080		MPI
+[1,21]<stdout>: 7077	0x000000ff		hwloc-ps
+[1,22]<stdout>: == Binding for rank 22 on node ip-10-0-0-32.ec2.internal ==
+[1,22]<stderr>: hwloc: Cannot find discovery component `windows'
+[1,22]<stderr>: hwloc: Cannot find discovery component `darwin'
+[1,22]<stdout>: 7011	0x000000ff		/usr/lib/systemd/systemd
+[1,22]<stdout>: 7013	0x000000ff		(sd-pam)
+[1,22]<stdout>: 7020	0x000000ff		sshd: ec2-user@notty
+[1,22]<stdout>: 7021	0x000000ff		/usr/local/bin/prted
+[1,22]<stdout>: 7039	0x000000ff		/usr/local/bin/prted
+[1,22]<stdout>:  7039	0x000000ff		prted
+[1,22]<stdout>:  7040	0x000000ff		cuda0000280000b
+[1,22]<stdout>:  7048	0x000000ff		prted
+[1,22]<stdout>:  7049	0x000000ff		prted
+[1,22]<stdout>:  7050	0x000000ff		prted
+[1,22]<stdout>:  7051	0x000000ff		prted
+[1,22]<stdout>:  7052	0x000000ff		prted
+[1,22]<stdout>:  7053	0x000000ff		prted
+[1,22]<stdout>:  7054	0x000000ff		prted
+[1,22]<stdout>:  7055	0x000000ff		prted
+[1,22]<stdout>:  7056	0x000000ff		prted
+[1,22]<stdout>:  7057	0x000000ff		prted
+[1,22]<stdout>:  7058	0x000000ff		prted
+[1,22]<stdout>:  7059	0x000000ff		prted
+[1,22]<stdout>:  7060	0x000000ff		prted
+[1,22]<stdout>:  7061	0x000000ff		prted
+[1,22]<stdout>:  7062	0x000000ff		prted
+[1,22]<stdout>:  7063	0x000000ff		prted
+[1,22]<stdout>:  7064	0x000000ff		prted
+[1,22]<stdout>: 7065	0x000000ff		./kmeans_starpu
+[1,22]<stdout>:  7065	0x000000ff		kmeans_starpu
+[1,22]<stdout>:  7066	0x000000ff		kmeans_starpu
+[1,22]<stdout>:  7067	0x000000ff		cuda00005800017
+[1,22]<stdout>:  7068	0x00000001		CUDA 0
+[1,22]<stdout>:  7069	0x00000002		CPU 0
+[1,22]<stdout>:  7070	0x00000004		CPU 1
+[1,22]<stdout>:  7071	0x00000008		CPU 2
+[1,22]<stdout>:  7072	0x00000010		CPU 3
+[1,22]<stdout>:  7073	0x00000020		CPU 4
+[1,22]<stdout>:  7074	0x00000040		CPU 5
+[1,22]<stdout>:  7075	0x00000001		cuda-EvtHandlr
+[1,22]<stdout>:  7076	0x00000001		kmeans_starpu
+[1,22]<stdout>:  7077	0x00000080		MPI
+[1,22]<stdout>: 7078	0x000000ff		hwloc-ps
+[1,23]<stdout>: == Binding for rank 23 on node ip-10-0-0-33.ec2.internal ==
+[1,23]<stderr>: hwloc: Cannot find discovery component `windows'
+[1,23]<stderr>: hwloc: Cannot find discovery component `darwin'
+[1,23]<stdout>: 7014	0x000000ff		/usr/lib/systemd/systemd
+[1,23]<stdout>: 7016	0x000000ff		(sd-pam)
+[1,23]<stdout>: 7023	0x000000ff		sshd: ec2-user@notty
+[1,23]<stdout>: 7024	0x000000ff		/usr/local/bin/prted
+[1,23]<stdout>: 7042	0x000000ff		/usr/local/bin/prted
+[1,23]<stdout>:  7042	0x000000ff		prted
+[1,23]<stdout>:  7043	0x000000ff		cuda0000280000b
+[1,23]<stdout>:  7051	0x000000ff		prted
+[1,23]<stdout>:  7052	0x000000ff		prted
+[1,23]<stdout>:  7053	0x000000ff		prted
+[1,23]<stdout>:  7054	0x000000ff		prted
+[1,23]<stdout>:  7055	0x000000ff		prted
+[1,23]<stdout>:  7056	0x000000ff		prted
+[1,23]<stdout>:  7057	0x000000ff		prted
+[1,23]<stdout>:  7058	0x000000ff		prted
+[1,23]<stdout>:  7059	0x000000ff		prted
+[1,23]<stdout>:  7060	0x000000ff		prted
+[1,23]<stdout>:  7061	0x000000ff		prted
+[1,23]<stdout>:  7062	0x000000ff		prted
+[1,23]<stdout>:  7063	0x000000ff		prted
+[1,23]<stdout>:  7064	0x000000ff		prted
+[1,23]<stdout>:  7065	0x000000ff		prted
+[1,23]<stdout>:  7066	0x000000ff		prted
+[1,23]<stdout>:  7067	0x000000ff		prted
+[1,23]<stdout>: 7068	0x000000ff		./kmeans_starpu
+[1,23]<stdout>:  7068	0x000000ff		kmeans_starpu
+[1,23]<stdout>:  7069	0x000000ff		kmeans_starpu
+[1,23]<stdout>:  7070	0x000000ff		cuda00005800017
+[1,23]<stdout>:  7071	0x00000001		CUDA 0
+[1,23]<stdout>:  7072	0x00000002		CPU 0
+[1,23]<stdout>:  7073	0x00000004		CPU 1
+[1,23]<stdout>:  7074	0x00000008		CPU 2
+[1,23]<stdout>:  7075	0x00000010		CPU 3
+[1,23]<stdout>:  7076	0x00000020		CPU 4
+[1,23]<stdout>:  7077	0x00000040		CPU 5
+[1,23]<stdout>:  7078	0x00000001		cuda-EvtHandlr
+[1,23]<stdout>:  7079	0x00000001		kmeans_starpu
+[1,23]<stdout>:  7080	0x00000080		MPI
+[1,23]<stdout>: 7081	0x000000ff		hwloc-ps
+[1,24]<stdout>: == Binding for rank 24 on node ip-10-0-0-34.ec2.internal ==
+[1,24]<stderr>: hwloc: Cannot find discovery component `windows'
+[1,24]<stderr>: hwloc: Cannot find discovery component `darwin'
+[1,24]<stdout>: 7016	0x000000ff		/usr/lib/systemd/systemd
+[1,24]<stdout>: 7018	0x000000ff		(sd-pam)
+[1,24]<stdout>: 7025	0x000000ff		sshd: ec2-user@notty
+[1,24]<stdout>: 7026	0x000000ff		/usr/local/bin/prted
+[1,24]<stdout>: 7044	0x000000ff		/usr/local/bin/prted
+[1,24]<stdout>:  7044	0x000000ff		prted
+[1,24]<stdout>:  7045	0x000000ff		cuda0000280000b
+[1,25]<stdout>: == Binding for rank 25 on node ip-10-0-0-35.ec2.internal ==
+[1,24]<stdout>:  7053	0x000000ff		prted
+[1,24]<stdout>:  7054	0x000000ff		prted
+[1,24]<stdout>:  7055	0x000000ff		prted
+[1,24]<stdout>:  7056	0x000000ff		prted
+[1,24]<stdout>:  7057	0x000000ff		prted
+[1,24]<stdout>:  7058	0x000000ff		prted
+[1,24]<stdout>:  7059	0x000000ff		prted
+[1,24]<stdout>:  7060	0x000000ff		prted
+[1,24]<stdout>:  7061	0x000000ff		prted
+[1,24]<stdout>:  7062	0x000000ff		prted
+[1,24]<stdout>:  7063	0x000000ff		prted
+[1,24]<stdout>:  7064	0x000000ff		prted
+[1,24]<stdout>:  7065	0x000000ff		prted
+[1,24]<stdout>:  7066	0x000000ff		prted
+[1,24]<stdout>:  7067	0x000000ff		prted
+[1,24]<stdout>:  7068	0x000000ff		prted
+[1,24]<stdout>:  7069	0x000000ff		prted
+[1,24]<stdout>: 7070	0x000000ff		./kmeans_starpu
+[1,24]<stdout>:  7070	0x000000ff		kmeans_starpu
+[1,24]<stdout>:  7071	0x000000ff		kmeans_starpu
+[1,24]<stdout>:  7072	0x000000ff		cuda00005800017
+[1,24]<stdout>:  7073	0x00000001		CUDA 0
+[1,24]<stdout>:  7074	0x00000002		CPU 0
+[1,24]<stdout>:  7075	0x00000004		CPU 1
+[1,24]<stdout>:  7076	0x00000008		CPU 2
+[1,24]<stdout>:  7077	0x00000010		CPU 3
+[1,24]<stdout>:  7078	0x00000020		CPU 4
+[1,24]<stdout>:  7079	0x00000040		CPU 5
+[1,24]<stdout>:  7080	0x00000001		cuda-EvtHandlr
+[1,24]<stdout>:  7081	0x00000001		kmeans_starpu
+[1,24]<stdout>:  7082	0x00000080		MPI
+[1,24]<stdout>: 7083	0x000000ff		hwloc-ps
+[1,25]<stderr>: hwloc: Cannot find discovery component `windows'
+[1,25]<stderr>: hwloc: Cannot find discovery component `darwin'
+[1,25]<stdout>: 7072	0x000000ff		/usr/lib/systemd/systemd
+[1,25]<stdout>: 7074	0x000000ff		(sd-pam)
+[1,25]<stdout>: 7081	0x000000ff		sshd: ec2-user@notty
+[1,25]<stdout>: 7082	0x000000ff		/usr/local/bin/prted
+[1,25]<stdout>: 7100	0x000000ff		/usr/local/bin/prted
+[1,25]<stdout>:  7100	0x000000ff		prted
+[1,25]<stdout>:  7101	0x000000ff		cuda0000280000b
+[1,25]<stdout>:  7109	0x000000ff		prted
+[1,25]<stdout>:  7110	0x000000ff		prted
+[1,25]<stdout>:  7111	0x000000ff		prted
+[1,25]<stdout>:  7112	0x000000ff		prted
+[1,25]<stdout>:  7113	0x000000ff		prted
+[1,25]<stdout>:  7114	0x000000ff		prted
+[1,25]<stdout>:  7115	0x000000ff		prted
+[1,25]<stdout>:  7117	0x000000ff		prted
+[1,25]<stdout>:  7118	0x000000ff		prted
+[1,25]<stdout>:  7119	0x000000ff		prted
+[1,25]<stdout>:  7120	0x000000ff		prted
+[1,25]<stdout>:  7121	0x000000ff		prted
+[1,25]<stdout>:  7122	0x000000ff		prted
+[1,25]<stdout>:  7123	0x000000ff		prted
+[1,25]<stdout>:  7124	0x000000ff		prted
+[1,25]<stdout>:  7125	0x000000ff		prted
+[1,25]<stdout>:  7126	0x000000ff		prted
+[1,25]<stdout>: 7127	0x000000ff		./kmeans_starpu
+[1,25]<stdout>:  7127	0x000000ff		kmeans_starpu
+[1,25]<stdout>:  7128	0x000000ff		kmeans_starpu
+[1,25]<stdout>:  7129	0x000000ff		cuda00005800017
+[1,25]<stdout>:  7130	0x00000001		CUDA 0
+[1,25]<stdout>:  7131	0x00000002		CPU 0
+[1,25]<stdout>:  7132	0x00000004		CPU 1
+[1,25]<stdout>:  7133	0x00000008		CPU 2
+[1,25]<stdout>:  7134	0x00000010		CPU 3
+[1,25]<stdout>:  7135	0x00000020		CPU 4
+[1,25]<stdout>:  7136	0x00000040		CPU 5
+[1,25]<stdout>:  7137	0x00000001		cuda-EvtHandlr
+[1,25]<stdout>:  7138	0x00000001		kmeans_starpu
+[1,25]<stdout>:  7139	0x00000080		MPI
+[1,25]<stdout>: 7140	0x000000ff		hwloc-ps
+[1,26]<stdout>: == Binding for rank 26 on node ip-10-0-0-36.ec2.internal ==
+[1,26]<stderr>: hwloc: Cannot find discovery component `windows'
+[1,26]<stderr>: hwloc: Cannot find discovery component `darwin'
+[1,26]<stdout>: 6957	0x000000ff		/usr/lib/systemd/systemd
+[1,26]<stdout>: 6959	0x000000ff		(sd-pam)
+[1,26]<stdout>: 6966	0x000000ff		sshd: ec2-user@notty
+[1,26]<stdout>: 6967	0x000000ff		/usr/local/bin/prted
+[1,26]<stdout>: 6985	0x000000ff		/usr/local/bin/prted
+[1,26]<stdout>:  6985	0x000000ff		prted
+[1,26]<stdout>:  6986	0x000000ff		cuda0000280000b
+[1,26]<stdout>:  6994	0x000000ff		prted
+[1,26]<stdout>:  6995	0x000000ff		prted
+[1,26]<stdout>:  6996	0x000000ff		prted
+[1,26]<stdout>:  6997	0x000000ff		prted
+[1,26]<stdout>:  6998	0x000000ff		prted
+[1,26]<stdout>:  6999	0x000000ff		prted
+[1,26]<stdout>:  7000	0x000000ff		prted
+[1,26]<stdout>:  7001	0x000000ff		prted
+[1,26]<stdout>:  7002	0x000000ff		prted
+[1,26]<stdout>:  7003	0x000000ff		prted
+[1,26]<stdout>:  7004	0x000000ff		prted
+[1,26]<stdout>:  7005	0x000000ff		prted
+[1,26]<stdout>:  7006	0x000000ff		prted
+[1,26]<stdout>:  7007	0x000000ff		prted
+[1,26]<stdout>:  7008	0x000000ff		prted
+[1,26]<stdout>:  7009	0x000000ff		prted
+[1,26]<stdout>:  7010	0x000000ff		prted
+[1,26]<stdout>: 7011	0x000000ff		./kmeans_starpu
+[1,26]<stdout>:  7011	0x000000ff		kmeans_starpu
+[1,26]<stdout>:  7012	0x000000ff		kmeans_starpu
+[1,26]<stdout>:  7015	0x000000ff		cuda00005800017
+[1,26]<stdout>:  7016	0x00000001		CUDA 0
+[1,26]<stdout>:  7017	0x00000002		CPU 0
+[1,26]<stdout>:  7018	0x00000004		CPU 1
+[1,26]<stdout>:  7019	0x00000008		CPU 2
+[1,26]<stdout>:  7020	0x00000010		CPU 3
+[1,26]<stdout>:  7021	0x00000020		CPU 4
+[1,26]<stdout>:  7022	0x00000040		CPU 5
+[1,26]<stdout>:  7023	0x00000001		cuda-EvtHandlr
+[1,26]<stdout>:  7024	0x00000001		kmeans_starpu
+[1,26]<stdout>:  7025	0x00000080		MPI
+[1,26]<stdout>: 7026	0x000000ff		hwloc-ps
+[1,27]<stdout>: == Binding for rank 27 on node ip-10-0-0-37.ec2.internal ==
+[1,27]<stderr>: hwloc: Cannot find discovery component `windows'
+[1,27]<stderr>: hwloc: Cannot find discovery component `darwin'
+[1,27]<stdout>: 7012	0x000000ff		/usr/lib/systemd/systemd
+[1,27]<stdout>: 7014	0x000000ff		(sd-pam)
+[1,27]<stdout>: 7021	0x000000ff		sshd: ec2-user@notty
+[1,27]<stdout>: 7022	0x000000ff		/usr/local/bin/prted
+[1,27]<stdout>: 7040	0x000000ff		/usr/local/bin/prted
+[1,27]<stdout>:  7040	0x000000ff		prted
+[1,27]<stdout>:  7041	0x000000ff		cuda0000280000b
+[1,27]<stdout>:  7049	0x000000ff		prted
+[1,27]<stdout>:  7050	0x000000ff		prted
+[1,27]<stdout>:  7051	0x000000ff		prted
+[1,27]<stdout>:  7052	0x000000ff		prted
+[1,27]<stdout>:  7053	0x000000ff		prted
+[1,27]<stdout>:  7054	0x000000ff		prted
+[1,27]<stdout>:  7055	0x000000ff		prted
+[1,27]<stdout>:  7056	0x000000ff		prted
+[1,27]<stdout>:  7057	0x000000ff		prted
+[1,27]<stdout>:  7058	0x000000ff		prted
+[1,27]<stdout>:  7059	0x000000ff		prted
+[1,27]<stdout>:  7060	0x000000ff		prted
+[1,27]<stdout>:  7061	0x000000ff		prted
+[1,27]<stdout>:  7062	0x000000ff		prted
+[1,27]<stdout>:  7063	0x000000ff		prted
+[1,27]<stdout>:  7064	0x000000ff		prted
+[1,27]<stdout>:  7065	0x000000ff		prted
+[1,27]<stdout>: 7066	0x000000ff		./kmeans_starpu
+[1,27]<stdout>:  7066	0x000000ff		kmeans_starpu
+[1,27]<stdout>:  7067	0x000000ff		kmeans_starpu
+[1,27]<stdout>:  7068	0x000000ff		cuda00005800017
+[1,27]<stdout>:  7069	0x00000001		CUDA 0
+[1,27]<stdout>:  7070	0x00000002		CPU 0
+[1,27]<stdout>:  7071	0x00000004		CPU 1
+[1,27]<stdout>:  7072	0x00000008		CPU 2
+[1,27]<stdout>:  7073	0x00000010		CPU 3
+[1,27]<stdout>:  7074	0x00000020		CPU 4
+[1,27]<stdout>:  7075	0x00000040		CPU 5
+[1,27]<stdout>:  7076	0x00000001		cuda-EvtHandlr
+[1,27]<stdout>:  7077	0x00000001		kmeans_starpu
+[1,27]<stdout>:  7078	0x00000080		MPI
+[1,27]<stdout>: 7079	0x000000ff		hwloc-ps
+[1,28]<stdout>: == Binding for rank 28 on node ip-10-0-0-38.ec2.internal ==
+[1,28]<stderr>: hwloc: Cannot find discovery component `windows'
+[1,28]<stderr>: hwloc: Cannot find discovery component `darwin'
+[1,28]<stdout>: 7071	0x000000ff		/usr/lib/systemd/systemd
+[1,28]<stdout>: 7073	0x000000ff		(sd-pam)
+[1,28]<stdout>: 7080	0x000000ff		sshd: ec2-user@notty
+[1,28]<stdout>: 7081	0x000000ff		/usr/local/bin/prted
+[1,28]<stdout>: 7099	0x000000ff		/usr/local/bin/prted
+[1,28]<stdout>:  7099	0x000000ff		prted
+[1,28]<stdout>:  7100	0x000000ff		cuda0000280000b
+[1,28]<stdout>:  7108	0x000000ff		prted
+[1,28]<stdout>:  7109	0x000000ff		prted
+[1,28]<stdout>:  7110	0x000000ff		prted
+[1,28]<stdout>:  7111	0x000000ff		prted
+[1,28]<stdout>:  7112	0x000000ff		prted
+[1,28]<stdout>:  7113	0x000000ff		prted
+[1,28]<stdout>:  7114	0x000000ff		prted
+[1,28]<stdout>:  7115	0x000000ff		prted
+[1,28]<stdout>:  7116	0x000000ff		prted
+[1,28]<stdout>:  7117	0x000000ff		prted
+[1,28]<stdout>:  7118	0x000000ff		prted
+[1,28]<stdout>:  7119	0x000000ff		prted
+[1,28]<stdout>:  7120	0x000000ff		prted
+[1,28]<stdout>:  7121	0x000000ff		prted
+[1,28]<stdout>:  7122	0x000000ff		prted
+[1,28]<stdout>:  7123	0x000000ff		prted
+[1,28]<stdout>:  7124	0x000000ff		prted
+[1,28]<stdout>: 7125	0x000000ff		./kmeans_starpu
+[1,28]<stdout>:  7125	0x000000ff		kmeans_starpu
+[1,28]<stdout>:  7126	0x000000ff		kmeans_starpu
+[1,28]<stdout>:  7127	0x000000ff		cuda00005800017
+[1,28]<stdout>:  7128	0x00000001		CUDA 0
+[1,28]<stdout>:  7129	0x00000002		CPU 0
+[1,28]<stdout>:  7130	0x00000004		CPU 1
+[1,28]<stdout>:  7131	0x00000008		CPU 2
+[1,28]<stdout>:  7132	0x00000010		CPU 3
+[1,28]<stdout>:  7133	0x00000020		CPU 4
+[1,28]<stdout>:  7134	0x00000040		CPU 5
+[1,28]<stdout>:  7135	0x00000001		cuda-EvtHandlr
+[1,28]<stdout>:  7136	0x00000001		kmeans_starpu
+[1,28]<stdout>:  7137	0x00000080		MPI
+[1,28]<stdout>: 7138	0x000000ff		hwloc-ps
+[1,29]<stdout>: == Binding for rank 29 on node ip-10-0-0-39.ec2.internal ==
+[1,29]<stderr>: hwloc: Cannot find discovery component `windows'
+[1,29]<stderr>: hwloc: Cannot find discovery component `darwin'
+[1,29]<stdout>: 7019	0x000000ff		/usr/lib/systemd/systemd
+[1,29]<stdout>: 7021	0x000000ff		(sd-pam)
+[1,29]<stdout>: 7028	0x000000ff		sshd: ec2-user@notty
+[1,29]<stdout>: 7029	0x000000ff		/usr/local/bin/prted
+[1,29]<stdout>: 7047	0x000000ff		/usr/local/bin/prted
+[1,29]<stdout>:  7047	0x000000ff		prted
+[1,29]<stdout>:  7048	0x000000ff		cuda0000280000b
+[1,29]<stdout>:  7056	0x000000ff		prted
+[1,29]<stdout>:  7057	0x000000ff		prted
+[1,29]<stdout>:  7058	0x000000ff		prted
+[1,29]<stdout>:  7059	0x000000ff		prted
+[1,29]<stdout>:  7060	0x000000ff		prted
+[1,29]<stdout>:  7061	0x000000ff		prted
+[1,29]<stdout>:  7062	0x000000ff		prted
+[1,29]<stdout>:  7063	0x000000ff		prted
+[1,29]<stdout>:  7064	0x000000ff		prted
+[1,29]<stdout>:  7065	0x000000ff		prted
+[1,29]<stdout>:  7066	0x000000ff		prted
+[1,29]<stdout>:  7067	0x000000ff		prted
+[1,29]<stdout>:  7068	0x000000ff		prted
+[1,29]<stdout>:  7069	0x000000ff		prted
+[1,29]<stdout>:  7070	0x000000ff		prted
+[1,29]<stdout>:  7071	0x000000ff		prted
+[1,29]<stdout>:  7072	0x000000ff		prted
+[1,29]<stdout>: 7073	0x000000ff		./kmeans_starpu
+[1,29]<stdout>:  7073	0x000000ff		kmeans_starpu
+[1,29]<stdout>:  7074	0x000000ff		kmeans_starpu
+[1,29]<stdout>:  7075	0x000000ff		cuda00005800017
+[1,29]<stdout>:  7076	0x00000001		CUDA 0
+[1,29]<stdout>:  7077	0x00000002		CPU 0
+[1,29]<stdout>:  7078	0x00000004		CPU 1
+[1,29]<stdout>:  7079	0x00000008		CPU 2
+[1,29]<stdout>:  7080	0x00000010		CPU 3
+[1,29]<stdout>:  7081	0x00000020		CPU 4
+[1,29]<stdout>:  7082	0x00000040		CPU 5
+[1,29]<stdout>:  7083	0x00000001		cuda-EvtHandlr
+[1,29]<stdout>:  7084	0x00000001		kmeans_starpu
+[1,29]<stdout>:  7085	0x00000080		MPI
+[1,29]<stdout>: 7086	0x000000ff		hwloc-ps
+[1,30]<stdout>: == Binding for rank 30 on node ip-10-0-0-40.ec2.internal ==
+[1,30]<stderr>: hwloc: Cannot find discovery component `windows'
+[1,30]<stderr>: hwloc: Cannot find discovery component `darwin'
+[1,30]<stdout>: 7024	0x000000ff		/usr/lib/systemd/systemd
+[1,31]<stdout>: == Binding for rank 31 on node ip-10-0-0-41.ec2.internal ==
+[1,30]<stdout>: 7026	0x000000ff		(sd-pam)
+[1,30]<stdout>: 7033	0x000000ff		sshd: ec2-user@notty
+[1,31]<stderr>: hwloc: Cannot find discovery component `windows'
+[1,31]<stderr>: hwloc: Cannot find discovery component `darwin'
+[1,30]<stdout>: 7034	0x000000ff		/usr/local/bin/prted
+[1,30]<stdout>: 7052	0x000000ff		/usr/local/bin/prted
+[1,30]<stdout>:  7052	0x000000ff		prted
+[1,30]<stdout>:  7053	0x000000ff		cuda0000280000b
+[1,30]<stdout>:  7061	0x000000ff		prted
+[1,30]<stdout>:  7062	0x000000ff		prted
+[1,30]<stdout>:  7063	0x000000ff		prted
+[1,30]<stdout>:  7064	0x000000ff		prted
+[1,30]<stdout>:  7065	0x000000ff		prted
+[1,30]<stdout>:  7066	0x000000ff		prted
+[1,30]<stdout>:  7067	0x000000ff		prted
+[1,30]<stdout>:  7068	0x000000ff		prted
+[1,30]<stdout>:  7069	0x000000ff		prted
+[1,30]<stdout>:  7070	0x000000ff		prted
+[1,30]<stdout>:  7071	0x000000ff		prted
+[1,30]<stdout>:  7072	0x000000ff		prted
+[1,30]<stdout>:  7073	0x000000ff		prted
+[1,30]<stdout>:  7074	0x000000ff		prted
+[1,30]<stdout>:  7075	0x000000ff		prted
+[1,30]<stdout>:  7076	0x000000ff		prted
+[1,30]<stdout>:  7077	0x000000ff		prted
+[1,30]<stdout>: 7078	0x000000ff		./kmeans_starpu
+[1,30]<stdout>:  7078	0x000000ff		kmeans_starpu
+[1,30]<stdout>:  7079	0x000000ff		kmeans_starpu
+[1,30]<stdout>:  7080	0x000000ff		cuda00005800017
+[1,30]<stdout>:  7081	0x00000001		CUDA 0
+[1,30]<stdout>:  7082	0x00000002		CPU 0
+[1,30]<stdout>:  7083	0x00000004		CPU 1
+[1,30]<stdout>:  7084	0x00000008		CPU 2
+[1,30]<stdout>:  7085	0x00000010		CPU 3
+[1,30]<stdout>:  7086	0x00000020		CPU 4
+[1,30]<stdout>:  7087	0x00000040		CPU 5
+[1,30]<stdout>:  7088	0x00000001		cuda-EvtHandlr
+[1,30]<stdout>:  7089	0x00000001		kmeans_starpu
+[1,30]<stdout>:  7090	0x00000080		MPI
+[1,30]<stdout>: 7091	0x000000ff		hwloc-ps
+[1,31]<stdout>: 7041	0x000000ff		/usr/lib/systemd/systemd
+[1,31]<stdout>: 7043	0x000000ff		(sd-pam)
+[1,31]<stdout>: 7050	0x000000ff		sshd: ec2-user@notty
+[1,31]<stdout>: 7051	0x000000ff		/usr/local/bin/prted
+[1,31]<stdout>: 7069	0x000000ff		/usr/local/bin/prted
+[1,31]<stdout>:  7069	0x000000ff		prted
+[1,31]<stdout>:  7070	0x000000ff		cuda0000280000b
+[1,31]<stdout>:  7078	0x000000ff		prted
+[1,31]<stdout>:  7079	0x000000ff		prted
+[1,31]<stdout>:  7080	0x000000ff		prted
+[1,31]<stdout>:  7081	0x000000ff		prted
+[1,31]<stdout>:  7082	0x000000ff		prted
+[1,31]<stdout>:  7083	0x000000ff		prted
+[1,31]<stdout>:  7084	0x000000ff		prted
+[1,31]<stdout>:  7085	0x000000ff		prted
+[1,31]<stdout>:  7086	0x000000ff		prted
+[1,31]<stdout>:  7087	0x000000ff		prted
+[1,31]<stdout>:  7088	0x000000ff		prted
+[1,31]<stdout>:  7089	0x000000ff		prted
+[1,31]<stdout>:  7090	0x000000ff		prted
+[1,31]<stdout>:  7091	0x000000ff		prted
+[1,31]<stdout>:  7092	0x000000ff		prted
+[1,31]<stdout>:  7093	0x000000ff		prted
+[1,31]<stdout>:  7094	0x000000ff		prted
+[1,31]<stdout>: 7095	0x000000ff		./kmeans_starpu
+[1,31]<stdout>:  7095	0x000000ff		kmeans_starpu
+[1,31]<stdout>:  7096	0x000000ff		kmeans_starpu
+[1,31]<stdout>:  7097	0x000000ff		cuda00005800017
+[1,31]<stdout>:  7098	0x00000001		CUDA 0
+[1,31]<stdout>:  7099	0x00000002		CPU 0
+[1,31]<stdout>:  7100	0x00000004		CPU 1
+[1,31]<stdout>:  7101	0x00000008		CPU 2
+[1,31]<stdout>:  7102	0x00000010		CPU 3
+[1,31]<stdout>:  7103	0x00000020		CPU 4
+[1,31]<stdout>:  7104	0x00000040		CPU 5
+[1,31]<stdout>:  7105	0x00000001		cuda-EvtHandlr
+[1,31]<stdout>:  7106	0x00000001		kmeans_starpu
+[1,31]<stdout>:  7107	0x00000080		MPI
+[1,31]<stdout>: 7108	0x000000ff		hwloc-ps
+[1,0]<stdout>: == End of bindings ==
+[1,0]<stdout>: [ACCUMULATE] modelo de desempenho: sim | soma entre nos so na CPU: sim | Update so na CPU: sim | Assign GPU balanceado: sim | blocos por SM: 2 | distancia expandida (teste): nao | threads por ponto: 1
+[1,0]<stdout>: [CHUNKS] pequenos por no: 0 (fracao 0.2) | rank 0 com menos pequenos: 0 | somas em qualquer ordem: sim | Assign e Calculate juntos: nao | prioridade aos grandes: nao | medicao por no: nao | submissao so das tarefas do no: nao
+[1,0]<stdout>: [INFO] Centroides iniciais escolhidos aleatoriamente (Seed: 42)
+[1,0]<stdout>: [INFO] Injetando max 30 iteracoes no DAG (Assíncrono)...
+[1,2]<stderr>: [starpu][ip-10-0-0-12.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from NUMA 0 to CUDA 0 took a very long time (1.296874 ms)
+[1,2]<stderr>: For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[1,3]<stderr>: [starpu][ip-10-0-0-13.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from NUMA 0 to CUDA 0 took a very long time (1.215906 ms)
+[1,3]<stderr>: For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[1,6]<stderr>: [starpu][ip-10-0-0-16.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from NUMA 0 to CUDA 0 took a very long time (1.496510 ms)
+[1,6]<stderr>: For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[1,5]<stderr>: [starpu][ip-10-0-0-15.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from NUMA 0 to CUDA 0 took a very long time (1.654036 ms)
+[1,5]<stderr>: For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[1,21]<stderr>: [starpu][ip-10-0-0-31.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from NUMA 0 to CUDA 0 took a very long time (1.252101 ms)
+[1,21]<stderr>: For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[1,9]<stderr>: [starpu][ip-10-0-0-19.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from NUMA 0 to CUDA 0 took a very long time (1.291447 ms)
+[1,9]<stderr>: For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[1,10]<stderr>: [starpu][ip-10-0-0-20.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from NUMA 0 to CUDA 0 took a very long time (1.446984 ms)
+[1,10]<stderr>: For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[1,18]<stderr>: [starpu][ip-10-0-0-28.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from NUMA 0 to CUDA 0 took a very long time (1.440145 ms)
+[1,18]<stderr>: For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[1,1]<stderr>: [starpu][ip-10-0-0-11.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from NUMA 0 to CUDA 0 took a very long time (1.645840 ms)
+[1,1]<stderr>: For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[1,13]<stderr>: [starpu][ip-10-0-0-23.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from NUMA 0 to CUDA 0 took a very long time (1.396353 ms)
+[1,13]<stderr>: For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[1,17]<stderr>: [starpu][ip-10-0-0-27.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from NUMA 0 to CUDA 0 took a very long time (1.164876 ms)
+[1,17]<stderr>: For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[1,22]<stderr>: [starpu][ip-10-0-0-32.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from NUMA 0 to CUDA 0 took a very long time (1.675253 ms)
+[1,22]<stderr>: For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[1,25]<stderr>: [starpu][ip-10-0-0-35.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from NUMA 0 to CUDA 0 took a very long time (1.453743 ms)
+[1,25]<stderr>: For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[1,14]<stderr>: [starpu][ip-10-0-0-24.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from NUMA 0 to CUDA 0 took a very long time (1.451819 ms)
+[1,14]<stderr>: For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[1,24]<stderr>: [starpu][ip-10-0-0-34.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from NUMA 0 to CUDA 0 took a very long time (1.515431 ms)
+[1,24]<stderr>: For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[1,15]<stderr>: [starpu][ip-10-0-0-25.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from NUMA 0 to CUDA 0 took a very long time (1.290973 ms)
+[1,15]<stderr>: For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[1,12]<stderr>: [starpu][ip-10-0-0-22.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from NUMA 0 to CUDA 0 took a very long time (1.574114 ms)
+[1,12]<stderr>: For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[1,26]<stderr>: [starpu][ip-10-0-0-36.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from NUMA 0 to CUDA 0 took a very long time (1.485214 ms)
+[1,26]<stderr>: For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[1,23]<stderr>: [starpu][ip-10-0-0-33.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from NUMA 0 to CUDA 0 took a very long time (1.164538 ms)
+[1,23]<stderr>: For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[1,27]<stderr>: [starpu][ip-10-0-0-37.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from NUMA 0 to CUDA 0 took a very long time (1.805917 ms)
+[1,27]<stderr>: For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[1,20]<stderr>: [starpu][ip-10-0-0-30.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from NUMA 0 to CUDA 0 took a very long time (1.330533 ms)
+[1,20]<stderr>: For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[1,4]<stderr>: [starpu][ip-10-0-0-14.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from NUMA 0 to CUDA 0 took a very long time (0.946620 ms)
+[1,4]<stderr>: For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[1,7]<stderr>: [starpu][ip-10-0-0-17.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from NUMA 0 to CUDA 0 took a very long time (1.402527 ms)
+[1,7]<stderr>: For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[1,8]<stderr>: [starpu][ip-10-0-0-18.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from NUMA 0 to CUDA 0 took a very long time (1.270454 ms)
+[1,8]<stderr>: For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[1,11]<stderr>: [starpu][ip-10-0-0-21.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from NUMA 0 to CUDA 0 took a very long time (1.366689 ms)
+[1,11]<stderr>: For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[1,16]<stderr>: [starpu][ip-10-0-0-26.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from NUMA 0 to CUDA 0 took a very long time (1.206284 ms)
+[1,16]<stderr>: For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[1,19]<stderr>: [starpu][ip-10-0-0-29.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from NUMA 0 to CUDA 0 took a very long time (1.427282 ms)
+[1,19]<stderr>: For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[1,30]<stderr>: [starpu][ip-10-0-0-40.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from NUMA 0 to CUDA 0 took a very long time (1.409494 ms)
+[1,30]<stderr>: For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[1,29]<stderr>: [starpu][ip-10-0-0-39.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from NUMA 0 to CUDA 0 took a very long time (1.623537 ms)
+[1,29]<stderr>: For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[1,31]<stderr>: [starpu][ip-10-0-0-41.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from NUMA 0 to CUDA 0 took a very long time (1.294181 ms)
+[1,31]<stderr>: For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[1,28]<stderr>: [starpu][ip-10-0-0-38.ec2.internal][starpu_interface_end_driver_copy_async_devid] Warning: the submission of asynchronous transfer from NUMA 0 to CUDA 0 took a very long time (1.438482 ms)
+[1,28]<stderr>: For proper asynchronous transfer overlapping, data registered to StarPU must be allocated with starpu_malloc() or pinned with starpu_memory_pin()
+[1,0]<stderr>: [StarPU] Iteracao 1
+[1,0]<stderr>: [StarPU] Iteracao 2
+[1,0]<stderr>: [StarPU] Iteracao 3
+[1,0]<stderr>: [StarPU] Iteracao 4
+[1,0]<stderr>: [StarPU] Iteracao 5
+[1,0]<stderr>: [StarPU] Iteracao 6
+[1,0]<stderr>: [StarPU] Iteracao 7
+[1,0]<stderr>: [StarPU] Iteracao 8
+[1,0]<stderr>: [StarPU] Iteracao 9
+[1,0]<stderr>: [StarPU] Iteracao 10
+[1,0]<stderr>: [StarPU] Iteracao 11
+[1,0]<stderr>: [StarPU] Iteracao 12
+[1,0]<stderr>: [StarPU] Iteracao 13
+[1,0]<stderr>: [StarPU] Iteracao 14
+[1,0]<stderr>: [StarPU] Iteracao 15
+[1,0]<stderr>: [StarPU] Iteracao 16
+[1,0]<stderr>: [StarPU] Iteracao 17
+[1,0]<stderr>: [StarPU] Iteracao 18
+[1,0]<stderr>: [StarPU] Iteracao 19
+[1,0]<stderr>: [StarPU] Iteracao 20
+[1,0]<stderr>: [StarPU] Iteracao 21
+[1,0]<stderr>: [StarPU] Iteracao 22
+[1,0]<stderr>: [StarPU] Iteracao 23
+[1,0]<stderr>: [StarPU] Iteracao 24
+[1,0]<stderr>: [StarPU] Iteracao 25
+[1,0]<stderr>: [StarPU] Iteracao 26
+[1,0]<stderr>: [StarPU] Iteracao 27
+[1,0]<stderr>: [StarPU] Iteracao 28
+[1,0]<stderr>: [StarPU] Iteracao 29
+[1,0]<stderr>: [StarPU] Iteracao 30
+[1,0]<stdout>: [SUBMISSAO] rank 0: 245.06 ms | mais lento: 245.06 ms (loop 3355.46 ms)
+[1,0]<stdout>: [INFO] Salvando centróides finais...
+[1,0]<stdout>: [INFO] Arquivo de centróides salvo com sucesso em: output_bench/exp_starpu_hybrid_np32_metricas1/256-clusters.txt
+[1,0]<stdout>: ============================================================
+[1,0]<stdout>: METRICAS FINAIS — StarPU/MPI
+[1,0]<stdout>: ============================================================
+[1,0]<stdout>: Workers (rank 0)          : 6 CPU  +  1 GPU CUDA
+[1,0]<stdout>: Ranks MPI                 : 32
+[1,0]<stdout>: 
+[1,0]<stdout>: Tempo do loop (max)       : 3355.46    ms  [min: 3317.84]
+[1,0]<stdout>: Tempo total (max, c/init) : 30287.64   ms  [min: 24617.53]
+[1,0]<stdout>: T. medio/iter             : 111.85     ms
+[1,0]<stdout>: Iteracoes                 : 30 / max 30
+[1,0]<stdout>: SSE                       : 2.9768e+14
+[1,0]<stdout>: 
+[1,0]<stdout>: Tempos por rank:
+[1,0]<stdout>:   Rank 0: loop=3355.46    ms  avg/iter=111.85   ms  total=30287.64   ms
+[1,0]<stdout>:   Rank 1: loop=3347.42    ms  avg/iter=111.58   ms  total=24617.53   ms
+[1,0]<stdout>:   Rank 2: loop=3345.68    ms  avg/iter=111.52   ms  total=26065.86   ms
+[1,0]<stdout>:   Rank 3: loop=3345.61    ms  avg/iter=111.52   ms  total=27465.46   ms
+[1,0]<stdout>:   Rank 4: loop=3326.50    ms  avg/iter=110.88   ms  total=26322.31   ms
+[1,0]<stdout>:   Rank 5: loop=3345.77    ms  avg/iter=111.53   ms  total=27462.97   ms
+[1,0]<stdout>:   Rank 6: loop=3345.69    ms  avg/iter=111.52   ms  total=27371.59   ms
+[1,0]<stdout>:   Rank 7: loop=3326.64    ms  avg/iter=110.89   ms  total=27111.73   ms
+[1,0]<stdout>:   Rank 8: loop=3324.14    ms  avg/iter=110.80   ms  total=27244.09   ms
+[1,0]<stdout>:   Rank 9: loop=3347.41    ms  avg/iter=111.58   ms  total=27160.02   ms
+[1,0]<stdout>:   Rank 10: loop=3345.61    ms  avg/iter=111.52   ms  total=27033.29   ms
+[1,0]<stdout>:   Rank 11: loop=3324.20    ms  avg/iter=110.81   ms  total=27185.61   ms
+[1,0]<stdout>:   Rank 12: loop=3339.57    ms  avg/iter=111.32   ms  total=27393.55   ms
+[1,0]<stdout>:   Rank 13: loop=3345.82    ms  avg/iter=111.53   ms  total=26972.51   ms
+[1,0]<stdout>:   Rank 14: loop=3346.07    ms  avg/iter=111.54   ms  total=26938.40   ms
+[1,0]<stdout>:   Rank 15: loop=3339.60    ms  avg/iter=111.32   ms  total=27370.44   ms
+[1,0]<stdout>:   Rank 16: loop=3321.90    ms  avg/iter=110.73   ms  total=27355.02   ms
+[1,0]<stdout>:   Rank 17: loop=3342.55    ms  avg/iter=111.42   ms  total=27295.63   ms
+[1,0]<stdout>:   Rank 18: loop=3344.65    ms  avg/iter=111.49   ms  total=27427.90   ms
+[1,0]<stdout>:   Rank 19: loop=3321.93    ms  avg/iter=110.73   ms  total=26953.76   ms
+[1,0]<stdout>:   Rank 20: loop=3336.47    ms  avg/iter=111.22   ms  total=27520.82   ms
+[1,0]<stdout>:   Rank 21: loop=3345.99    ms  avg/iter=111.53   ms  total=26796.64   ms
+[1,0]<stdout>:   Rank 22: loop=3346.07    ms  avg/iter=111.54   ms  total=27052.97   ms
+[1,0]<stdout>:   Rank 23: loop=3336.36    ms  avg/iter=111.21   ms  total=25751.63   ms
+[1,0]<stdout>:   Rank 24: loop=3339.85    ms  avg/iter=111.33   ms  total=27047.77   ms
+[1,0]<stdout>:   Rank 25: loop=3345.99    ms  avg/iter=111.53   ms  total=26851.62   ms
+[1,0]<stdout>:   Rank 26: loop=3346.00    ms  avg/iter=111.53   ms  total=26972.37   ms
+[1,0]<stdout>:   Rank 27: loop=3340.10    ms  avg/iter=111.34   ms  total=26042.69   ms
+[1,0]<stdout>:   Rank 28: loop=3318.06    ms  avg/iter=110.60   ms  total=27194.42   ms
+[1,0]<stdout>:   Rank 29: loop=3321.51    ms  avg/iter=110.72   ms  total=26659.74   ms
+[1,0]<stdout>:   Rank 30: loop=3321.59    ms  avg/iter=110.72   ms  total=27238.35   ms
+[1,0]<stdout>:   Rank 31: loop=3317.84    ms  avg/iter=110.59   ms  total=27486.73   ms
+[1,0]<stdout>: 
+[1,0]<stdout>: Distribuicao por kernel (CPU vs CUDA) — global:
+[1,0]<stdout>:   Kernel        CPU (N / %)             GPU CUDA (N / %)        
+[1,0]<stdout>:   ------------------------------------------------------------
+[1,0]<stdout>:   Assign        23037 (23.9976%)        72960 (76.0024%)        
+[1,0]<stdout>:   Calculate     95038 (99%)             960 (1.00002%)          
+[1,0]<stdout>:   Clean         960 (100%)              0 (0%)                  
+[1,0]<stdout>:   Update        30 (100%)               0 (0%)                  
+[1,0]<stdout>:   Accumulate    96930 (100%)            0 (0%)                  
+[1,0]<stdout>:   ------------------------------------------------------------
+[1,0]<stdout>:   TOTAL         215995 (74.5029%)       73920 (25.4971%)        
+[1,0]<stdout>: 
+[1,0]<stdout>: Tarefas por rank MPI:
+[1,0]<stdout>:   Rank 0: 7680 CPU + 2310 CUDA = 9990 total (3.4%)
+[1,0]<stdout>:   Rank 1: 6720 CPU + 2310 CUDA = 9030 total (3.1%)
+[1,0]<stdout>:   Rank 2: 6720 CPU + 2310 CUDA = 9030 total (3.1%)
+[1,0]<stdout>:   Rank 3: 6720 CPU + 2310 CUDA = 9030 total (3.1%)
+[1,0]<stdout>:   Rank 4: 6720 CPU + 2310 CUDA = 9030 total (3.1%)
+[1,0]<stdout>:   Rank 5: 6720 CPU + 2310 CUDA = 9030 total (3.1%)
+[1,0]<stdout>:   Rank 6: 6720 CPU + 2310 CUDA = 9030 total (3.1%)
+[1,0]<stdout>:   Rank 7: 6720 CPU + 2310 CUDA = 9030 total (3.1%)
+[1,0]<stdout>:   Rank 8: 6720 CPU + 2310 CUDA = 9030 total (3.1%)
+[1,0]<stdout>:   Rank 9: 6720 CPU + 2310 CUDA = 9030 total (3.1%)
+[1,0]<stdout>:   Rank 10: 6720 CPU + 2310 CUDA = 9030 total (3.1%)
+[1,0]<stdout>:   Rank 11: 6720 CPU + 2310 CUDA = 9030 total (3.1%)
+[1,0]<stdout>:   Rank 12: 6719 CPU + 2310 CUDA = 9029 total (3.1%)
+[1,0]<stdout>:   Rank 13: 6719 CPU + 2310 CUDA = 9029 total (3.1%)
+[1,0]<stdout>:   Rank 14: 6720 CPU + 2310 CUDA = 9030 total (3.1%)
+[1,0]<stdout>:   Rank 15: 6720 CPU + 2310 CUDA = 9030 total (3.1%)
+[1,0]<stdout>:   Rank 16: 6720 CPU + 2310 CUDA = 9030 total (3.1%)
+[1,0]<stdout>:   Rank 17: 6720 CPU + 2310 CUDA = 9030 total (3.1%)
+[1,0]<stdout>:   Rank 18: 6719 CPU + 2310 CUDA = 9029 total (3.1%)
+[1,0]<stdout>:   Rank 19: 6719 CPU + 2310 CUDA = 9029 total (3.1%)
+[1,0]<stdout>:   Rank 20: 6720 CPU + 2310 CUDA = 9030 total (3.1%)
+[1,0]<stdout>:   Rank 21: 6720 CPU + 2310 CUDA = 9030 total (3.1%)
+[1,0]<stdout>:   Rank 22: 6720 CPU + 2310 CUDA = 9030 total (3.1%)
+[1,0]<stdout>:   Rank 23: 6720 CPU + 2310 CUDA = 9030 total (3.1%)
+[1,0]<stdout>:   Rank 24: 6720 CPU + 2310 CUDA = 9030 total (3.1%)
+[1,0]<stdout>:   Rank 25: 6720 CPU + 2310 CUDA = 9030 total (3.1%)
+[1,0]<stdout>:   Rank 26: 6720 CPU + 2310 CUDA = 9030 total (3.1%)
+[1,0]<stdout>:   Rank 27: 6720 CPU + 2310 CUDA = 9030 total (3.1%)
+[1,0]<stdout>:   Rank 28: 6720 CPU + 2310 CUDA = 9030 total (3.1%)
+[1,0]<stdout>:   Rank 29: 6720 CPU + 2310 CUDA = 9030 total (3.1%)
+[1,0]<stdout>:   Rank 30: 6720 CPU + 2310 CUDA = 9030 total (3.1%)
+[1,0]<stdout>:   Rank 31: 6719 CPU + 2310 CUDA = 9029 total (3.1%)
+[1,0]<stdout>: ============================================================
+[1,0]<stdout>: Escalonador StarPU ativo: dmda

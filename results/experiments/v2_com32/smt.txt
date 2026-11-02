@@ -1,0 +1,129 @@
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.12' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.13' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.14' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.15' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.16' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.17' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.18' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.19' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.20' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.21' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.22' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.23' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.24' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.25' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.26' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.27' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.28' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.29' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.30' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.31' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.32' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.33' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.34' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.35' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.36' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.37' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.38' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.39' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.40' (ED25519) to the list of known hosts.
+Warning: Permanently added '10.0.0.41' (ED25519) to the list of known hosts.
+[exec-all] 10.0.0.10: echo "SMT=$(cat /sys/devices/system/cpu/smt/control) CPUS=$(nproc)"
+Warning: Permanently added '10.0.0.10' (ED25519) to the list of known hosts.
+SMT=off CPUS=8
+[exec-all] 10.0.0.11: echo "SMT=$(cat /sys/devices/system/cpu/smt/control) CPUS=$(nproc)"
+Warning: Permanently added '10.0.0.11' (ED25519) to the list of known hosts.
+SMT=off CPUS=8
+[exec-all] 10.0.0.12: echo "SMT=$(cat /sys/devices/system/cpu/smt/control) CPUS=$(nproc)"
+Warning: Permanently added '10.0.0.12' (ED25519) to the list of known hosts.
+SMT=off CPUS=8
+[exec-all] 10.0.0.13: echo "SMT=$(cat /sys/devices/system/cpu/smt/control) CPUS=$(nproc)"
+Warning: Permanently added '10.0.0.13' (ED25519) to the list of known hosts.
+SMT=off CPUS=8
+[exec-all] 10.0.0.14: echo "SMT=$(cat /sys/devices/system/cpu/smt/control) CPUS=$(nproc)"
+Warning: Permanently added '10.0.0.14' (ED25519) to the list of known hosts.
+SMT=off CPUS=8
+[exec-all] 10.0.0.15: echo "SMT=$(cat /sys/devices/system/cpu/smt/control) CPUS=$(nproc)"
+Warning: Permanently added '10.0.0.15' (ED25519) to the list of known hosts.
+SMT=off CPUS=8
+[exec-all] 10.0.0.16: echo "SMT=$(cat /sys/devices/system/cpu/smt/control) CPUS=$(nproc)"
+Warning: Permanently added '10.0.0.16' (ED25519) to the list of known hosts.
+SMT=off CPUS=8
+[exec-all] 10.0.0.17: echo "SMT=$(cat /sys/devices/system/cpu/smt/control) CPUS=$(nproc)"
+Warning: Permanently added '10.0.0.17' (ED25519) to the list of known hosts.
+SMT=off CPUS=8
+[exec-all] 10.0.0.18: echo "SMT=$(cat /sys/devices/system/cpu/smt/control) CPUS=$(nproc)"
+Warning: Permanently added '10.0.0.18' (ED25519) to the list of known hosts.
+SMT=off CPUS=8
+[exec-all] 10.0.0.19: echo "SMT=$(cat /sys/devices/system/cpu/smt/control) CPUS=$(nproc)"
+Warning: Permanently added '10.0.0.19' (ED25519) to the list of known hosts.
+SMT=off CPUS=8
+[exec-all] 10.0.0.20: echo "SMT=$(cat /sys/devices/system/cpu/smt/control) CPUS=$(nproc)"
+Warning: Permanently added '10.0.0.20' (ED25519) to the list of known hosts.
+SMT=off CPUS=8
+[exec-all] 10.0.0.21: echo "SMT=$(cat /sys/devices/system/cpu/smt/control) CPUS=$(nproc)"
+Warning: Permanently added '10.0.0.21' (ED25519) to the list of known hosts.
+SMT=off CPUS=8
+[exec-all] 10.0.0.22: echo "SMT=$(cat /sys/devices/system/cpu/smt/control) CPUS=$(nproc)"
+Warning: Permanently added '10.0.0.22' (ED25519) to the list of known hosts.
+SMT=off CPUS=8
+[exec-all] 10.0.0.23: echo "SMT=$(cat /sys/devices/system/cpu/smt/control) CPUS=$(nproc)"
+Warning: Permanently added '10.0.0.23' (ED25519) to the list of known hosts.
+SMT=off CPUS=8
+[exec-all] 10.0.0.24: echo "SMT=$(cat /sys/devices/system/cpu/smt/control) CPUS=$(nproc)"
+Warning: Permanently added '10.0.0.24' (ED25519) to the list of known hosts.
+SMT=off CPUS=8
+[exec-all] 10.0.0.25: echo "SMT=$(cat /sys/devices/system/cpu/smt/control) CPUS=$(nproc)"
+Warning: Permanently added '10.0.0.25' (ED25519) to the list of known hosts.
+SMT=off CPUS=8
+[exec-all] 10.0.0.26: echo "SMT=$(cat /sys/devices/system/cpu/smt/control) CPUS=$(nproc)"
+Warning: Permanently added '10.0.0.26' (ED25519) to the list of known hosts.
+SMT=off CPUS=8
+[exec-all] 10.0.0.27: echo "SMT=$(cat /sys/devices/system/cpu/smt/control) CPUS=$(nproc)"
+Warning: Permanently added '10.0.0.27' (ED25519) to the list of known hosts.
+SMT=off CPUS=8
+[exec-all] 10.0.0.28: echo "SMT=$(cat /sys/devices/system/cpu/smt/control) CPUS=$(nproc)"
+Warning: Permanently added '10.0.0.28' (ED25519) to the list of known hosts.
+SMT=off CPUS=8
+[exec-all] 10.0.0.29: echo "SMT=$(cat /sys/devices/system/cpu/smt/control) CPUS=$(nproc)"
+Warning: Permanently added '10.0.0.29' (ED25519) to the list of known hosts.
+SMT=off CPUS=8
+[exec-all] 10.0.0.30: echo "SMT=$(cat /sys/devices/system/cpu/smt/control) CPUS=$(nproc)"
+Warning: Permanently added '10.0.0.30' (ED25519) to the list of known hosts.
+SMT=off CPUS=8
+[exec-all] 10.0.0.31: echo "SMT=$(cat /sys/devices/system/cpu/smt/control) CPUS=$(nproc)"
+Warning: Permanently added '10.0.0.31' (ED25519) to the list of known hosts.
+SMT=off CPUS=8
+[exec-all] 10.0.0.32: echo "SMT=$(cat /sys/devices/system/cpu/smt/control) CPUS=$(nproc)"
+Warning: Permanently added '10.0.0.32' (ED25519) to the list of known hosts.
+SMT=off CPUS=8
+[exec-all] 10.0.0.33: echo "SMT=$(cat /sys/devices/system/cpu/smt/control) CPUS=$(nproc)"
+Warning: Permanently added '10.0.0.33' (ED25519) to the list of known hosts.
+SMT=off CPUS=8
+[exec-all] 10.0.0.34: echo "SMT=$(cat /sys/devices/system/cpu/smt/control) CPUS=$(nproc)"
+Warning: Permanently added '10.0.0.34' (ED25519) to the list of known hosts.
+SMT=off CPUS=8
+[exec-all] 10.0.0.35: echo "SMT=$(cat /sys/devices/system/cpu/smt/control) CPUS=$(nproc)"
+Warning: Permanently added '10.0.0.35' (ED25519) to the list of known hosts.
+SMT=off CPUS=8
+[exec-all] 10.0.0.36: echo "SMT=$(cat /sys/devices/system/cpu/smt/control) CPUS=$(nproc)"
+Warning: Permanently added '10.0.0.36' (ED25519) to the list of known hosts.
+SMT=off CPUS=8
+[exec-all] 10.0.0.37: echo "SMT=$(cat /sys/devices/system/cpu/smt/control) CPUS=$(nproc)"
+Warning: Permanently added '10.0.0.37' (ED25519) to the list of known hosts.
+SMT=off CPUS=8
+[exec-all] 10.0.0.38: echo "SMT=$(cat /sys/devices/system/cpu/smt/control) CPUS=$(nproc)"
+Warning: Permanently added '10.0.0.38' (ED25519) to the list of known hosts.
+SMT=off CPUS=8
+[exec-all] 10.0.0.39: echo "SMT=$(cat /sys/devices/system/cpu/smt/control) CPUS=$(nproc)"
+Warning: Permanently added '10.0.0.39' (ED25519) to the list of known hosts.
+SMT=off CPUS=8
+[exec-all] 10.0.0.40: echo "SMT=$(cat /sys/devices/system/cpu/smt/control) CPUS=$(nproc)"
+Warning: Permanently added '10.0.0.40' (ED25519) to the list of known hosts.
+SMT=off CPUS=8
+[exec-all] 10.0.0.41: echo "SMT=$(cat /sys/devices/system/cpu/smt/control) CPUS=$(nproc)"
+Warning: Permanently added '10.0.0.41' (ED25519) to the list of known hosts.
+SMT=off CPUS=8
+hwloc-ps no nó 0: /usr/local/bin/hwloc-ps

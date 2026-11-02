@@ -1,0 +1,38 @@
+[com32 01:49:13] Gerando input_pq.bin (102400000 pontos, D=16)
+[com32 01:50:31] Gerando input_deep.bin (20480000 pontos, D=96)
+[com32 01:52:03] Gerando input_sift.bin (10240000 pontos, D=128)
+[com32 01:53:08] Gerando input_sift_32.bin (320000 pontos, D=128)
+[com32 01:53:24] Sessão cal_sift64_t4
+[com32 01:55:33] HT desligado e 8 CPUs em 32/32 nós
+[com32 01:55:33] Sessão conferencia_fixacao
+[com32 02:05:48] Fixação: TOTAL 32 nós ok (detalhes em results/experiments/v2_com32/fixacao.txt)
+[com32 02:05:48] Sessão B_pq
+[com32 02:06:57] Sessão C_pq
+[com32 02:08:03] Sessão B_deep
+[com32 02:09:21] Sessão C_deep
+[com32 02:10:44] Sessão B_sift
+[com32 02:12:09] Sessão C_sift
+[com32 02:13:09] Sessão C_pq
+[com32 02:14:15] Sessão B_pq
+[com32 02:15:25] Sessão C_deep
+[com32 02:16:45] Sessão B_deep
+[com32 02:18:06] Sessão C_sift
+[com32 02:19:12] Sessão B_sift
+[com32 02:20:12] Sessão B_pq
+[com32 02:22:05] Sessão C_pq
+[com32 02:23:16] Sessão B_deep
+[com32 02:24:35] Sessão C_deep
+[com32 02:25:54] Sessão B_sift
+[com32 02:27:01] Sessão C_sift
+[com32 02:28:01] Sessão C_sift64_t4
+B_deep                   n=3 ok=3 loop=3933.2 ms sse=6.0084e+14
+B_pq                     n=3 ok=3 loop=3381.2 ms sse=2.9768e+14
+B_sift                   n=3 ok=3 loop=3166.2 ms sse=4.0941e+14
+C_deep                   n=3 ok=3 loop=3938.6 ms sse=6.0084e+14
+C_pq                     n=3 ok=3 loop=3411.9 ms sse=2.9768e+14
+C_sift                   n=3 ok=3 loop=3165.8 ms sse=4.0941e+14
+C_sift64_t4              n=3 ok=3 loop=2675.4 ms sse=4.0941e+14
+cal_sift64_t4            n=1 ok=1 loop=2454.1 ms sse=1.2720e+13
+conferencia_fixacao      n=1 ok=1 loop=3355.5 ms sse=2.9768e+14
+[com32 02:31:01] Estado final: CONCLUIDO em 41 min (SIFT 64 com 4 threads: testado)
+[com32 02:31:01] Agendando o desligamento de todos os nós para daqui a 15 min (proteção)

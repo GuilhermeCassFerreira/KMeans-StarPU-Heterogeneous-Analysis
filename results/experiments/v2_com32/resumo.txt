@@ -1,0 +1,9 @@
+B_deep                   n=3 ok=3 loop=3933.2 ms sse=6.0084e+14
+B_pq                     n=3 ok=3 loop=3381.2 ms sse=2.9768e+14
+B_sift                   n=3 ok=3 loop=3166.2 ms sse=4.0941e+14
+C_deep                   n=3 ok=3 loop=3938.6 ms sse=6.0084e+14
+C_pq                     n=3 ok=3 loop=3411.9 ms sse=2.9768e+14
+C_sift                   n=3 ok=3 loop=3165.8 ms sse=4.0941e+14
+C_sift64_t4              n=3 ok=3 loop=2675.4 ms sse=4.0941e+14
+cal_sift64_t4            n=1 ok=1 loop=2454.1 ms sse=1.2720e+13
+conferencia_fixacao      n=1 ok=1 loop=3355.5 ms sse=2.9768e+14

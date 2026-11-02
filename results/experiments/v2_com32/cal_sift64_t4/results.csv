@@ -1,0 +1,5 @@
+timestamp,mode,nodes,N,K,chunks,rep_kind,rep_idx,loop_ms,sse,run_ok,assign_cpu,assign_gpu,calculate_cpu,calculate_gpu,clean_cpu,clean_gpu,update_cpu,update_gpu,accumulate_cpu,accumulate_gpu,calib_md5,calib_warn,sched,opcoes
+2026-11-02T01:54:48Z,starpu_hybrid,1,320000,256,64,calibracao,1,2450.15,1.2720e+13,1,540,1380,1135,785,30,0,30,0,822,1098,,0,dmda,KMEANS_ASSIGN_CALC_JUNTOS=0;KMEANS_ASSIGN_THREADS_PONTO=4
+2026-11-02T01:54:53Z,starpu_hybrid,1,320000,256,64,calibracao,2,2460.52,1.2720e+13,1,540,1380,1086,834,30,0,30,0,636,1284,,0,dmda,KMEANS_ASSIGN_CALC_JUNTOS=0;KMEANS_ASSIGN_THREADS_PONTO=4
+2026-11-02T01:54:59Z,starpu_hybrid,1,320000,256,64,calibracao,3,2467.80,1.2720e+13,1,540,1380,1197,723,30,0,30,0,569,1351,,0,dmda,KMEANS_ASSIGN_CALC_JUNTOS=0;KMEANS_ASSIGN_THREADS_PONTO=4
+2026-11-02T01:55:05Z,starpu_hybrid,1,320000,256,64,metricas,1,2454.08,1.2720e+13,1,540,1380,1070,850,30,0,30,0,638,1282,,0,dmda,KMEANS_ASSIGN_CALC_JUNTOS=0;KMEANS_ASSIGN_THREADS_PONTO=4
