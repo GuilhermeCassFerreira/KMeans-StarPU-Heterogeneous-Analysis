@@ -235,14 +235,30 @@ __global__ void assign_multi_cuda_kernel(
 #define OT_BK 16                      // dimensões por bloco
 #define OT_TS (OT_BN * OT_BK + 1)     // passo entre os blocos de cada sub (+1 evita conflito de banco)
 
+/* ‖c‖² de cada centroide, uma vez por tarefa, para o kernel otimizado. Mesmas operações, na
+ * mesma ordem, do cálculo dentro de cada bloco, então o resultado é o mesmo */
+__global__ void normas_centroides_cuda_kernel(const double *centroids, int K, int dimensions,
+                                              double *normas)
+{
+    int c = blockIdx.x * blockDim.x + threadIdx.x;
+    if (c >= K) return;
+    const double *cent = centroids + (size_t)c * dimensions;
+    double s = 0.0;
+    for (int d = 0; d < dimensions; ++d) s += cent[d] * cent[d];
+    normas[c] = s;
+}
+
 __global__ void assign_otimizado_cuda_kernel(
-    const double *points_values, const double *centroids,
+    const double *points_values, const double *centroids, const double *normas,
     int K, int dimensions, int npoints, int *nearestClusterIds, int pts_per_block, int tpp)
 {
     extern __shared__ double s_mem[];
     double *s_norma = s_mem;          // ‖c‖² de cada centroide
     double *s_cent = s_mem + K;       // tpp blocos de OT_BN centroides × OT_BK dimensões
+    // normas == nullptr (KMEANS_ASSIGN_NORMA_BLOCO=1): cada bloco calcula os ‖c‖². Com chunks
+    // pequenos isso pesa (SIFT com ~11 pontos por bloco: ~9% do kernel)
     for (int c = threadIdx.x; c < K; c += blockDim.x) {
+        if (normas) { s_norma[c] = normas[c]; continue; }
         const double *cent = centroids + (size_t)c * dimensions;
         double s = 0.0;
         for (int d = 0; d < dimensions; ++d) s += cent[d] * cent[d];
@@ -320,6 +336,30 @@ static bool assign_otimizado() {
         v = e ? (atoi(e) == 1) : 0;
     }
     return v == 1;
+}
+
+/* KMEANS_ASSIGN_NORMA_BLOCO=1 volta ao ‖c‖² calculado dentro de cada bloco, para comparar */
+static bool assign_norma_bloco() {
+    static int v = -1;
+    if (v < 0) {
+        const char *e = getenv("KMEANS_ASSIGN_NORMA_BLOCO");
+        v = e ? (atoi(e) == 1) : 0;
+    }
+    return v == 1;
+}
+
+/* Buffer dos ‖c‖² na GPU, um por worker (com STARPU_NWORKER_PER_CUDA > 1 há várias streams
+ * na mesma GPU). Alocado no primeiro uso e mantido até o fim do programa */
+static double *normas_buffer(int K) {
+    static double *buf[STARPU_NMAXWORKERS];
+    static int cap[STARPU_NMAXWORKERS];
+    int w = starpu_worker_get_id();
+    if (cap[w] < K) {
+        if (buf[w]) CUDA_CHECK(cudaFree(buf[w]));
+        CUDA_CHECK(cudaMalloc(&buf[w], (size_t)K * sizeof(double)));
+        cap[w] = K;
+    }
+    return buf[w];
 }
 
 static int assign_threads_ponto() {
@@ -402,8 +442,14 @@ static void lancar_assign(cudaStream_t stream, const double *points_values, cons
         threads = ((pts_per_block * tpp_o + passadas - 1) / passadas + 31) / 32 * 32;
         blocks = (chunk_size + pts_per_block - 1) / pts_per_block;
         size_t smem = (size_t)(K + tpp_o * OT_TS) * sizeof(double);
+        double *normas = nullptr;
+        if (!assign_norma_bloco()) {
+            normas = normas_buffer(K);
+            normas_centroides_cuda_kernel<<<(K + 127) / 128, 128, 0, stream>>>(
+                centroids, K, dimensions, normas);
+        }
         assign_otimizado_cuda_kernel<<<blocks, threads, smem, stream>>>(
-            points_values, centroids, K, dimensions, chunk_size,
+            points_values, centroids, normas, K, dimensions, chunk_size,
             nearestClusterIds, pts_per_block, tpp_o);
         CUDA_CHECK(cudaGetLastError());
         return;

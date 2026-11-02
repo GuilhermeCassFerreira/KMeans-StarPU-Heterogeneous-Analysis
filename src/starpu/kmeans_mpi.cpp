@@ -242,7 +242,13 @@ static void aplicar_opcoes_accumulate(int rank) {
     const char *tpp_env = getenv("KMEANS_ASSIGN_THREADS_PONTO");
     int tpp = tpp_env ? atoi(tpp_env) : 1;
     if (otimizado || expandido || (tpp != 2 && tpp != 4)) tpp = 1;
-    if (otimizado) {
+    // KMEANS_ASSIGN_NORMA_BLOCO=1: kernel otimizado com o ‖c‖² calculado em cada bloco (só
+    // para comparar), com modelos próprios para não misturar as calibrações
+    bool norma_bloco = otimizado && env_ligada("KMEANS_ASSIGN_NORMA_BLOCO", false);
+    if (norma_bloco) {
+        assign_perf_model.symbol = "kmeans_assign_otimb_model_mpi";
+        assign_calc_perf_model.symbol = "kmeans_assign_calc_otimb_model_mpi";
+    } else if (otimizado) {
         assign_perf_model.symbol = "kmeans_assign_otim_model_mpi";
         assign_calc_perf_model.symbol = "kmeans_assign_calc_otim_model_mpi";
     } else if (expandido) {
@@ -268,7 +274,8 @@ static void aplicar_opcoes_accumulate(int rank) {
                   << " | blocos por SM: " << (blocos ? blocos : "2")
                   << " | distancia expandida (teste): " << (expandido ? "sim" : "nao")
                   << " | threads por ponto: " << tpp
-                  << " | kernel otimizado: " << (otimizado ? "sim" : "nao") << std::endl;
+                  << " | kernel otimizado: " << (otimizado ? (norma_bloco ? "sim (norma por bloco)" : "sim") : "nao")
+                  << std::endl;
         std::cout << "[CHUNKS] pequenos por no: " << g_chunks_pequenos << " (fracao " << g_fracao_pequenos
                   << ") | rank 0 com menos pequenos: " << g_rank0_menos_pequenos
                   << " | somas em qualquer ordem: " << (g_commute ? "sim" : "nao")
